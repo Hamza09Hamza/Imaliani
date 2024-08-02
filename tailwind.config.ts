@@ -20,12 +20,13 @@ const config: Config = {
       fontSize:{
         "header":"7rem",
         "homeHeader":"4rem",
-        "semiHeader":"3rem"
+        "semiHeader":"3rem",
+        "small":"0.5rem"
       },
 
       screens: {
-        'xxs': { 'max': '1025px' }, // Custom breakpoint for max-width 480px
-        
+        'mid': { 'max': '1025px' }, // Custom breakpoint for max-width 480px
+        'xxs':{ 'max': '652px'}
       },
 
       backgroundImage: {

@@ -34,7 +34,7 @@ const New = () => {
 
   return (
     <>
-    <div className='pb-20'>
+    <div className='pb-20 '>
       <Head status={true} setCategorie={setCat} categorie={cat}  />
       
       <h1 className='text-black text-3xl font-bold text-center mt-4'> What's New in <span className='text-hardBeige'>Imaliani Craft Studio</span> ?</h1>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-const Summary = ({products}) => {
+const Summary = ({setCurrentPage,products}) => {
     
     const[SumPrice,setSumPrice]=useState(products.reduce((total, product) => total + product.quantity*product.amount/100, 0))
     const HandleCheckout=async ()=>{
@@ -83,7 +83,7 @@ const Summary = ({products}) => {
 
                     <div className="mt-6 space-y-3">
                         <button onClick={HandleCheckout} type="button" className="transition-all duration-500 text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-hardBeige hover:bg-tooHardBeige text-white rounded-md">Checkout</button>
-                        <button type="button" className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md">Continue Shopping  </button>
+                        <button onClick={()=>setCurrentPage(0)} type="button" className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md">Continue Shopping  </button>
                     </div>
                 </div>
         </> );

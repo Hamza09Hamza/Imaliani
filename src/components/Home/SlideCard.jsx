@@ -5,7 +5,7 @@ const SlideCard = ({image,type,title ,description}) => {
         const [state,setState]=useState(false)
         return ( <>
         <div onMouseEnter={()=>{setState(true)}} onMouseLeave={()=>{setState(false)}} 
-        className='lg:max-w-[30%] xxs:w-[80%]  relative overflow-hidden '>
+        className='lg:max-w-[30%] mid:w-[70%] xxs:w-[90%]    relative overflow-hidden '>
             <div
                 className="absolute bottom-auto left-auto right-12 top-4  inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-hardBeige px-2.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
                 {type}
@@ -15,8 +15,8 @@ const SlideCard = ({image,type,title ,description}) => {
                                 <div >
                                     <h5 className="mb-2 lg:text-2xl font-bold tracking-tight  text-white">{title}</h5>
                                 </div>
-                                <p className="mb-3 font-normal xxs:text-sm  text-gray-400">{description}</p>
-                                <a href="#" className="xxs:text-sm inline-flex items-center px-2 py-1 text-sm font-medium text-center text-white bg-hardBeige rounded-lg hover:bg-opacity-65 transition-all duration-500 focus:ring-4 focus:outline-none focus:ring-blue-300  ">
+                                <p className="mb-3 font-normal mid:text-sm  text-gray-400">{description}</p>
+                                <a href="#" className="mid:text-sm inline-flex items-center px-2 py-1 text-sm font-medium text-center text-white bg-hardBeige rounded-lg hover:bg-opacity-65 transition-all duration-500 focus:ring-4 focus:outline-none focus:ring-blue-300  ">
                                     More About The Product
                                     <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>

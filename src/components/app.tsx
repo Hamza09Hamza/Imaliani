@@ -21,7 +21,7 @@ const Application: React.FC = () => {
         <>
                 <main className=' h-[100%] flex-1  '>
                     {currentPage === 0 ? <Home /> :
-                        currentPage === 1 ? <Categorie /> : currentPage === 2 ? <New/> : currentPage === 3 ? <Chart/>: currentPage === 4 ? <Contact/> :<></>}
+                        currentPage === 1 ? <Categorie    /> : currentPage === 2 ? <New/> : currentPage === 3 ? <Chart  setCurrentPage={SettingCurrentPage}/>: currentPage === 4 ? <Contact/> :<></>}
 
                         <Footer setCurrentPage={SettingCurrentPage} />
                 </main>

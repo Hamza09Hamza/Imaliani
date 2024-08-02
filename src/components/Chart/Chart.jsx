@@ -5,10 +5,42 @@ import CharCard from "./ChartCard";
 import Summary from "./PricingSum";
 import { auth } from '@/Firebase/Initialisation';
 
-const Chart = () => {
+const Chart = ({setCurrentPage}) => {
    
     const [products, setProducts] = useState(([
-]));
+            {
+                id: 1,
+                title: "Candle Holder",
+                description: "Elegant candle holder made from high-quality materials.",
+                price: 25.99, // Price in AED
+                images: ["https://example.com/images/candle-holder.jpg"],
+                quantity: 2
+            },
+            {
+                id: 2,
+                title: "Ashtray",
+                description: "Stylish ashtray with a modern design.",
+                price: 15.49, // Price in AED
+                images: ["https://example.com/images/ashtray.jpg"],
+                quantity: 1
+            },
+            {
+                id: 3,
+                title: "Home Decoration",
+                description: "Beautiful home decoration piece to enhance your living space.",
+                price: 30.00, // Price in AED
+                images: ["https://example.com/images/home-decoration.jpg"],
+                quantity: 3
+            },
+            {
+                id: 4,
+                title: "Jewelry Tray",
+                description: "Chic and practical jewelry tray for organizing your accessories.",
+                price: 20.75, // Price in AED
+                images: ["https://example.com/images/jewelry-tray.jpg"],
+                quantity: 4
+            }
+        ]));
 
     const changeQuantity = (value, id) => {
         setProducts(products => 
@@ -27,8 +59,11 @@ const Chart = () => {
 
     return ( 
         <>
+        <div className='pb-20'>
+
             <Head status={false} />
-            {products.length>0?<div className="font-sans max-w-5xl max-md:max-w-xl mx-auto bg-white py-4">
+            {products.length>0?
+            <div className="font-sans max-w-5xl xxs:max-w-[90%] max-md:max-w-xl mx-auto bg-white py-4">
                 <h1 className="text-3xl font-bold text-gray-800 text-center">Shopping Cart</h1>
                 <div className="grid md:grid-cols-3 gap-8 mt-12">
                     <div className="md:col-span-2 space-y-4">
@@ -39,7 +74,7 @@ const Chart = () => {
                             </React.Fragment>
                         ))}
                     </div>
-                    <Summary products={products.map(item => ({
+                    <Summary setCurrentPage={setCurrentPage}products={products.map(item => ({
                         name: item.title,
                         description: item.description,
                         amount: item.price*100,
@@ -63,6 +98,8 @@ const Chart = () => {
                     </button>
                 </div>
             </div>}
+        </div>
+
         </>
     );
 }

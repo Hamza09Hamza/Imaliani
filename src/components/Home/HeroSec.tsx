@@ -14,14 +14,14 @@ const HeroSec = () => {
         return (<>
         <div className='flex flex-col items-center '>
 
-			<h1  className={'text-center  lg:text-header  xxs:text-3xl    uppercase opacity-35 text-gray-400 font-Abril  my-20'}>
+			<h1  className={'text-center  lg:text-header  mid:text-3xl    uppercase opacity-35 text-gray-400 font-Abril  my-20'}>
 					Welcome to Imaliani craft studio
 			</h1>
-			<p className='lg:max-w-[60%] xxs:w-[90%]   text-center lg:text-xl text-hardBeige xxs:text-tooHardBeige'>
+			<p className='lg:max-w-[60%] mid:w-[90%]   text-center lg:text-xl text-hardBeige mid:text-tooHardBeige'>
 			Welcome to Imaliano Craft Studio! Discover unique candles, ashtrays, and home decorations crafted to add elegance to your space. Explore our collection and find the perfect piece for your home.
 			</p>
 				<TrendingSlider images={images}/>
-				<p className='lg:max-w-[60%] xxs:text-sm xxs:max-w-[80%] text-center text-xl xxs:text-tooHardBeige text-hardBeige mb-10'>
+				<p className='lg:max-w-[60%] mid:text-sm mid:max-w-[80%] text-center text-xl mid:text-tooHardBeige text-hardBeige mb-10'>
 				We offer a curated selection of candles, ashtrays, and home decorations to bring a touch of elegance to your space. Discover unique pieces that reflect your style and add warmth to your home. Transform your surroundings with Imaliano Craft Studio, where creativity and quality come together.			</p>
 			<div className=' mt-10 flex flex-col justify-around items-center w-[90%]'>
 					<HeroCard 
