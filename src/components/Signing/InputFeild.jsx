@@ -1,27 +1,36 @@
-"use client";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const InputField = ({ label, type, value, onChange, placeholder, icon }) => {
-    const [error, setError] = useState('');
+const InputField = ({ label, type, value, onChange, placeholder, icon, errors, setErrors }) => {
+    const [touched, setTouched] = useState(false);
+
+    const handleChange = (e) => {
+        onChange(e.target.value);
+        if (touched) {
+            setErrors((prevErrors) => ({ ...prevErrors, [label.toLowerCase().replace(' ', '')]: "" }));
+        }
+    };
+
+    const handleBlur = () => {
+        setTouched(true);
+        if (!value) {
+            setErrors((prevErrors) => ({ ...prevErrors, [label.toLowerCase().replace(' ', '')]: `${label} is required.` }));
+        } else if (label === "Email" && !validateEmail(value)) {
+            setErrors((prevErrors) => ({ ...prevErrors, [label.toLowerCase().replace(' ', '')]: "Invalid email format." }));
+        }
+        if (errors[label.toLowerCase().replace(' ', '')] && value) {
+            console.log("inside");
+        
+            const { [label.toLowerCase().replace(' ', '')]: removed, ...newErrors } = errors;
+        
+            console.log("newErrors");
+        
+            setErrors(newErrors);
+        }
+    };
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-    };
-
-    const handleChange = (e) => {
-        const newValue = e.target.value;
-        onChange(newValue);
-    };
-
-    const handleBlur = () => {
-        if (type === 'email') {
-            if (value && !validateEmail(value)) {
-                setError('Please enter a valid email address.');
-            } else {
-                setError('');
-            }
-        }
     };
 
     return (
@@ -34,7 +43,7 @@ const InputField = ({ label, type, value, onChange, placeholder, icon }) => {
                     onBlur={handleBlur}
                     type={type}
                     required
-                    className={`w-full text-gray-800 text-sm border ${error ? 'border-red-500' : 'border-gray-300'} px-4 py-3 rounded-md outline-Beige`}
+                    className={`w-full text-gray-800 text-sm border ${errors[label.toLowerCase().replace(' ', '')] ? 'border-red-500' : 'border-gray-300'} px-4 py-3 rounded-md outline-Beige`}
                     placeholder={placeholder}
                 />
                 {icon && (
@@ -43,7 +52,9 @@ const InputField = ({ label, type, value, onChange, placeholder, icon }) => {
                     </svg>
                 )}
             </div>
-            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            {errors[label.toLowerCase().replace(' ', '')] && (
+                <p className="text-red-500 text-sm mt-1">{errors[label.toLowerCase().replace(' ', '')]}</p>
+            )}
         </div>
     );
 };

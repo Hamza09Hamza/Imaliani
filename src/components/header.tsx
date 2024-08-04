@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Image from 'next/image';
 import Imiliani from '@/images/Imalian.png';
 import Search from './searchbar';
@@ -10,10 +10,20 @@ import { auth } from '@/Firebase/Initialisation';
 interface ChildComponentProps {
     status:boolean | any
     categorie: string | null;
-    
     setCategorie: React.Dispatch<React.SetStateAction<string>> |null;
 }
 const Head: React.FC<ChildComponentProps> = ({ status,categorie,setCategorie }) => {
+    const [user, setUser] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedUser = localStorage.getItem("UserID");
+            setUser(storedUser ? JSON.parse(storedUser) : null);
+        }
+    }, []);
+
+
+    
     return (
         <>
             <header className='flex justify-around flex-row bg-Main w-[100vw] font-roboto items-center py-2'>
@@ -26,8 +36,10 @@ const Head: React.FC<ChildComponentProps> = ({ status,categorie,setCategorie }) 
                 />
                 <Search />
                 <div className='flex flex-row w-[20%] items-center justify-around max-h-[90%] mr-5 '>
-                    <div onClick={()=>auth.currentUser?window.location.assign("/me/"+auth.currentUser.uid): window.location.assign("/signIn")}  className='text-black mid:text-xs mid:hidden mid:text-center cursor-pointer font-roboto font-light hover:text-gray-600 transition-all duration-500 '>My Activites</div>
-                    <UserDrop/>
+                    <div 
+                        onClick={()=>auth.currentUser?window.location.assign("/me/"+auth.currentUser.uid+"/chart"): window.location.assign("/signin")}  
+                        className='text-black mid:text-xs mid:hidden mid:text-center cursor-pointer font-roboto font-light hover:text-gray-400 duration-500 transition-all  '> {user? "My Chart" :"Sign In"} </div>
+                    <UserDrop user={user} />
                 </div>
             </header>
             {status  && <div className='flex justify-center w-[100%] border-b-2'>

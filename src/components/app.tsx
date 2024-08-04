@@ -11,19 +11,18 @@ import Chart from './Chart/Chart';
 import Contact from "../components/Contact"
 
 const Application: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState<number>(0);
 
-    const SettingCurrentPage = (value: number) => {
-        setCurrentPage(value);
-    };
 
     return (
         <>
                 <main className=' h-[100%] flex-1  '>
-                    {currentPage === 0 ? <Home /> :
-                        currentPage === 1 ? <Categorie    /> : currentPage === 2 ? <New/> : currentPage === 3 ? <Chart  setCurrentPage={SettingCurrentPage}/>: currentPage === 4 ? <Contact/> :<></>}
+                    <Home />
+                    {/* {currentPage === 0 ?  :
+                        : currentPage === 2 ? <New setListCat={setListCat} setCurrentPage={setCurrentPage} /> 
+                        : currentPage === 3 ? <Chart setListCat={setListCat}  setCurrentPage={SettingCurrentPage}/>
+                        : currentPage === 4 ? <Contact setListCat={setListCat} setCurrentPage={setCurrentPage}/> :<></>} */}
 
-                        <Footer setCurrentPage={SettingCurrentPage} />
+                        <Footer  />
                 </main>
         </>
     );

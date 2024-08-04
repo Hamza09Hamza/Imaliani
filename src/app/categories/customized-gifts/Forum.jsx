@@ -31,19 +31,19 @@ const Customized = () => {
                 <div class="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
                   <div>
                     <input type="text" placeholder="First name"
-                      class="px-4 mid:px-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm  border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 mid:px-2 lg:my-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm  border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                   <div>
                     <input type="text" placeholder="Last name"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                   <div>
                     <input type="email" placeholder="Email address"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                   <div>
                     <input type="text" placeholder="Phone number"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                 </div>
             </div>
@@ -52,18 +52,18 @@ const Customized = () => {
           <div class="grid mid:text-center md:grid-cols-3  gap-4 mid:mt-12 mid:w-[90%]">
             <div>
               <h3 class="lg:text-3xl font-bold text-gray-300 mid:hidden">02</h3>
-              <h3 class="lg:text-xl font-bold text-gray-800 mt-1">Shopping Address</h3>
+              <h3 class="lg:text-xl  font-bold text-gray-800 mt-1">Shopping Address</h3>
             </div>
 
             <div class="md:col-span-2  mid:flex mid:items-center mid:flex-col ">
                 <div class="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
                   <div>
                     <input type="text" placeholder="Street address"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 py-3 lg:my-2  bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                   <div>
                     <input type="text" placeholder="City"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
+                      class="px-4 py-3 lg:my-2  bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
                   </div>
                   <div>
                     <input type="text" placeholder="State"

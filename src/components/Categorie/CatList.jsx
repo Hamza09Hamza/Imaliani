@@ -38,7 +38,7 @@ const CatList = ({ list, setList, listcat, toggleSidebar,status }) => {
                             <li key={item}>
                                 <div
                                     className={`lg:text-lg mid:text-small px-2 mt-2 py-1 lg:py-4 hover:bg-white cursor-pointer hover:border-l-8 hover:border-l-hardBeige transition-all duration-500 ${listcat === item ? 'border-l-8 border-l-hardBeige bg-white' : ''}`}
-                                    onClick={() => setList(item)}
+                                    onClick={() => item !=="Customized gifts" ? setList(item) : window.location.assign("/categories/customized-gifts")}
                                 >
                                     {item}
                                 </div>

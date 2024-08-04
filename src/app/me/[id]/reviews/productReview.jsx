@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react'
-const ProductReview = ({title,Message,Rating}) => {
+const ProductReview = ({title,Message,Rating,handleDeleteClick,handleEditClick}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -12,7 +12,7 @@ const ProductReview = ({title,Message,Rating}) => {
         </svg>
         </>
     const MissStar=()=><><svg className="w-5 h-5 text-yellow-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-        <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+        <path stroke="currentColor" strokeWidth="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
     </svg> 
     </>
     const Stars=()=>{
@@ -71,14 +71,15 @@ const ProductReview = ({title,Message,Rating}) => {
                     className="z-10 absolute lg:right-20 mid:right-0 mid:mt-32 w-40 divide-y divide-gray-100 rounded-lg bg-white shadow" 
                 >
                     <ul className="p-2 text-left text-sm font-medium text-gray-500">
-                        <li>
+                        <li >
                             <button 
+                                onClick={handleEditClick}
                                 type="button" 
                                 data-modal-target="editReviewModal" 
                                 data-modal-toggle="editReviewModal" 
                                 className="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                             >
-                                <svg 
+                                <svg  
                                     className="me-1.5 h-4 w-4 text-gray-400 group-hover:text-gray-900" 
                                     aria-hidden="true" 
                                     xmlns="http://www.w3.org/2000/svg" 
@@ -89,11 +90,12 @@ const ProductReview = ({title,Message,Rating}) => {
                                 >
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                                 </svg>                              
-                                <span>Edit review</span>
+                                <span >Edit review</span>
                             </button>
                         </li>
-                        <li>
+                        <li  >
                             <button 
+                                onClick={handleDeleteClick}
                                 type="button" 
                                 data-modal-target="deleteReviewModal" 
                                 data-modal-toggle="deleteReviewModal" 

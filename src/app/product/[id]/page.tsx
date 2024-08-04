@@ -7,9 +7,9 @@ import MainProduct from '../MainProduct';
 import Footer from '@/components/footer';
 import MoreProducts from '../MoreProducts';
 
-function ProductPage({ params }: { params: { slug: string } }) {
+function ProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const  id  = params.slug;
+  const  id  = params.id;
   const [product, setProduct] = useState(null);
 
 

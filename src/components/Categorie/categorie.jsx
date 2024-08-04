@@ -1,17 +1,21 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from '../header';
 import ProductList from './ProductList';
 import { OriginCategorieList } from '../products';
-import Customized from '../CustomizedGifts/Forum';
+import Customized from '../../app/categories/customized-gifts/Forum';
 import CatList from './CatList';
+import { useRouter } from 'next/router';
 
 const Categorie = () => {
     const [cat, setCat] = useState('All');
-    const [listcat, setListCat] = useState('');
+    
+    const [listcat, setListCat] = useState();
+    
     const [CategorieList, setCategorieList] = useState(OriginCategorieList);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+     // Assuming category is the third segment
+    
     const handleCategorie = (value) => {
         if (value !== 'All') {
             const filteredList = OriginCategorieList.filter(item => value.includes(item));
@@ -24,6 +28,8 @@ const Categorie = () => {
             setListCat('');
         }
     };
+    
+
 
     const products = [
         { id: 1, title: 'Urban Sneakers', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '100', images: ["https://readymadeui.com/images/product10.webp"] },
@@ -43,22 +49,22 @@ const Categorie = () => {
 
     return (
         <>
-            <div className="w-screen h-screen relative max-h-screen overflow-hidden pb-60 xxs:pb-90 bg-gray-50">
-                <Head status={true} categorie={cat} setCategorie={handleCategorie} />
+            <div className="w-screen h-screen relative max-h-screen overflow-hidden  xxs:pb-90 bg-gray-50">
+                <Head 
+                status={true} 
+                categorie={cat} 
+                setCategorie={handleCategorie} />
                 <div className="flex flex-row h-full overflow-scroll bg-gray-50">
                     
-                    <div className={`lg:w-1/5 z-50 text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 xxs:pb-2 transition-transform transform duration-500 `}>
+                    <div className={`lg:w-1/5  text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500 `}style={{zIndex:200}}>
                         <CatList list={CategorieList} setList={setListCat} listcat={listcat} toggleSidebar={toggleSidebar} status={isSidebarOpen} />
                     </div>
-                    {listcat !== "Customized gifts" ?
-                        <div className="flex-1  lg:pl-2 overflow-y-auto h-full lg:pb-60 mid:pb-10 xxs:pb-4 bg-gray-50">
+                   
+                        <div className="flex-1  lg:pl-2 overflow-y-auto h-full  mid:pb-10 xxs:pb-4 bg-gray-50">
                             <ProductList products={products} />
                         </div>
-                        :
-                        <>
-                            <Customized />
-                        </>
-                    }
+                       
+                    
                 </div>
             </div>
         </>

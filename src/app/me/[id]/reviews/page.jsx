@@ -2,14 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import ProductReview from './ProductReview';
 import Head from '@/components/header';
-
+import DeleteModal from"../Delete";
+import Navbar from  "../navbar"
+import EditReviewModal from"./UpdateReview";
 
 const Reviews = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(5);
     const [selectedRating, setSelectedRating] = useState('All reviews');
 
-    const productArray = [
+    const [reviews,setReviews] =useState( [
         {
             title: `Apple iMac 27", M2 Max CPU 1TB HDD, Retina 5K`,
             Message: `It’s fancy, amazing keyboard, matching accessories. Super fast, batteries last more than usual, everything runs perfect in this...`,
@@ -60,21 +62,19 @@ const Reviews = () => {
             Message: `A sleek and powerful laptop with a great display and comfortable keyboard. Battery life is good, but the price is high.`,
             Rating: 5
         },
-    ];
+    ]);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Filter reviews based on the selected rating
     const filteredReviews = selectedRating === 'All reviews'
-        ? productArray
-        : productArray.filter(review => review.Rating.toString() === selectedRating);
+        ? reviews
+        : reviews.filter(review => review.Rating.toString() === selectedRating);
 
-    // Calculate pagination variables
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
     const currentReviews = filteredReviews.slice(indexOfFirstReview, indexOfLastReview);
     const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage);
-    useEffect(()=>{
-        console.log(currentPage,totalPages)
-    },[])
+   
     const handlePageChange = (pageNumber) => {
         
         pageNumber<=totalPages&& pageNumber>=1 &&  setCurrentPage(pageNumber);
@@ -83,14 +83,44 @@ const Reviews = () => {
     const handleRatingChange = (event) => {
         
         setSelectedRating(event.target.value);
-        setCurrentPage(1); // Reset to first page on filter change
+        setCurrentPage(1); 
     };
+    
+  
+    const handleDeleteClick = () => {
+      setIsDeleteModalOpen(true);
+    };
+  
+    const handleEditClick = () => {
+      setIsEditModalOpen(true);
+    };
+  
+    const handleDeleteClose = () => {
+      setIsDeleteModalOpen(false);
+    };
+  
+    const handleEditClose = () => {
+      setIsEditModalOpen(false);
+    };
+  
+    const handleSaveEdit = () => {
+      // Save edit logic
+      setIsEditModalOpen(false);
+    };
+  
+    const handleConfirmDelete = () => {
+      // Delete logic
+      setIsDeleteModalOpen(false);
+    };
+
+
+
 
     return (
         <>
             <Head categorie={null} setCategorie={null} status={false}/>
 
-            <section className="bg-white py-8 antialiased md:py-16">
+           {reviews.length>0? <section className="bg-white py-8 antialiased md:py-16">
                 <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
                     <div className="mx-auto max-w-5xl">
                         <div className="gap-4 sm:flex sm:items-center sm:justify-between">
@@ -121,53 +151,23 @@ const Reviews = () => {
                                         title={item.title}
                                         Message={item.Message}
                                         Rating={item.Rating}
+                                        handleDeleteClick={handleDeleteClick}
+                                        handleEditClick={handleEditClick}
                                     />
                                 ))}
                             </div>
                         </div>
 
-                        <nav className="mt-6 flex items-center justify-center sm:mt-8" aria-label="Page navigation example">
-                            <ul className="flex h-8 items-center -space-x-px text-sm">
-                                <li>
-                                    <a
-                                        
-                                        className={`ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
-                                        onClick={() => currentPage!=1?handlePageChange(currentPage - 1):<></>}
-                                    >
-                                        <span className="sr-only">Previous</span>
-                                        <svg className="h-4 w-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
-                                        </svg>
-                                    </a>
-                                </li>
-                                {[...Array(totalPages).keys()].map(number => (
-                                    <li key={number + 1}>
-                                        <a
-                                           
-                                            className={`flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 ${currentPage === number + 1 ? 'z-10 border-primary-300 bg-primary-50 text-primary-600' : ''}`}
-                                            onClick={() => handlePageChange(number + 1)}
-                                        >
-                                            {number + 1}
-                                        </a>
-                                    </li>
-                                ))}
-                                <li>
-                                    <a
-                                       
-                                        className={`flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : ''}`}
-                                        onClick={() =>  handlePageChange(currentPage + 1)}
-                                    >
-                                        <span className="sr-only">Next</span>
-                                        <svg className="h-4 w-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7" />
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Navbar handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages}/>
                     </div>
                 </div>
             </section>
+            :
+                <Empty type={"reviewing"} text={"You have no reviews yet."}/>
+
+            }
+            <DeleteModal typeText={"review"} isOpen={isDeleteModalOpen} onClose={handleDeleteClose} onDelete={handleConfirmDelete}/>
+            <EditReviewModal isOpen={isEditModalOpen} onClose={handleEditClose} onSave={handleSaveEdit}/>
         </>
     );
 };

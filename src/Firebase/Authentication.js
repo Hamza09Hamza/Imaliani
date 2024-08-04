@@ -3,10 +3,14 @@ import {
     signInWithPopup,
     createUserWithEmailAndPassword,
     updateProfile,
-    sendEmailVerification
+    sendEmailVerification,
+    signOut,
+    signInWithEmailAndPassword,
+    
 } from "firebase/auth";
 import { DB, auth } from "./Initialisation";
 import { setDoc, doc } from "firebase/firestore";
+const provider = new GoogleAuthProvider();
 
 auth.useDeviceLanguage();
 
@@ -25,6 +29,7 @@ export const FireSignUp = async (userData) => {
         phoneNumber: userData.phoneNumber 
     };
     await setDoc(doc(DB, "Users", auth.currentUser.uid), { ...userDoc });
+    
 };
 
 const handleUserSignUp = async (userData) => {
@@ -48,7 +53,6 @@ const handleUserSignUp = async (userData) => {
 };
 
 export const GoogleSignUp = async () => {
-    const provider = new GoogleAuthProvider();
     try {
         console.log("Trying sign up with Google");
         await signInWithPopup(auth, provider);
@@ -59,6 +63,9 @@ export const GoogleSignUp = async () => {
             phoneNumber: auth.currentUser.phoneNumber
         });
         console.log("Done in FireStore");
+        localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+        window.location.assign("/")
+
     } catch (error) {
         console.log(error);
     }
@@ -72,7 +79,58 @@ export const EmailSignUp = async (userData) => {
         console.log(userData.phoneNumber)
         await handleUserSignUp(userData);
         console.log("Done in FireStore");
+        return ""
     } catch (error) {
         console.error("Error during Email SignUp:", error);
+        if (error.code === 'auth/email-already-in-use') {
+            return "An account with this email already exists.";
+        } else if (error.code === 'auth/invalid-email') {
+            return "The email address is badly formatted.";
+        } else if (error.code === 'auth/weak-password') {
+            return "The password is too weak.";
+        } else {
+            return "An unexpected error occurred. Please try again later.";
+        }
     }
 };
+
+export const  UserSignout =async ()=>{
+    try {
+        await signOut(auth)
+        localStorage.removeItem("UserID")
+        sessionStorage.clear();
+        window.location.assign("/")
+
+    } catch (error) {
+        console.log("Error during  Sign out",error)
+    }
+}
+
+export const EmailSignIn=async({email,password})=>{
+    try {
+       await  signInWithEmailAndPassword(auth,email,password)
+       localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+       window.location.assign("/")
+    } catch (error) {
+        console.error("Error during Email SignIn:", error);
+        if (error.code === 'auth/user-not-found') {
+            return "No account found with this email.";
+        } else if (error.code === 'auth/wrong-password') {
+            return "Incorrect password. Please try again.";
+        } else if (error.code === 'auth/invalid-email') {
+            return "The email address is badly formatted.";
+        } else {
+            return "An unexpected error occurred. Please try again later.";
+        }
+    }
+}
+export const GoogleSignIn=async()=>{
+    try {
+        await signInWithPopup(auth, provider);
+        localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+
+    } catch (error) {
+        console.log("Error during Google Sign In",error)
+
+    }
+}

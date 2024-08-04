@@ -1,45 +1,48 @@
 "use client";
-import React, { useLayoutEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import Head from '../header';
 import CharCard from "./ChartCard";
 import Summary from "./PricingSum";
 import { auth } from '@/Firebase/Initialisation';
+import Empty from "../Emptylist"
 
-const Chart = ({setCurrentPage}) => {
+const Chart = ({setCurrentPage,setListCat}) => {
    
-    const [products, setProducts] = useState(([
-            {
-                id: 1,
-                title: "Candle Holder",
-                description: "Elegant candle holder made from high-quality materials.",
-                price: 25.99, // Price in AED
-                images: ["https://example.com/images/candle-holder.jpg"],
-                quantity: 2
-            },
-            {
-                id: 2,
-                title: "Ashtray",
-                description: "Stylish ashtray with a modern design.",
-                price: 15.49, // Price in AED
-                images: ["https://example.com/images/ashtray.jpg"],
-                quantity: 1
-            },
-            {
-                id: 3,
-                title: "Home Decoration",
-                description: "Beautiful home decoration piece to enhance your living space.",
-                price: 30.00, // Price in AED
-                images: ["https://example.com/images/home-decoration.jpg"],
-                quantity: 3
-            },
-            {
-                id: 4,
-                title: "Jewelry Tray",
-                description: "Chic and practical jewelry tray for organizing your accessories.",
-                price: 20.75, // Price in AED
-                images: ["https://example.com/images/jewelry-tray.jpg"],
-                quantity: 4
-            }
+    const [products, setProducts] = useState(
+        (
+        [
+        //     {
+        //         id: 1,
+        //         title: "Candle Holder",
+        //         description: "Elegant candle holder made from high-quality materials.",
+        //         price: 25.99, // Price in AED
+        //         images: ["https://example.com/images/candle-holder.jpg"],
+        //         quantity: 2
+        //     },
+        //     {
+        //         id: 2,
+        //         title: "Ashtray",
+        //         description: "Stylish ashtray with a modern design.",
+        //         price: 15.49, // Price in AED
+        //         images: ["https://example.com/images/ashtray.jpg"],
+        //         quantity: 1
+        //     },
+        //     {
+        //         id: 3,
+        //         title: "Home Decoration",
+        //         description: "Beautiful home decoration piece to enhance your living space.",
+        //         price: 30.00, // Price in AED
+        //         images: ["https://example.com/images/home-decoration.jpg"],
+        //         quantity: 3
+        //     },
+        //     {
+        //         id: 4,
+        //         title: "Jewelry Tray",
+        //         description: "Chic and practical jewelry tray for organizing your accessories.",
+        //         price: 20.75, // Price in AED
+        //         images: ["https://example.com/images/jewelry-tray.jpg"],
+        //         quantity: 4
+        //     }
         ]));
 
     const changeQuantity = (value, id) => {
@@ -61,7 +64,7 @@ const Chart = ({setCurrentPage}) => {
         <>
         <div className='pb-20'>
 
-            <Head status={false} />
+            <Head setListCat={setListCat} status={false} />
             {products.length>0?
             <div className="font-sans max-w-5xl xxs:max-w-[90%] max-md:max-w-xl mx-auto bg-white py-4">
                 <h1 className="text-3xl font-bold text-gray-800 text-center">Shopping Cart</h1>
@@ -83,21 +86,9 @@ const Chart = ({setCurrentPage}) => {
                     }))} />
                 </div>
             </div>:
-            <div className="h-full mx-auto px-10 py-4 bg-white rounded-lg flex items-center justify-center">
-                <div className="flex flex-col items-center justify-center py-12 h-[100%]">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-24 w-24 text-gray-400 mb-4">
-                        <path
-                        d="M4.00488 16V4H2.00488V2H5.00488C5.55717 2 6.00488 2.44772 6.00488 3V15H18.4433L20.4433 7H8.00488V5H21.7241C22.2764 5 22.7241 5.44772 22.7241 6C22.7241 6.08176 22.7141 6.16322 22.6942 6.24254L20.1942 16.2425C20.083 16.6877 19.683 17 19.2241 17H5.00488C4.4526 17 4.00488 16.5523 4.00488 16ZM6.00488 23C4.90031 23 4.00488 22.1046 4.00488 21C4.00488 19.8954 4.90031 19 6.00488 19C7.10945 19 8.00488 19.8954 8.00488 21C8.00488 22.1046 7.10945 23 6.00488 23ZM18.0049 23C16.9003 23 16.0049 22.1046 16.0049 21C16.0049 19.8954 16.9003 19 18.0049 19C19.1095 19 20.0049 19.8954 20.0049 21C20.0049 22.1046 19.1095 23 18.0049 23Z">
-                        </path>
-                    </svg>
-                    <p className="text-gray-600 text-lg font-semibold mb-4">Your shopping cart is empty.</p>
-                    <button
-                        onClick={(e)=>{e.preventDefault();auth.currentUser? window.location.assign("/"):window.location.assign("signup")}}
-                        className="px-6 py-2 bg-hardBeige text-white rounded-md shadow-md hover:bg-tooHardBeige transition-colors duration-300">
-                        Let's go shopping!
-                    </button>
-                </div>
-            </div>}
+
+            <Empty text=" Your Shopping Chart is empty. " type="shopping"/>
+            }
         </div>
 
         </>
