@@ -9,7 +9,8 @@ import {
     
 } from "firebase/auth";
 import { DB, auth } from "./Initialisation";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, addDoc,getDoc } from "firebase/firestore";
+import { encryptData } from "@/app/Utils/Encryption";
 const provider = new GoogleAuthProvider();
 
 auth.useDeviceLanguage();
@@ -24,11 +25,12 @@ export const FireSignUp = async (userData) => {
             },
         ],
         Ratings: [""],
-        Orders: [""],
+        
         email: userData.email,
         phoneNumber: userData.phoneNumber 
     };
-    await setDoc(doc(DB, "Users", auth.currentUser.uid), { ...userDoc });
+
+    await addDoc(doc(DB, "Users", auth.currentUser.uid), { ...userDoc });
     
 };
 
@@ -52,22 +54,34 @@ const handleUserSignUp = async (userData) => {
 
 };
 
-export const GoogleSignUp = async () => {
+export const GoogleSignUporIn = async () => {
     try {
-        console.log("Trying sign up with Google");
-        await signInWithPopup(auth, provider);
-        console.log("Done in FireAuth");
-        await FireSignUp({
-            displayName: auth.currentUser.displayName,
-            email: auth.currentUser.email,
-            phoneNumber: auth.currentUser.phoneNumber
-        });
-        console.log("Done in FireStore");
-        localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
-        window.location.assign("/")
+        console.log("Trying sign up or sign in with Google");
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
 
+        const userDocRef = doc(DB, "Users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+            // New user, sign up
+            await FireSignUp({
+                displayName: user.displayName,
+                email: user.email,
+                phoneNumber: user.phoneNumber
+            });
+            console.log("User added to Firestore");
+
+            // Redirect to verification page
+            window.location.assign('/verify-email/' + user.uid);
+        } else {
+            // Existing user, sign in
+            localStorage.setItem('UserID', JSON.stringify(encryptData(user.uid)));
+            console.log("User signed in");
+            window.location.assign("/");
+        }
     } catch (error) {
-        console.log(error);
+        console.log("Error during Google Sign In/Sign Up", error);
     }
 };
 

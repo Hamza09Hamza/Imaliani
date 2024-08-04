@@ -51,19 +51,19 @@ const UserDrop = ({user}) => {
                     aria-labelledby="dropdownAvatarNameButton"
                 >
                     <li>
-                        <a href={auth.currentUser ? "/me/"+ auth.currentUser.uid+"/orders":"/signin"} className="  block cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
+                        <a href={auth.currentUser ? "/me/orders":"/signin"} className="  block cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
                             My Orders
                         </a>
                        
                     </li>
                     <li>
-                        <a href={auth.currentUser ? "/me/"+ auth.currentUser.uid+"/chart":"/signin"} className="xss:block lg:hidden cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
+                        <a href={auth.currentUser ? "/me/chart":"/signin"} className="xss:block lg:hidden cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
                             My Chart
                         </a>
                         
                     </li>
                     <li>
-                        <a href={auth.currentUser ? "/me/"+ auth.currentUser.uid+"/reviews":"/signin"} className="block px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
+                        <a href={auth.currentUser ? "/me/reviews":"/signin"} className="block px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
                             My Ratings
                         </a>
                     </li>

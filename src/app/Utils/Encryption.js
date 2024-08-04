@@ -1,12 +1,18 @@
-import CryptoJS from "crypto-js";
+import  { AES,enc } from "crypto-js";
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_SECRET_KEY;
 
 export const encryptData = (data) => {
-    return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+    if (!SECRET_KEY) {
+        throw new Error("Encryption secret key is not defined");
+    }
+    return AES.encrypt(data, SECRET_KEY).toString();
 };
 
 export const decryptData = (data) => {
-    const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    if (!SECRET_KEY) {
+        throw new Error("Encryption secret key is not defined");
+    }
+    const bytes = AES.decrypt(data, SECRET_KEY);
+    return bytes.toString(enc.Utf8);;
 };

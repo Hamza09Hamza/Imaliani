@@ -1,17 +1,74 @@
 "use client";
-import React, { useState } from 'react';
-import OrderCard from './Article';
-import Navbar from '../navbar';
-import DeleteModal from '../Delete';
-import {getDateRange} from "./Order"
-import Head from '@/components/header';
+import React, { useEffect, useState } from 'react';
+import OrderCard from '../../me/orders/Article';
+import Navbar from '../../me/navbar';
+import DeleteModal from '../../me/Delete';
+import {getDateRange} from "../../me/orders/Order"
 import Empty from '@/components/Emptylist';
+import { auth } from '@/Firebase/Initialisation';
+import { getAllOrders } from '@/Firebase/CRUD/Oders';
+import { formatTimestamp, getMostRecentStatus } from '@/app/Utils/time';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedRating, setSelectedRating] = useState('All orders');
-    const [selectedDateFilter, setSelectedDateFilter] = useState('Al orders');
+    const [selectedDateFilter, setSelectedDateFilter] = useState('All times');
+    const [lastVisibile, setLastVisibile] = useState(null);
+    const [currentOrders,setCurrentOrders] =useState([])
+    const [totalPages,setTotalPages] =useState()
+    const [displayedOrders,setDisplayedOrders]=useState([])
+
+    useEffect(() => {
+        const handleAuthStateChange = () => {
+            const unsubscribe = auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const OrdersData = await getAllOrders(null, 10);
+                        let OrdersList = OrdersData.orders.map((order) => {
+                            return {
+                                orderId: "#" + order.orderId,
+                                date: formatTimestamp(order.Status.In_transit),
+                                totalAmount: "AED " + order.totalAmount,
+                                status: !order.cancelled ? getMostRecentStatus(order.Status) : "Cancelled"
+                            };
+                        });
+                        setDisplayedOrders(OrdersList);
+                        setLastVisibile(OrdersData.lastVisible);
+                        console.log(OrdersData)
+
+                    } catch (error) {
+                        console.error("Error fetching user orders:", error);
+                    }
+                } else {
+                    // Handle the case when user is not signed in
+                    setDisplayedOrders([]);
+                    setCurrentOrders([]);
+                }
+            });
+
+            return () => unsubscribe();
+        };
+
+        handleAuthStateChange();
+    }, []); 
+    useEffect(()=>{
+        
+        const filteredOrders = displayedOrders.filter(order => 
+            (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
+            new Date(order.date.split('.').reverse().join('-')) >= startDate
+        );
+    
+        const indexOfLastOrder = currentPage * ordersPerPage;
+    
+        const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+        setCurrentOrders(filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder));
+        setTotalPages(Math.ceil(displayedOrders.length / ordersPerPage))
+        
+    },[displayedOrders, selectedRating, selectedDateFilter, currentPage, ordersPerPage])
+
+
+
 
     const Statuses=[
         {
@@ -33,7 +90,7 @@ const Orders = () => {
             statusClass: 'bg-red-100 text-red-800 text-xs',
         },
         {
-            status: 'In transit',
+            status: 'In_transit',
             statusIcon: (
                 <svg className="me-1 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.5 10.5v6h-15v-6h15Zm0 0L17.308 7M12 10.5V6m0 0-2.192 4.5M12 6l2.192 4.5" />
@@ -73,68 +130,7 @@ const Orders = () => {
             setIsDeleteModalOpen(false);
         };
 
-    const orders = [
-        {
-            id: '#FWB127364372',
-            date: '20.12.2023',
-            price: '$4,756',
-            status: 'Pre-order',
-        },
-        {
-            id: '#FWB146284623',
-            date: '26.09.2023',
-            price: '$180',
-            status: 'Cancelled',
-        },
-        {
-            id: '#FWB154678235',
-            date: '15.11.2023',
-            price: '$350',
-            status: 'In transit',
-        },
-        {
-            id: '#FWB162938475',
-            date: '02.01.2024',
-            price: '$1,240',
-            status: 'Processing',
-        },
-        {
-            id: '#FWB173847562',
-            date: '10.08.2023',
-            price: '$720',
-            status: 'Processing',
-        },
-        {
-            id: '#FWB185947621',
-            date: '05.05.2023',
-            price: '$980',
-            status: 'Shipped',
-        },
-        {
-            id: '#FWB196837452',
-            date: '25.07.2023',
-            price: '$2,345',
-            status: 'Shipped',
-        },
-        {
-            id: '#FWB204857361',
-            date: '12.12.2023',
-            price: '$4,567',
-            status: 'Pre-order',
-        },
-        {
-            id: '#FWB218736472',
-            date: '11.11.2023',
-            price: '$500',
-            status: 'Cancelled',
-        },
-        {
-            id: '#FWB225847362',
-            date: '23.10.2023',
-            price: '$675',
-            status: 'In transit',
-        },
-    ];
+  
     const startDate = getDateRange(selectedDateFilter);
 
     const handleDateFilterChange = (event) => {
@@ -149,27 +145,15 @@ const Orders = () => {
     };
 
 
-    const filteredOrders = orders
-    .filter(order => 
-        (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
-        new Date(order.date.split('.').reverse().join('-')) >= startDate
-    );
-
-    const indexOfLastOrder = currentPage * ordersPerPage;
-
-    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-    const totalPages = Math.ceil(orders.length / ordersPerPage);
-    
+   
     const handlePageChange = (pageNumber) => {
         pageNumber<=totalPages&& pageNumber>=1 &&  setCurrentPage(pageNumber);
     };
     
 
   return (<>
-  <Head status={false} categorie={null } setCategorie={null} />
-   {orders.length>0 ? <section className="bg-white py-8 antialiased md:py-16">
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+   {displayedOrders.length>0 ? <section className="bg-white py-8 antialiased md:py-16">
+      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0 bg-softBeige rounded-3xl">
         <div className="mx-auto max-w-5xl">
           <div className="gap-4 sm:flex sm:items-center sm:justify-between">
             <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">My orders</h2>
@@ -178,7 +162,7 @@ const Orders = () => {
                 <label htmlFor="order-type" className="sr-only mb-2 block text-sm font-medium text-gray-900">Select order type</label>
                 <select value={selectedRating}
                     onChange={handleRatingChange} id="order-type" className="block w-full min-w-[8rem] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-hardBeige outline-hardBeige focus:ring-hardBeige">
-                  <option selected>All orders</option>
+                  <option defaultValue="">All orders</option>
                   <option value="pre-order">Pre-order</option>
                   <option value="processing">Processing</option>
                   <option value="transit">In transit</option>
@@ -192,7 +176,7 @@ const Orders = () => {
                 <select 
                 value={selectedDateFilter} 
                 onChange={handleDateFilterChange} id="duration" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-hardBeige outline-hardBeige focus:ring-hardBeige">
-                  <option selected>All times</option>
+                  <option defaultValue="">All times</option>
                   <option value={"this week"}>this week</option>
                   <option value="this month">this month</option>
                   <option value="last 3 months">the last 3 months</option>
@@ -208,9 +192,9 @@ const Orders = () => {
               {currentOrders.map((order, index) => (
                 <OrderCard
                   key={index}
-                  id={order.id}
+                  id={order.orderId}
                   date={order.date}
-                  price={order.price}
+                  price={order.totalAmount}
                   status={order.status}
                   statusIcon={Statuses.find((ord)=>ord.status==order.status).statusIcon }
                   statusClass={Statuses.find((ord)=>ord.status==order.status).statusClass}

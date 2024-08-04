@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {deleteProduct, getProductsperID} from "@/Firebase/CRUD/Products"
 import { DocumentData } from 'firebase/firestore';
 import Image from 'next/image';
-import DeleteModal from "@/app/me/[id]/Delete"
+import DeleteModal from "@/app/me/Delete"
 export default function Product({ params }: { params: { slug: string } }) {  
     const [isOpen,setIsOpen]=useState<Boolean>(false) 
     const  slug  = params.slug

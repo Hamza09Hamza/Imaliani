@@ -1,26 +1,15 @@
-import { getDocs, collection, query, where, orderBy, limit, startAfter } from "firebase/firestore";
-import { DB } from "./Initialisation";
+import { getDocs, collection, query, where, orderBy, limit, startAfter, addDoc, doc, updateDoc } from "firebase/firestore";
+import { DB, auth } from "../Initialisation";
 import { decryptData, encryptData } from "../../app/Utils/Encryption";
  
 
-export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10) => {
+export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10,userId) => {
     try {
-        const encryptedUserData = sessionStorage.getItem('UserData');
-        if (!encryptedUserData) {
-            throw new Error("User data not found in session storage.");
-        }
-        
-        const userData = decryptData(encryptedUserData);
-        const userId = userData?.id;
-        if (!userId) {
-            throw new Error("User ID not found in decrypted user data.");
-        }
-
-        const ordersRef = collection(DB, "orders");
+        const ordersRef = collection(DB, "Orders");
         let ordersQuery = query(
             ordersRef,
-            where("UserID", "==", encryptData(userId)), 
-            orderBy("date", "desc"),
+            where("userID", "==",userId), 
+            orderBy("Status.Pre_order", "desc"),
             limit(pageSize)
         );
 
@@ -32,20 +21,20 @@ export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10) => {
         }
 
         const querySnapshot = await getDocs(ordersQuery);
+        querySnapshot.docs.map(doc=>{console.log(doc.data())})
         const orders = querySnapshot.docs.map(doc => {
             const data = doc.data();
-            // Decrypt UserID and ProductIDs
+            
             return {
-                id: doc.id,
+                orderId: doc.id,
                 ...data,
-                UserID: decryptData(data.UserID),
-                Products: data.Products.map(product => ({
+                UserID: data.UserID,
+                products: data.products.map(product => ({
                     ...product,
-                    ProductID: decryptData(product.ProductID)
+                    id: product.id
                 }))
             };
         });
-
         // Get the last visible document for pagination
         const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
@@ -59,10 +48,10 @@ export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10) => {
 
 export const getAllOrders = async (lastVisibleOrder = null, pageSize = 10) => {
     try {
-        const ordersRef = collection(DB, "orders");
+        const ordersRef = collection(DB, "Orders");
         let ordersQuery = query(
             ordersRef,
-            orderBy("date", "desc"),
+            orderBy("Status.Pre_order", "desc"),
             limit(pageSize)
         );
 
@@ -77,12 +66,12 @@ export const getAllOrders = async (lastVisibleOrder = null, pageSize = 10) => {
         const orders = querySnapshot.docs.map(doc => {
             const data = doc.data();
             return {
-                id: doc.id,
+                orderId: doc.id,
                 ...data,
-                UserID: decryptData(data.UserID),
-                Products: data.Products.map(product => ({
+                UserID: data.UserID,
+                products: data.products.map(product => ({
                     ...product,
-                    ProductID: decryptData(product.ProductID)
+                    ProductID: decryptData(product.id)
                 }))
             };
         });
@@ -97,20 +86,13 @@ export const getAllOrders = async (lastVisibleOrder = null, pageSize = 10) => {
 };
 
 
-export const setNewOrder = async (orderId, orderData) => {
+export const setNewOrder = async ( orderData) => {
     try {
         
-        const encryptedOrderData = {
-            ...orderData,
-            UserID: encryptData(orderData.UserID),
-            Products: orderData.Products.map(product => ({
-                ...product,
-                ProductID: encryptData(product.ProductID)
-            }))
-        };
+        
 
-        await setDoc(doc(DB, "orders", orderId), encryptedOrderData);
-        console.log("Order saved successfully.");
+        await addDoc(collection(DB, "Orders"), encryptedOrderData);
+        console.log("Order saved successfully. with ID:",orderData.UserID);
     } catch (error) {
         console.error("Error saving order:", error);
         throw new Error("Failed to save order.");
@@ -120,7 +102,7 @@ export const setNewOrder = async (orderId, orderData) => {
 
 export const deleteOrder = async (orderId) => {
     try {
-        const orderRef = doc(DB, "orders", orderId);
+        const orderRef = doc(DB, "Orders", orderId);
         await deleteDoc(orderRef);
         console.log("Order deleted successfully.");
     } catch (error) {
@@ -132,7 +114,7 @@ export const deleteOrder = async (orderId) => {
 
 export const updateOrderStatus = async (orderId, newStatus) => {
     try {
-        const orderRef = doc(DB, "orders", orderId);
+        const orderRef = doc(DB, "Orders", orderId);
         await updateDoc(orderRef, { Status: newStatus });
         console.log("Order status updated successfully.");
     } catch (error) {

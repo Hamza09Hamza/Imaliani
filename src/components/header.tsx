@@ -37,7 +37,7 @@ const Head: React.FC<ChildComponentProps> = ({ status,categorie,setCategorie }) 
                 <Search />
                 <div className='flex flex-row w-[20%] items-center justify-around max-h-[90%] mr-5 '>
                     <div 
-                        onClick={()=>auth.currentUser?window.location.assign("/me/"+auth.currentUser.uid+"/chart"): window.location.assign("/signin")}  
+                        onClick={()=>auth.currentUser?window.location.assign("/me/chart"): window.location.assign("/signin")}  
                         className='text-black mid:text-xs mid:hidden mid:text-center cursor-pointer font-roboto font-light hover:text-gray-400 duration-500 transition-all  '> {user? "My Chart" :"Sign In"} </div>
                     <UserDrop user={user} />
                 </div>

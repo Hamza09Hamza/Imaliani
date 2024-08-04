@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { OriginCategorieList } from '@/components/products';
 import {addNewProduct} from "@/Firebase/CRUD/Products"
-
+import {getCurrentFirestoreTimestamp} from "../../Utils/time"
 const CreateProduct = () => {
     const [fileNames, setFileNames] = useState([]);
     const [formData, setFormData] = useState({
@@ -10,7 +10,7 @@ const CreateProduct = () => {
         price: '',
         category: '',
         description: '',
-        images: [] // Array to store file objects
+        images: []
     });
 
     const handleFileChange = (event) => {
@@ -35,7 +35,8 @@ const CreateProduct = () => {
         event.preventDefault();
 
         const productData = {
-            ...formData
+            ...formData,
+            dateAdded:getCurrentFirestoreTimestamp()
         };
 
         try {

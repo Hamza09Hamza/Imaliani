@@ -9,14 +9,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { products } = await req.json();
+    const { products , userID } = await req.json();
+    const encryptedProductData = products.map((product: { id: string; quantity: number }) => ({
+      id: product.id,
+      quantity: product.quantity
+    }));
     const lineItems = products.map((product: { name: string; description: string; images: string[]; amount: number; quantity: number }) => ({
       price_data: {
         currency: 'aed',
+        
+        
+
         product_data: {
+          
           name: product.name,
           description: product.description,
-          images: product.images,
+          
+         
         },
         unit_amount: product.amount,
       },
@@ -26,8 +35,12 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `http://localhost:3000/success`,
-      cancel_url: `http://localhost:3000/cancel`,
+      success_url: `http://localhost:3000/`,
+      cancel_url: `http://localhost:3000/me/chart`,
+      metadata: {
+        encryptedProductData:JSON.stringify(encryptedProductData),
+        encryptedUserId: userID,
+      },
     });
 
 

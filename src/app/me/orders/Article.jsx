@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {formatString} from "@/app/Utils/text"
 const OrderCard = ({ id, date, price, status, statusClass, statusIcon,handleDeleteClick }) => {
     const canCancel = ['Pre-order', 'In transit', 'Processing'].includes(status);
 
@@ -8,7 +8,7 @@ const OrderCard = ({ id, date, price, status, statusClass, statusIcon,handleDele
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-800 ">Order ID:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900 ">
-          <a href="#" className="hover:underline">{id}</a>
+          <a href="#" className="hover:underline">{formatString(id)}</a>
         </dd>
       </dl>
 
@@ -31,12 +31,12 @@ const OrderCard = ({ id, date, price, status, statusClass, statusIcon,handleDele
           <span className="ms-2">{status}</span>
         </dd>
       </dl>
-      <div class="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
+      <div className="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
         {canCancel && (
-                    <button onClick={handleDeleteClick} type="button" class=" transition-all duration-500 w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium text-red-700 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300    lg:w-auto">Cancel order</button>
+                    <button onClick={handleDeleteClick} type="button" className=" transition-all duration-500 w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium text-red-700 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300    lg:w-auto">Cancel order</button>
 
             )}        
-        <a href="#" class=" transition-all duration-500 w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100   -whi lg:w-auto">View details</a>
+        <a href="#" className=" transition-all duration-500 w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100   -whi lg:w-auto">View details</a>
       </div>
     </article>
      
