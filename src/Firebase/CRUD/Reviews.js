@@ -1,28 +1,20 @@
-import { getDocs, collection, query, where, orderBy, limit, startAfter,addDoc } from "firebase/firestore";
-import { DB } from "./Initialisation";
+import { getDocs, collection, query, where, orderBy, limit, startAfter,addDoc, getDoc, updateDoc, deleteDoc, setDoc, doc } from "firebase/firestore";
+import { DB } from "../Initialisation";
 import { decryptData, encryptData } from "../../app/Utils/Encryption";
+import { error } from "console";
+import { ref } from "firebase/storage";
 
 
-export const getUserReviews = async (lastVisibleOrder = null, pageSize = 10) => {
+export const getUserReviews = async (userId,lastVisibleOrder = null, pageSize = 5) => {
     try {
-        const encryptedUserData = sessionStorage.getItem('UserData');
-        if (!encryptedUserData) {
-            throw new Error("User data not found in session storage.");
-        }
-        
-        const userData = decryptData(encryptedUserData);
-        const userId = userData?.id;
-        if (!userId) {
-            throw new Error("User ID not found in decrypted user data.");
-        }
-
-        const reviewsRef = collection(DB, "reviews");
+        const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
-            where("UserID", "==", encryptData(userId)),  // Encrypt userId for the query
-            orderBy("date", "desc"),
+            where("UserID","==",encryptData(userId)),
+            orderBy("dateAdded", "desc"),
             limit(pageSize)
         );
+
 
         if (lastVisibleOrder) {
             reviewsQuery = query(
@@ -32,6 +24,7 @@ export const getUserReviews = async (lastVisibleOrder = null, pageSize = 10) => 
         }
 
         const querySnapshot = await getDocs(reviewsQuery);
+        console.log(querySnapshot.empty)
         const reviews = querySnapshot.docs.map(doc => {
             const data = doc.data();
             // Decrypt UserID and ProductIDs
@@ -39,10 +32,7 @@ export const getUserReviews = async (lastVisibleOrder = null, pageSize = 10) => 
                 id: doc.id,
                 ...data,
                 UserID: decryptData(data.UserID),
-                Products: data.Products.map(product => ({
-                    ...product,
-                    ProductID: decryptData(product.ProductID)
-                }))
+                ProductID:decryptData(data.ProductID),
             };
         });
 
@@ -58,10 +48,10 @@ export const getUserReviews = async (lastVisibleOrder = null, pageSize = 10) => 
 
 export const getProductReviews = async (productId, lastVisibleReview = null, pageSize = 10) => {
     try {
-        const reviewsRef = collection(DB, "reviews");
+        const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
-            where("ProductID", "==", encryptData(productId)),
+            where("ProductID","==",encryptData(productId)),
             orderBy("dateAdded", "desc"),
             limit(pageSize)
         );
@@ -71,8 +61,8 @@ export const getProductReviews = async (productId, lastVisibleReview = null, pag
                 reviewsQuery,
                 startAfter(lastVisibleReview)
             );
+            
         }
-
         const querySnapshot = await getDocs(reviewsQuery);
         const reviews = querySnapshot.docs.map(doc => ({
             id: doc.id,
@@ -80,6 +70,8 @@ export const getProductReviews = async (productId, lastVisibleReview = null, pag
             UserID: decryptData(doc.data().UserID),
             ProductID: decryptData(doc.data().ProductID),
         }));
+        console.log(querySnapshot.empty)
+
 
         const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
@@ -93,7 +85,7 @@ export const getProductReviews = async (productId, lastVisibleReview = null, pag
 
 export const getAllReviews = async (lastVisibleOrder = null, pageSize = 10) => {
     try {
-        const reviewsRef = collection(DB, "reviews");
+        const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
             orderBy("date", "desc"),
@@ -130,16 +122,27 @@ export const getAllReviews = async (lastVisibleOrder = null, pageSize = 10) => {
     }
 };
 
-export const setNewReview = async ( ReviewData) => {
-    try {
-        
-        const encryptedReviewData = {
-            ...ReviewData,
-            UserID: encryptData(ReviewData.UserID),
-            ProductID: encryptData(product.ProductID)
-        };
+export const getReviwesperID=async (id)=>{
+    if(id)
+    {    const ReviewRef = doc(DB, "Ratings", id);
+        try {
+            return (await getDoc(ReviewRef)).data()
+        } catch (error) {
+            console.log(error)
+        }
+    }else{
+        throw new error("nothing")
+    }
+}
 
-        await addDoc(doc(DB, "reviews"), encryptedReviewData);
+export const setReview = async (id=null, ReviewData) => {
+    try {
+
+        
+        if(id!==null){
+            await setDoc(doc(DB, "Ratings/",id), ReviewData);}
+        else
+            await addDoc(collection(DB,"Ratings"),ReviewData)
         console.log("Review saved successfully.");
     } catch (error) {
         console.error("Error saving Review:", error);
@@ -150,7 +153,7 @@ export const setNewReview = async ( ReviewData) => {
 
 export const deleteReview = async (ReviewId) => {
     try {
-        const ReviewRef = doc(DB, "reviews", ReviewId);
+        const ReviewRef = doc(DB, "Ratings/", ReviewId);
         await deleteDoc(ReviewRef);
         console.log("Review deleted successfully.");
     } catch (error) {
@@ -159,14 +162,3 @@ export const deleteReview = async (ReviewId) => {
     }
 };
 
-
-export const updateReviewstatus = async (ReviewId, reviewData) => {
-    try {
-        const ReviewRef = doc(DB, "reviews", ReviewId);
-        await updateDoc(ReviewRef,reviewData);
-        console.log("Review  updated successfully.");
-    } catch (error) {
-        console.error("Error updating Review :", error);
-        throw new Error("Failed to update Review .");
-    }
-};

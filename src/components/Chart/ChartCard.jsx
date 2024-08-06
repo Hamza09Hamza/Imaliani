@@ -9,7 +9,7 @@ const CharCard = ({ product, setProducts,removeProduct }) => {
             <div className="grid grid-cols-3 items-start gap-4">
                 <div className="col-span-2 flex items-start gap-4">
                     <div className="w-28 h-28 max-sm:w-24 max-sm:h-24 shrink-0 bg-gray-100 p-2 rounded-md">
-                        <Image src={product.images[0]} className="w-full h-full object-contain" alt={product.title} />
+                        <Image src={product.images[0]} className="w-full h-full object-contain" width={500} height={510} alt={product.title} />
                     </div>
                     <div className="flex flex-col">
                         <h3 className="text-base font-bold text-gray-800">{product.title}</h3>

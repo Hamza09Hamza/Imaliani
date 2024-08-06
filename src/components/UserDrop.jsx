@@ -68,7 +68,7 @@ const UserDrop = ({user}) => {
                         </a>
                     </li>
                     <li>
-                        <div onClick={()=>{window.location.assign("/categories/customized-gifts")}} className="block cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
+                        <div onClick={()=>{window.location.assign("/me/customized")}} className="block cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
                             Customized Gifts
                         </div>
                     </li>

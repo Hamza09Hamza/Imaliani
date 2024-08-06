@@ -8,7 +8,7 @@ const NewProduct = ({ productsList }) => {
     return (
         <div className='flex justify-center items-center'>
             <div className="flex flex-row flex-wrap flex-1 p-4  lg:ml-0 lg:max-w-[70%]  xxs:max-w-[90%] justify-around">
-                {productsList.map((item)=><>
+                {productsList&& productsList.map((item)=><>
                     <ProductCard product={item}/>
                 </>)}
             </div>

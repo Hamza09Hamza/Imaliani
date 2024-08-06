@@ -8,7 +8,7 @@ export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10,userI
         const ordersRef = collection(DB, "Orders");
         let ordersQuery = query(
             ordersRef,
-            where("userID", "==",userId), 
+            where("UserID", "==",userId), 
             orderBy("Status.Pre_order", "desc"),
             limit(pageSize)
         );
@@ -21,14 +21,12 @@ export const getUserOrders = async (lastVisibleOrder = null, pageSize = 10,userI
         }
 
         const querySnapshot = await getDocs(ordersQuery);
-        querySnapshot.docs.map(doc=>{console.log(doc.data())})
         const orders = querySnapshot.docs.map(doc => {
             const data = doc.data();
             
             return {
                 orderId: doc.id,
                 ...data,
-                UserID: data.UserID,
                 products: data.products.map(product => ({
                     ...product,
                     id: product.id
@@ -91,7 +89,7 @@ export const setNewOrder = async ( orderData) => {
         
         
 
-        await addDoc(collection(DB, "Orders"), encryptedOrderData);
+        await addDoc(collection(DB, "Orders"), orderData);
         console.log("Order saved successfully. with ID:",orderData.UserID);
     } catch (error) {
         console.error("Error saving order:", error);
@@ -102,7 +100,7 @@ export const setNewOrder = async ( orderData) => {
 
 export const deleteOrder = async (orderId) => {
     try {
-        const orderRef = doc(DB, "Orders", orderId);
+        const orderRef = doc(DB, "Orders/", orderId);
         await deleteDoc(orderRef);
         console.log("Order deleted successfully.");
     } catch (error) {
@@ -114,8 +112,8 @@ export const deleteOrder = async (orderId) => {
 
 export const updateOrderStatus = async (orderId, newStatus) => {
     try {
-        const orderRef = doc(DB, "Orders", orderId);
-        await updateDoc(orderRef, { Status: newStatus });
+        const orderRef = doc(DB, "Orders/", orderId);
+        await updateDoc(orderRef, {  Status:newStatus });
         console.log("Order status updated successfully.");
     } catch (error) {
         console.error("Error updating order status:", error);

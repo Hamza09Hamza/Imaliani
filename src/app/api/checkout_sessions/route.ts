@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { products , userID } = await req.json();
+    const { products , userID ,userInfo} = await req.json();
     const encryptedProductData = products.map((product: { id: string; quantity: number }) => ({
       id: product.id,
       quantity: product.quantity
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
           
           name: product.name,
           description: product.description,
-          
+          images:product.images
          
         },
         unit_amount: product.amount,
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         encryptedProductData:JSON.stringify(encryptedProductData),
         encryptedUserId: userID,
+        encryptedUserInfo:JSON.stringify(userInfo)
       },
     });
 

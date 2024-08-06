@@ -5,7 +5,7 @@ const StarRating = ({rating,setRating}) => {
   
 
   const handleStarClick = (index) => {
-    setRating(index + 1);
+    setRating("rating",index + 1);
   };
 
   return (

@@ -1,118 +1,221 @@
-"use client";
-import React, { useState } from 'react'
-
-
+"use client"
+import React, { useState } from 'react';
+import axios from 'axios';
+import { auth } from '../../../Firebase/Initialisation';
 
 const Customized = () => {
-    const [fileName, setFileName] = useState('');
+    const [files, setFiles] = useState([]);
+    const [fileNames, setFileNames] = useState([]);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [streetAddress, setStreetAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [zipCode, setZipCode] = useState('');
+    const [description, setDescription] = useState('');
 
     const handleFileChange = (event) => {
-        if (event.target.files.length > 0) {
-            setFileName(event.target.files[0].name);
-        } else {
-            setFileName('');
+        const selectedFiles = Array.from(event.target.files);
+        const newFileNames = selectedFiles.map(file => file.name);
+    
+        // Limit to 3 files
+        if (files.length + selectedFiles.length > 3) {
+          alert("You can only upload a maximum of 3 files.");
+          return;
+        }
+    
+        // Update state with new files and file names
+        setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
+        setFileNames(prevFileNames => [...prevFileNames, ...newFileNames]);
+      };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!firstName || !lastName || !email || !phoneNumber || !streetAddress || !city || !state || !zipCode || !description) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('fullName', firstName + ' ' + lastName);
+            formData.append('email', email);
+            formData.append('phoneNumber', phoneNumber);
+            formData.append('streetAddress', streetAddress);
+            formData.append('city', city);
+            formData.append('state', state);
+            formData.append('zipCode', zipCode);
+            formData.append('description', description);
+            formData.append('userId', auth.currentUser.uid);
+
+            files.forEach((file, index) => {
+                formData.append('files', file);
+            });
+
+            await axios.post("/api/customized_gifts/addgift", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            alert("Gift successfully added!");
+            window.location.assign("/me/customized");
+        } catch (e) {
+            console.error("Error adding document: ", e);
         }
     };
-        return ( <>
-      <div class="lg:max-w-4xl lg:mx-auto lg:pt-10 mid:pt-2 lg:pb-20 mid:w-[100%]  mid:pb-40 ">
-        <div class="text-center">
-          <h2 class="lg:text-3xl font-extrabold text-gray-800 inline-block border-b-[3px] border-gray-800 lg:pb-1">Cutomized Gifts</h2>
-        </div>
 
-        <div class="lg:mt-12 mid:mt-2 mid:flex mid:items-center mid:flex-col w-[100%] ">
-
-          <div class="grid mid:text-center md:grid-cols-3 gap-4  mid:w-[90%] ">
-            <div>
-              <h3 class="lg:text-3xl font-bold text-gray-300 mid:hidden">01</h3>
-              <h3 class="lg:text-xl font-bold text-gray-800 mt-1">Personal Details</h3>
-            </div>
-
-            <div class="md:col-span-2  mid:flex mid:items-center mid:flex-col ">
-                <div class="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
-                  <div>
-                    <input type="text" placeholder="First name"
-                      class="px-4 mid:px-2 lg:my-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm  border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="text" placeholder="Last name"
-                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="email" placeholder="Email address"
-                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="text" placeholder="Phone number"
-                      class="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
+    return (
+        <>
+            <div className="lg:max-w-4xl lg:mx-auto lg:pt-10 mid:pt-2 lg:pb-20 mid:w-[100%] mid:pb-40">
+                <div className="text-center">
+                    <h2 className="lg:text-3xl font-extrabold text-gray-800 inline-block border-b-[3px] border-gray-800 lg:pb-1">Customized Gifts</h2>
                 </div>
-            </div>
-          </div>
 
-          <div class="grid mid:text-center md:grid-cols-3  gap-4 mid:mt-12 mid:w-[90%]">
-            <div>
-              <h3 class="lg:text-3xl font-bold text-gray-300 mid:hidden">02</h3>
-              <h3 class="lg:text-xl  font-bold text-gray-800 mt-1">Shopping Address</h3>
-            </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="lg:mt-12 mid:mt-2 mid:flex mid:items-center mid:flex-col w-[100%]">
+                        <div className="grid mid:text-center md:grid-cols-3 gap-4 mid:w-[90%]">
+                            <div>
+                                <h3 className="lg:text-3xl font-bold text-gray-300 mid:hidden">01</h3>
+                                <h3 className="lg:text-xl font-bold text-gray-800 mt-1">Personal Details</h3>
+                            </div>
+                            <div className="md:col-span-2 mid:flex mid:items-center mid:flex-col">
+                                <div className="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="First name"
+                                            className="px-4 mid:px-2 lg:my-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Last name"
+                                            className="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="email"
+                                            placeholder="Email address"
+                                            className="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Phone number"
+                                            className="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={phoneNumber}
+                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="md:col-span-2  mid:flex mid:items-center mid:flex-col ">
-                <div class="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
-                  <div>
-                    <input type="text" placeholder="Street address"
-                      class="px-4 py-3 lg:my-2  bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="text" placeholder="City"
-                      class="px-4 py-3 lg:my-2  bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="text" placeholder="State"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                  <div>
-                    <input type="number" placeholder="Zip Code"
-                      class="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" />
-                  </div>
-                </div>
-            </div>
-          </div>
-          <div class="grid mid:text-center md:grid-cols-3  gap-4 mid:mt-12 mid:w-[90%]">
-            <div>
-              <h3 class="lg:text-3xl font-bold text-gray-300 mid:hidden">03</h3>
-              <h3 class="lg:text-xl font-bold text-gray-800 mt-1">Gift's Details</h3>
-            </div>
+                        <div className="grid mid:text-center md:grid-cols-3 gap-4 mid:mt-12 mid:w-[90%]">
+                            <div>
+                                <h3 className="lg:text-3xl font-bold text-gray-300 mid:hidden">02</h3>
+                                <h3 className="lg:text-xl font-bold text-gray-800 mt-1">Shopping Address</h3>
+                            </div>
+                            <div className="md:col-span-2 mid:flex mid:items-center mid:flex-col">
+                                <div className="grid sm:grid-cols-2 gap-4 mid:w-[90%]">
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Street address"
+                                            className="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={streetAddress}
+                                            onChange={(e) => setStreetAddress(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="City"
+                                            className="px-4 py-3 lg:my-2 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={city}
+                                            onChange={(e) => setCity(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="State"
+                                            className="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={state}
+                                            onChange={(e) => setState(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="number"
+                                            placeholder="Zip Code"
+                                            className="px-4 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            value={zipCode}
+                                            onChange={(e) => setZipCode(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="md:col-span-2  mid:flex mid:items-center mid:flex-col">
-                <div class="grid sm:grid-cols-2 gap-4 mid:w-[100%] ">
-                    <div class="max-w-sm mx-auto mid:w-[100%]">
-                        <textarea id="message" rows="4" class="lg:px-16 mid:w-[90%] mid:px-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none" placeholder="Describe the Gift wanted.."></textarea>
+                        <div className="grid mid:text-center md:grid-cols-3 gap-4 mid:mt-12 mid:w-[90%]">
+                            <div>
+                                <h3 className="lg:text-3xl font-bold text-gray-300 mid:hidden">03</h3>
+                                <h3 className="lg:text-xl font-bold text-gray-800 mt-1">Gift's Details</h3>
+                            </div>
+                            <div className="md:col-span-2 mid:flex mid:items-center mid:flex-col">
+                                <div className="grid sm:grid-cols-2 gap-4 mid:w-[100%]">
+                                    <div className="max-w-sm mx-auto mid:w-[100%]">
+                                        <textarea
+                                            id="message"
+                                            rows="4"
+                                            className="lg:px-16 mid:w-[90%] mid:px-2 py-3 bg-white text-gray-800 w-full text-sm mid:text-sm border-2 rounded-md focus:border-Beige outline-none"
+                                            placeholder="Describe the Gift wanted.."
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        ></textarea>
+                                    </div>
+                                    <div className='flex justify-center items-center flex-col transition-all duration-500'>
+                                        <input type="file" id="file-upload" className="hidden" onChange={handleFileChange} multiple />
+                                        <label htmlFor="file-upload" className="mid:w-[60%] mt-4 cursor-pointer bg-hardBeige hover:bg-Beige text-white font-bold py-2 px-4 rounded transition-all duration-500">
+                                            Upload File
+                                        </label>
+                                        {fileNames &&fileNames.map ((fileName)=>
+                                            <p className="mt-4 text-brown">
+                                                Selected file: {fileName}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap justify-end gap-4 lg:mt-12 mid:mt-6">
+                            <button
+                                type="submit"
+                                className="px-6 py-3 text-sm font-semibold tracking-wide bg-black text-white rounded-md hover:bg-hardBeige transition-all duration-500"
+                            >
+                                Book now
+                            </button>
+                        </div>
                     </div>
-                 
-                    <div className='flex justify-center items-center flex-col transition-all duration-500'>
-                        <input type="file" id="file-upload" class="hidden" onChange={handleFileChange}/>
-                        <label for="file-upload" class="mid:w-[60%] cursor-pointer bg-hardBeige hover:bg-Beige text-white font-bold py-2 px-4 rounded transition-all duration-500">
-                            Upload File
-                        </label>
-                        {fileName && (
-                            <p className="mt-4 text-brown">
-                                Selected file: {fileName}
-                            </p>
-                        )}
-                    </div>
-                </div>
+                </form>
             </div>
-          </div>
+        </>
+    );
+};
 
-         
-
-          <div class="flex flex-wrap justify-end gap-4 lg:mt-12 mid:mt-6">
-            <button type="button"
-              class="px-6 py-3 text-sm font-semibold tracking-wide bg-black text-white rounded-md hover:bg-hardBeige transition-all duration-500" >Book now</button>
-          </div>
-        </div>
-      </div>
-
-        </> );
-}
- 
 export default Customized;

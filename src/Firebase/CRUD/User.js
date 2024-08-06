@@ -1,5 +1,5 @@
-import { DB, auth } from "./Initialisation";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { DB, auth } from "../Initialisation";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { decryptData, encryptData } from "../../app/Utils/Encryption";
 
 
@@ -33,12 +33,12 @@ export const getStoredUserData = () => {
     return null;
 };
 
-export const updateUserField = async (userID, field, value) => {
+export const updateUserField = async ( field, value,userid) => {
     try {
 
-        const userDocRef = doc(DB, "Users", userID);
+        const userDocRef = doc(DB, "Users", userid);
         const userDocSnap = await getDoc(userDocRef);
-
+        console.log("test")
         if (userDocSnap.exists()) {
            
             await updateDoc(userDocRef, {

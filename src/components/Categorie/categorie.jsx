@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Head from '../header';
 import ProductList from './ProductList';
 import { OriginCategorieList } from '../products';
-import Customized from '../../app/categories/customized-gifts/Forum';
 import CatList from './CatList';
-import { useRouter } from 'next/router';
+import { fetchrandomProducts,fetchCatProducts } from '@/Firebase/CRUD/Products';
 
 const Categorie = () => {
     const [cat, setCat] = useState('All');
@@ -14,34 +13,57 @@ const Categorie = () => {
     
     const [CategorieList, setCategorieList] = useState(OriginCategorieList);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-     // Assuming category is the third segment
+    const [products, setProducts] = useState([]);
+    const [lastVisibleOrder, setLastVisibleOrder] = useState(null);
     
     const handleCategorie = (value) => {
         if (value !== 'All') {
             const filteredList = OriginCategorieList.filter(item => value.includes(item));
             setCategorieList(filteredList.length > 0 ? filteredList : OriginCategorieList);
             setCat(filteredList[0]);
+            setLastVisibleOrder(null)
             setListCat(filteredList[0]);
         } else {
             setCategorieList(OriginCategorieList);
             setCat(value);
+            setLastVisibleOrder(null)
             setListCat('');
         }
     };
     
+    useEffect(()=>{
+        const fetchProducts = async () => {
+            try {
+                
+                let {  products, lastVisible } = await fetchCatProducts(listcat,null,10);
+                setProducts(products);
+                setLastVisibleOrder(lastVisible);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
 
+        if(OriginCategorieList.includes(listcat)){
+            fetchProducts();
+        }
 
-    const products = [
-        { id: 1, title: 'Urban Sneakers', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '100', images: ["https://readymadeui.com/images/product10.webp"] },
-        { id: 2, title: 'Blaze Burst', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product9.webp"] },
-        { id: 3, title: 'Sneakers', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product8.webp"] },
-        { id: 4, title: 'Pumps', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product15.webp"] },
-        { id: 5, title: 'Echo Elegance', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product14.webp"] },
-        { id: 6, title: 'Nike Shoes', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product6.webp"] },
-        { id: 7, title: 'Zenith Glow', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product13.webp"] },
-        { id: 8, title: 'Summit Hiking', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product12.webp"] },
-        { id: 9, title: 'Velvet Boots', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', price: '200', images: ["https://readymadeui.com/images/product11.webp"] },
-    ];
+    },[listcat])
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const {  products, lastVisible } = await fetchrandomProducts(lastVisibleOrder);
+                setProducts(products);
+                setLastVisibleOrder(lastVisible);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+    
+
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -61,7 +83,7 @@ const Categorie = () => {
                     </div>
                    
                         <div className="flex-1  lg:pl-2 overflow-y-auto h-full  mid:pb-10 xxs:pb-4 bg-gray-50">
-                            <ProductList products={products} />
+                            <ProductList products={products?products:[]} />
                         </div>
                        
                     

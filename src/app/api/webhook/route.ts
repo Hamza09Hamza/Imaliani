@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { decryptData,encryptData } from '@/app/Utils/Encryption';
 import {getCurrentFirestoreTimestamp} from "@/app/Utils/time"
 import {setNewOrder} from "@/Firebase/CRUD/Oders"
+import { updateUserField } from '@/Firebase/CRUD/User';
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -47,25 +48,33 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
   
   const encryptedProductData = session.metadata?.encryptedProductData || "[]";
+  const encryptedUserInfo = session.metadata?.encryptedUserInfo || "[]";
   const userId = session.metadata?.encryptedUserId || "";
   
   const productData = JSON.parse(encryptedProductData) as { id: string; quantity: number }[]
-   
+  const UserInfo=JSON.parse(encryptedUserInfo) as any
 
     const order={
+        ShippingAdresse:{
+          streetAddress:UserInfo.streetAddress,
+          zipCode:UserInfo.zipCode,
+          city:UserInfo.city,
+          state:UserInfo.state,
+        },
+        email:encryptData(UserInfo.email),
         products:productData,
         Status:{
             Pre_order:getCurrentFirestoreTimestamp(),
             Processing:null,
             In_transit:null,
             Shipped:null,
+            Cancelled:null,
         },
         UserID:userId,
         totalAmount:totalAmount/100,
     }
     const encryptedOrderData = {
       ...order,
-      cancelled:false,
       UserID: order.UserID,
       encryptedUserID:encryptData(order.UserID),
       products: order.products.map(product => ({
@@ -73,10 +82,15 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           id: encryptData(product.id)
       }))
     };
-
-    console.log(productData,userId)
+    
+    console.log(userId)
     try {
-        await setNewOrder(encryptedOrderData)
+      await setNewOrder(encryptedOrderData)
+      console.log("done setting order")
+
+      await updateUserField("Chart",[],userId)
+      console.log("done deleting  chart")
+
     } catch (error) {
         console.log("something went off")
     } 

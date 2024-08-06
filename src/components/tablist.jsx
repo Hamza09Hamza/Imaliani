@@ -5,10 +5,6 @@ const TableList = ({ setCategorie, categorie }) => {
     const [CategorieList] = useState([
         "All", "Candle holder", "Ashtray &Lighter cover", "Home decoration", "Frame decoration", "Jewelry tray"
     ]);
-    useEffect(()=>{
-        console.log(CategorieList.slice(3))
-    },[listShow])
-
     return (
         <>
         <ul className="flex flex-wrap overflow-hidden text-sm xxs:text-xs font-medium text-center text-gray-400">
@@ -46,8 +42,8 @@ const TableList = ({ setCategorie, categorie }) => {
             
         </button>
 
-    <div id="dropdown" class={`z-10 ${listShow?'flex':'hidden'} fixed right-2 top-24 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 `}>
-        <ul class="py-2 text-sm  " aria-labelledby="dropdownDefaultButton">
+    <div id="dropdown" className={`z-10 ${listShow?'flex':'hidden'} fixed right-2 top-24 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 `}>
+        <ul className="py-2 text-sm  " aria-labelledby="dropdownDefaultButton">
         { CategorieList.slice(3).map((item) => (
                 <li key={CategorieList.indexOf(item)} className="me-2 ">
                     <div

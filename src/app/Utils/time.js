@@ -3,53 +3,38 @@ import { Timestamp } from 'firebase/firestore';
 export function getCurrentFirestoreTimestamp() {
     return Timestamp.now();
 }
-export function formatTimestamp(timestamp) {
-    console.log(timestamp)
-    // Ensure the input is a Firebase Timestamp or a Date object
-    let date;
-    if (timestamp instanceof Date) {
-        date = timestamp;
-    } else if (timestamp instanceof Timestamp) {
-        date = timestamp.toDate();
-    } else {
-        console.error('Invalid timestamp:', timestamp);
-        return ''; // Return an empty string or handle the error as needed
+export function timestampToDate(timestamp) {
+    if (!timestamp || typeof timestamp.seconds !== 'number' || typeof timestamp.nanoseconds !== 'number') {
+        throw new Error('Invalid timestamp format');
     }
-
-    // Define options for date formatting
     const options = {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
     };
-
-    // Format the date
-    const formattedDate = new Intl.DateTimeFormat('de-DE', options).format(date);
-
-    return formattedDate;
+    let date=new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000)
+    return  new Intl.DateTimeFormat('de-DE', options).format(date);
+    
+    
+     
 }
-
-
 export function getMostRecentStatus(statuses) {
-    
-    const statusOrder = ['Pre_order', 'Processing', 'In_transit', 'Shipped'];
-    
-    const statusEntries = Object.entries(statuses)
-        .filter(([status, date]) => date !== null) 
-        .map(([status, date]) => ({ status, date }));
+    // Define the priority order of statuses
+    const statusOrder = ['Shipped', 'In_transit', 'Processing', 'Pre_order','Cancelled'];
 
-    if (statusEntries.length === 0) {
-        return null;
+    // Iterate over the statusOrder array
+    for (const status of statusOrder) {
+        // Check if the current status has a non-null date
+        if (statuses[status] && statuses[status].seconds !== null && statuses[status].nanoseconds !== null) {
+            // Return the status if it has a valid date
+            return status;
+        }
     }
 
-    // Find the most recent date
-    const mostRecent = statusEntries.reduce((latest, current) => 
-        current.date > latest.date ? current : latest
-    );
-
-    // Return the status of the most recent date, respecting the order
-    return mostRecent.status;
+    // Return null if no valid statuses are found
+    return null;
 }
-
 
 

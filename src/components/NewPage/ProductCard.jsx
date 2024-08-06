@@ -1,15 +1,40 @@
-import React from 'react';
+import Image from 'next/image';
+import React, { useEffect } from 'react';
+import AddToCartButton from '../addChart';
+import { auth } from '@/Firebase/Initialisation';
+import axios from 'axios';
 
 const ProductCard = ({ product }) => {
+  const handleAddToCart= async ()=>{
+    if(auth.currentUser) {
+      await axios.put("/api/chart/updateuser",{type:true,id:product.id,userid:auth.currentUser.uid})
+      
+
+    }else
+      window.location.assign("signin")
+  }
+
+
+  const CompleteStar = () => (
+    <svg className="w-5 h-5 text-yellow-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path>
+    </svg>
+);
+const MissStar = () => (
+    <svg className="w-5 h-5 text-yellow-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" strokeWidth="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z" />
+    </svg>
+);
+const Stars = (rating) => (
+    Array.from({ length: 5 }, (_, index) => (
+        index < rating ? <CompleteStar key={index} /> : <MissStar key={index} />
+    ))
+);
     return (<>
-      <div className="group h-[400px] my-10 flex w-full max-w-xs lg:max-w-[30%] flex-col overflow-hidden border-2 border-gray-400 bg-white shadow-md  rounded-xl" >
-        <div className="relative h-[250px] flex   items-center justify-center overflow-hidden  bg-gray-100" href="#">
-          <img className="absolute top-0 right-0 h-[90%] w-[90%] object-contain" src={product.images[0]} alt="product image" />
-          <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
-            <div className="h-3 w-3 rounded-full border-2 border-white bg-white"></div>
-            <div className="h-3 w-3 rounded-full border-2 border-white bg-transparent"></div>
-            <div className="h-3 w-3 rounded-full border-2 border-white bg-transparent"></div> 
-          </div>
+      <div   className="  group h-[400px] my-10 flex w-full max-w-xs lg:max-w-[30%] flex-col overflow-hidden border-2 border-gray-400 bg-white shadow-md  rounded-xl" >
+        <div onClick={()=>window.location.assign("/product/"+product.id)} className=" cursor-pointer relative h-[250px] flex   items-center justify-center overflow-hidden  bg-gray-100" href="#">
+          <Image src={product && product.images&&product.images[0]} width={400} height={400} className="absolute top-0 right-0 h-[100%] w-[100%] object-contain"  alt="product image" />
+          
           
         </div>
         <div className="mt-2 px-5 h-[150px] flex flex-col justify-between  ">
@@ -17,34 +42,17 @@ const ProductCard = ({ product }) => {
             <h5 className=" truncate tracking-tight text-slate-900">{product.title}</h5>
           </a>
             <p>
-              <span className="text-lg font-bold text-slate-900">{product.price}AED</span>
+              <span className="text-lg font-bold text-slate-900">{product.price} AED</span>
             </p>
           <div class="flex mb-2 items-center ">
             <div class="flex items-center space-x-1 rtl:space-x-reverse">
-                <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                </svg>
-                <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                </svg>
-                <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                </svg>
-                <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                </svg>
-                <svg class="w-4 h-4 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                </svg>
+            {product.rate&&Stars(product.rate)}
             </div>
-            <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded ">5.0</span>
+            <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded ">{product.rate>0 ? product.rate :"No Rates yet"}</span>
         </div>
-          <button className="flex items-center max-w-[40%] mb-2  rounded-full justify-center bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5 " viewBox="0 0 20 20" fill="currentColor">
-              <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-            </svg>
-            Add to cart
-          </button>
+        <div className='w-fit mb-2 '>
+          <AddToCartButton styles={" bg-black"} onClick={handleAddToCart}/>
+        </div>
         </div>
       </div>
 

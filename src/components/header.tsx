@@ -10,15 +10,15 @@ import { auth } from '@/Firebase/Initialisation';
 interface ChildComponentProps {
     status:boolean | any
     categorie: string | null;
+    customer:string | any
     setCategorie: React.Dispatch<React.SetStateAction<string>> |null;
 }
-const Head: React.FC<ChildComponentProps> = ({ status,categorie,setCategorie }) => {
+const Head: React.FC<ChildComponentProps> = ({ customer,status,categorie,setCategorie }) => {
     const [user, setUser] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const storedUser = localStorage.getItem("UserID");
-            setUser(storedUser ? JSON.parse(storedUser) : null);
+            sessionStorage.getItem("UserID")!=null ?setUser(JSON.parse(sessionStorage.getItem("UserID")||"")):null
         }
     }, []);
 

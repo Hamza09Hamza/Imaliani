@@ -1,4 +1,4 @@
-import {  deleteDoc, doc,getDoc, getDocs ,updateDoc} from "firebase/firestore";
+import {  deleteDoc, doc,getDoc, getDocs ,limit,orderBy,query,startAfter,updateDoc, where} from "firebase/firestore";
 import { ref } from "firebase/database";
 import {  ref as storageRef, uploadBytes, getDownloadURL ,deleteObject} from "firebase/storage";
 import { DB ,Storage as storage} from "../Initialisation";
@@ -6,7 +6,6 @@ import { addDoc, collection } from "firebase/firestore";
 
 
 const uploadImage = async (imageFile) => {
-    console.log(imageFile)
     const imageRef = storageRef(storage, `${imageFile.name}`);
     await uploadBytes(imageRef, imageFile);
     const downloadURL = await getDownloadURL(imageRef);
@@ -34,7 +33,7 @@ export const addNewProduct = async (productData) => {
 export const updateProduct = async (productId, updatedData) => {
     try {
         console.log(updatedData)
-        const productRef = doc(DB, "products", productId);
+        const productRef = doc(DB, "products/", productId);
 
         const productSnap = await getDoc(productRef);
         if (!productSnap.exists()) {
@@ -73,7 +72,7 @@ export const updateProduct = async (productId, updatedData) => {
 
 export const deleteProduct = async (productId) => {
     try {
-        const productRef = doc(DB, "products", productId);
+        const productRef = doc(DB, "products/", productId);
 
         const productSnap = await getDoc(productRef);
         if (!productSnap.exists()) {
@@ -102,8 +101,8 @@ export const getProductsperID=async(id)=>{
     try {
         const docSnap=await getDoc(doc(DB,"products/"+id));
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
-            return docSnap.data()
+            let data={...docSnap.data(),id:docSnap.id}
+            return data
         } else {
             console.log("No such product!");
         }
@@ -114,53 +113,71 @@ export const getProductsperID=async(id)=>{
     
 }
 
-export const fetchNewProducts = async () => {
+export const fetchNewProducts = async (lastVisible=null) => {
    try {
     const productsRef = collection(DB, "products");
-    const q = query(productsRef, orderBy("dateAdded", "desc"),  limit(10));
-    const querySnapshot = await getDocs(q);
-    const products = querySnapshot.docs.map(doc => doc.data());
-    return products;
+    let productQuery = query(productsRef, orderBy("dateAdded", "desc"),  limit(10));
+    if (lastVisible) {
+        productQuery = query(
+            productQuery,
+            startAfter(lastVisible)
+        );
+    }
+    const querySnapshot = await getDocs(productQuery);
+    let lastVisibleGift=null
+    const products = querySnapshot.docs.map(doc => ({...doc.data(),id:doc.id}));
+    if(products.length==10){
+     lastVisibleGift = querySnapshot.docs[querySnapshot.docs.length - 1];
+    }
+    return {products,lastVisibleGift};
    } catch (error) {
-    console.log("error fetching new products")
+    console.log("error fetching new products",error)
    } 
 };
-export const fetchNextNewProducts = async (lastVisible) => {
-    if (!lastVisible) return []; // No more products to fetch
 
+
+export const fetchCatProducts = async (categorie,lastVisibleProduct = null, pageSize = 10) => {
     try {
-        const productsRef = collection(db, "products");
-        const q = query(
-            productsRef,
-            orderBy("dateAdded", "desc"),
-            startAfter(lastVisible), // Start after the last document from previous fetch
-            limit(10)
-        );
-
-        const querySnapshot = await getDocs(q);
-        lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1]; // Update the last document
-
-        const products = querySnapshot.docs.map(doc => doc.data());
-        console.log("Next 10 products:", products);
-        return products;
-    } catch (error) {
-        console.error("Error fetching next 10 products:", error);
-        return [];
-    }
-};
-
-export const fetchCatProducts = async (categorie) => {
-    try {
-        const productsRef = collection(db, "products");
-        const q = query(
+        const productsRef = collection(DB, "products");
+        let q = query(
             productsRef,
             where("category", "==", categorie), 
+            limit(pageSize)
         );
+        if (lastVisibleProduct) {
+            q = query(
+                q,
+                startAfter(lastVisibleProduct)
+            );
+        }
 
         const querySnapshot = await getDocs(q);
         const products = querySnapshot.docs.map(doc => doc.data());
-        console.log("Products found:", products);
-        return products;
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        return {products,lastVisible};
+    } catch (error) {
+        console.error("Error searching products by category:", error);
+        return [];
+    }
+ };
+export const fetchrandomProducts = async (lastVisibleOrder = null, pageSize = 10) => {
+    try {
+        const productsRef = collection(DB, "products");
+        let q = query(
+            productsRef,
+            limit(pageSize)
+        );
+        if (lastVisibleOrder) {
+            q = query(
+                q,
+                startAfter(lastVisibleOrder)
+            );
+        }
+
+        const querySnapshot = await getDocs(q);
+        const products = querySnapshot.docs.map(doc => {return {id:doc.id,...doc.data()}});
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        return {products,lastVisible};
     } catch (error) {
         console.error("Error searching products by category:", error);
         return [];

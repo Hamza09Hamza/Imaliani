@@ -1,3 +1,4 @@
+import { auth } from '@/Firebase/Initialisation';
 import React from 'react'
 const Empty = ({text,type}) => {
     return ( <>

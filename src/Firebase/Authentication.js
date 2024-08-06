@@ -18,19 +18,14 @@ auth.useDeviceLanguage();
 export const FireSignUp = async (userData) => {
     const userDoc = {
         displayName: userData.displayName,
-        Chart: [
-            {
-                ProductID: "",
-                Quantity: 0,
-            },
-        ],
-        Ratings: [""],
+        Chart: [],
         
         email: userData.email,
+        
         phoneNumber: userData.phoneNumber 
     };
 
-    await addDoc(doc(DB, "Users", auth.currentUser.uid), { ...userDoc });
+    await setDoc(doc(DB, "Users/", auth.currentUser.uid), { ...userDoc });
     
 };
 
@@ -60,7 +55,7 @@ export const GoogleSignUporIn = async () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        const userDocRef = doc(DB, "Users", user.uid);
+        const userDocRef = doc(DB, "Users/", user.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (!userDoc.exists()) {
@@ -72,11 +67,9 @@ export const GoogleSignUporIn = async () => {
             });
             console.log("User added to Firestore");
 
-            // Redirect to verification page
-            window.location.assign('/verify-email/' + user.uid);
         } else {
             // Existing user, sign in
-            localStorage.setItem('UserID', JSON.stringify(encryptData(user.uid)));
+            sessionStorage.setItem('UserID', JSON.stringify(encryptData(user.uid)));
             console.log("User signed in");
             window.location.assign("/");
         }
@@ -123,7 +116,7 @@ export const  UserSignout =async ()=>{
 export const EmailSignIn=async({email,password})=>{
     try {
        await  signInWithEmailAndPassword(auth,email,password)
-       localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+       sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
        window.location.assign("/")
     } catch (error) {
         console.error("Error during Email SignIn:", error);

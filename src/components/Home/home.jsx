@@ -4,11 +4,11 @@ import HeroSec from "./HeroSec"
 
 
 
-const Home: React.FC = () => {
+const Home= ({customer}) => {
     return (
         <>
             <div className='w-[100vw]  bg-softBeige h-fit pb-40w' >
-                <Head   status={false} categorie={null} setCategorie={null} />
+                <Head customer={customer}   status={false} categorie={null} setCategorie={null} />
                 <HeroSec/>
             </div>
         </>
