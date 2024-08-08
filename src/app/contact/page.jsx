@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { DB } from '@/Firebase/Initialisation'; // Import your Firebase app configuration
-import Head from '@/components/header'
-import Footer from "@/components/footer"
+import { DB,auth } from '../../Firebase/Initialisation'; // Import your Firebase app configuration
+import Head from '../../components/header'
+import Footer from "../../components/footer"
 const ContactForm = () => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
@@ -18,6 +18,7 @@ const ContactForm = () => {
 
     try {
       await addDoc(collection(DB, 'Messages'), {
+        UserID:auth.currentUser.uid,
         email,
         subject,
         message,

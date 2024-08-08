@@ -4,6 +4,8 @@ import NewProduct from "./NewProduct";
 import Head from '../header';
 import { fetchNewProducts } from '@/Firebase/CRUD/Products';
 import axios from 'axios';
+import { auth } from '@/Firebase/Initialisation';
+import { getRateProduct } from '@/Firebase/CRUD/Reviews';
 
 const New = ({setListCat,setCurrentPage}) => {
   const [data, setData] = useState([]);
@@ -13,7 +15,9 @@ const New = ({setListCat,setCurrentPage}) => {
   const [error, setError] = useState(null);
   const [lastVisibile,setLastVisibile]=useState()
   useEffect(() => {
-    const fetchData = async () => {
+    const handleAuthStateChange = () => {
+      const unsubscribe = auth.onAuthStateChanged(async (user) => {
+        if (user) {
       try {
         const res = await fetchNewProducts()
         const result=await getproductsrates(res.products)
@@ -29,24 +33,29 @@ const New = ({setListCat,setCurrentPage}) => {
       } finally {
         setLoading(false);
       }
-    };
+    }
+    });
 
-    fetchData();
+    return () => unsubscribe();
+}
+
+handleAuthStateChange();
   }, []);
 
  const  getproductsrates=async (products )=>{
   const result=await Promise.all(products.map(async(prod)=>{
-    let {data}=await axios.get("/api/product/getrate",{
-      params:{id:prod.id,}
-    })
     
     return {
-      ...prod,rate:data.rate
+      ...prod,rate:await getRateProduct(prod.id,auth.currentUser.uid)
     }
 
   }));
   return result
   }
+ 
+ 
+ 
+ 
   useEffect(()=>{
     if(cat!=="All"){
       setProducts(data.filter((prod)=>cat.toLowerCase().includes(prod.category.toLowerCase())))

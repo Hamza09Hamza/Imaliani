@@ -16,9 +16,11 @@ interface ChildComponentProps {
 const Head: React.FC<ChildComponentProps> = ({ customer,status,categorie,setCategorie }) => {
     const [user, setUser] = useState<string | null>(null);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (typeof window !== 'undefined') {
-            sessionStorage.getItem("UserID")!=null ?setUser(JSON.parse(sessionStorage.getItem("UserID")||"")):null
+           const stored= sessionStorage.getItem("UserID")
+           if(stored)
+            setUser(JSON.parse(stored))
         }
     }, []);
 

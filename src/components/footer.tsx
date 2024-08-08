@@ -26,11 +26,11 @@ const Footer: React.FC = () => {
                         <New selected={false}/>
                     <span className=' z-50 mid:text-small text-sm text-center'>New</span>
                 </div>
-                <div onClick={()=>auth.currentUser?window.location.assign("/me/chart"): window.location.assign("/signIn")}   className=' z-50 flex-col cursor-pointer hover:bg-softGray rounded-full w-[4.2rem] h-[4.2rem] flex justify-center items-center mx-1 transition-all duration-500'>
+                <div onClick={()=>auth.currentUser?window.location.assign("/me/chart"): window.location.assign("/signin")}   className=' z-50 flex-col cursor-pointer hover:bg-softGray rounded-full w-[4.2rem] h-[4.2rem] flex justify-center items-center mx-1 transition-all duration-500'>
                         <Chart selected={false}/>
                     <span className=' z-50 mid:text-small text-sm text-center'>Chart</span>
                 </div>
-                <div onClick={()=>window.location.assign("/contact")}  className=' z-50 flex-col cursor-pointer hover:bg-softGray rounded-full w-[4.2rem] h-[4.2rem] flex justify-center items-center mx-1 transition-all duration-500'>
+                <div onClick={()=>auth.currentUser?window.location.assign("/contact"):window.location.assign("/signin")}  className=' z-50 flex-col cursor-pointer hover:bg-softGray rounded-full w-[4.2rem] h-[4.2rem] flex justify-center items-center mx-1 transition-all duration-500'>
                         <Contact selected={false}/>
                     <span className=' z-50 mid:text-small text-sm text-center'>Contact</span>
                 </div>

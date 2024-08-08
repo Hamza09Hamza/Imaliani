@@ -2,9 +2,9 @@ import React from 'react';
 import {formatString} from "@/app/Utils/text"
 const GiftCard = ({order, statusClass, statusIcon }) => {
  let { id, date, description, status,images, email}=order
+
  const seeGift=()=>{
-    const url ="/me/customized/"+id.slice(1);
-    sessionStorage.setItem("giftData",JSON.stringify(order))
+    const url ="/me/customized/"+id;
     window.location.assign(url)
 
   }
@@ -14,7 +14,7 @@ const GiftCard = ({order, statusClass, statusIcon }) => {
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-800 ">Order ID:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900 ">
-          <div onClick={seeGift} className=" cursor-pointer hover:underline">{formatString(id)}</div>
+          <div onClick={seeGift} className=" cursor-pointer hover:underline">#{ formatString(id)}</div>
         </dd>
       </dl>
 

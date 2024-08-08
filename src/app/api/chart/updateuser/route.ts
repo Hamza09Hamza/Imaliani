@@ -1,52 +1,48 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { DB, auth } from '@/Firebase/Initialisation';
-import { decryptData, encryptData } from '@/app/Utils/Encryption';
-import {  updateUserField } from '@/Firebase/CRUD/User';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { DB } from '@/Firebase/Initialisation';
+import {  encryptData } from '@/app/Utils/Encryption';
+import { doc, getDoc } from 'firebase/firestore';
+import axios from 'axios';
+import { auth } from 'firebase-admin';
+
+
 
 export async function PUT(req: NextRequest) {
-    const { type,id,userid } = await req.json();
-    
-    try {
-        if (!userid) {
-            return NextResponse.json({ error: 'User not authorized' }, { status: 401 });
-        }
-        
-        const data = await getDoc(doc(DB,"products/"+id))
-
-        if( data.exists())
-        {
-            const userdata = await getDoc(doc(DB,"Users/"+userid))
-            if(userdata.exists()){
-                
-                let Chart=userdata.data().Chart
+    const {  id,type,Chart } = await req.json();
+        try {
+        const data = await getDoc(doc(DB,"products/",id))
+        let userchart=Chart
+            if( data.exists())
+            {
                 if(type===true)
                     {
-                        if (!Chart.find((prod: any) => decryptData(prod.ProductID) === id)) {
-                            Chart = [...Chart, { ProductID: encryptData(id), Quantity: 1 }];
+                        let encryptedProductID=await axios.post("/api/encrypt",{id:"testing",data:id})
+                        encryptedProductID=encryptedProductID.data.data;
+                        if (!userchart.find((prod: any) => prod.ProductID === id)) {
+                            userchart = [...userchart, { ProductID: encryptedProductID, Quantity: 1 }];
                         }
+                        console.log(userchart)
+                        return NextResponse.json({ userchart}, { status: 200 })
+
                     }
                 else{
-                    Chart = Chart.map((prod:any)=>{return {...prod,ProductID:decryptData(prod.ProductID)}});
-                    Chart=Chart.filter((prod:any)=>{;return!(prod.ProductID==id)})
-                    console.log(Chart)
-                    Chart = Chart.map((prod:any)=>{return {...prod,ProductID:encryptData(prod.ProductID)}});
+                    userchart = userchart.map((prod:any)=>{return {...prod,ProductID:prod.ProductID}});
+                    userchart=userchart.filter((prod:any)=>{return!(prod.ProductID==id)})
+                    userchart = userchart.map((prod:any)=>{return {...prod,ProductID:encryptData(prod.ProductID)}});
                 }
+                    
+                    return NextResponse.json({ userchart}, { status: 200 })
                 
-                
-                await updateUserField("Chart",Chart,userid);
-            }else{
-                return NextResponse.json({ error: 'user does not  exists' }, { status: 403 });
             }
-        }
-        else{
-            NextResponse.json({ error: 'Order does not  exists' }, { status: 404 })
-        }
+            else{
+                NextResponse.json({ error: 'product does not  exists' }, { status: 404 })
+            }
 
 
-        return NextResponse.json({ status: 200 });
+            return NextResponse.json({ userchart}, { status: 200 })
 
     } catch (error) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+

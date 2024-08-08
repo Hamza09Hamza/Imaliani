@@ -4,7 +4,7 @@ import { auth } from '@/Firebase/Initialisation';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
-const Summary = ({ setCurrentPage, products }) => {
+const Summary = ({  products }) => {
     const [SumPrice, setSumPrice] = useState(products.reduce((total, product) => total + (product.quantity * product.amount) / 100, 0));
     const [streetAddress, setStreetAddress] = useState('');
     const [state, setState] = useState('');
@@ -55,7 +55,7 @@ const Summary = ({ setCurrentPage, products }) => {
             city,
             zipCode,
             email,
-            phoneNo:"+"+phoneNo
+            phoneNo:phoneNo
         };
 
         const { data } = await axios.post("/api/checkout_sessions", {
@@ -147,7 +147,7 @@ const Summary = ({ setCurrentPage, products }) => {
                                         placeholder="+1 555-555-555"
                                         value={phoneNo}
                                         onChange={setPhoneNo}
-                                        defaultCountry="UAE"
+                                        defaultCountry="AE"
                                         className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"  
                                         />
                                         {errors.phoneNo && <span className="text-red-500 mt-2 text-xs">{errors.phoneNo}</span>}
@@ -173,7 +173,7 @@ const Summary = ({ setCurrentPage, products }) => {
 
                 <div className="mt-6 space-y-3">
                     <button onClick={HandleCheckout} type="button" className="transition-all duration-500 text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-hardBeige hover:bg-tooHardBeige text-white rounded-md">Checkout</button>
-                    <button onClick={() => setCurrentPage(0)} type="button" className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md">Continue Shopping  </button>
+                    <button onClick={() => window.location.assign("/categories")} type="button" className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md">Continue Shopping  </button>
                 </div>
             </div>
         </>

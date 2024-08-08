@@ -113,7 +113,7 @@ const EditReviewModal = ({ isOpen, review, setReview, onClose, onSave,type}) => 
               <button
                 type="button"
                 className="me-2 inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-center text-sm font-medium border-2 border-hardBeige text-hardBeige  hover:text-white transition-all duration-500 hover:bg-tooHardBeige focus:outline-hardBeige   "
-                onClick={onSave}
+                onClick={handleSave}
               >
                 {type? "Add" :"Edit"} review
               </button>

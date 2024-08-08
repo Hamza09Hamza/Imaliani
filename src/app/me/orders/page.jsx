@@ -5,10 +5,11 @@ import Navbar from '../navbar';
 import {getDateRange} from "./Order"
 import Head from '@/components/header';
 import Empty from '@/components/Emptylist';
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import { timestampToDate, getMostRecentStatus } from '@/app/Utils/time';
 import axios from 'axios';
 import {Statuses} from "./Order"
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
@@ -20,44 +21,53 @@ const Orders = () => {
     const [displayedOrders,setDisplayedOrders]=useState([])
 
     useEffect(() => {
-        const handleAuthStateChange = () => {
-            const unsubscribe = auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    try {
-                        const {data} = await axios.get("/api/orders/userorders" ,{
-                                params: {
-                                    id: user.uid
-                                }
-                        });
-                        let OrdersData=data.data
-                        console.log(OrdersData)
-                        let OrdersList = OrdersData.map((order) => {
-                            console.log(getMostRecentStatus(order.Status))
-                            return {
-                                orderId: "#" + order.orderId,
-                                date: timestampToDate(order.Status.Pre_order),
-                                totalAmount: "AED " + order.totalAmount,
-                                status: getMostRecentStatus(order.Status) 
-                            };
-                        });
-                        setDisplayedOrders(OrdersList);
-                        setLastVisibile(data.lastVisible);
-
-                    } catch (error) {
-                        console.error("Error fetching user orders:", error);
-                    }
-                } else {
+      const handleAuthStateChange = () => {
+          const unsubscribe = auth.onAuthStateChanged(async (user) => {
+              if (user) {
+                  try {
+                      const customRef=collection(DB,"Orders");
+                      const {data}=await axios.post("/api/encrypt",{id:user.uid,data:user.uid})
+                      const cryptedUserID=data.data
+                      let orderQuery = query(
+                          customRef,
+                          where("encryptedUserID","==",cryptedUserID),
+                      );
+                      const res=await getDocs(orderQuery)
                     
-                    setDisplayedOrders([]);
-                    setCurrentOrders([]);
-                }
-            });
+                      if(!res.empty){
+                          const customs=res.docs.map((doc)=>({...doc.data(),id:doc.id}))
+                          let OrdersList = customs.map((order) => {
+                                  console.log(getMostRecentStatus(order.Status))
+                                  return {
+                                    ...order,
+                                      orderId:  order.id,
+                                      date: timestampToDate(order.Status.Pre_order),
+                                      status: getMostRecentStatus(order.Status),
+                                      description:order.description
+                                  };
+                              });
+                          setDisplayedOrders(OrdersList);
 
-            return () => unsubscribe();
-        };
+                      }else{
+                          setDisplayedOrders([]);
+                      setCurrentOrders([]);
+                      }
 
-        handleAuthStateChange();
-    }, []); 
+                  } catch (error) {
+                      console.error("Error fetching user orders:", error);
+                  }
+              } else {
+                  
+                  setDisplayedOrders([]);
+                  setCurrentOrders([]);
+              }
+          });
+
+          return () => unsubscribe();
+      };
+
+      handleAuthStateChange();
+  }, []); 
     useEffect(()=>{
         
         const filteredOrders = displayedOrders.filter(order => 
@@ -128,7 +138,7 @@ const Orders = () => {
                 <select 
                 value={selectedDateFilter} 
                 onChange={handleDateFilterChange} id="duration" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-hardBeige outline-hardBeige focus:ring-hardBeige">
-                  <option selected>All times</option>
+                  <option defaultValue={""}>All times</option>
                   <option value={"this week"}>this week</option>
                   <option value="this month">this month</option>
                   <option value="last 3 months">the last 3 months</option>
@@ -143,7 +153,7 @@ const Orders = () => {
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {currentOrders.map((order, index) => (
                 <OrderCard
-                url={"/me/orders/"+order.orderId.slice(1)}
+                url={"/me/orders/"+order.orderId}
 
                   key={index}
                   id={order.orderId}

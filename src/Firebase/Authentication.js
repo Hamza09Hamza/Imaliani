@@ -9,7 +9,7 @@ import {
     
 } from "firebase/auth";
 import { DB, auth } from "./Initialisation";
-import { setDoc, doc, addDoc,getDoc } from "firebase/firestore";
+import { setDoc, doc,getDoc } from "firebase/firestore";
 import { encryptData } from "@/app/Utils/Encryption";
 const provider = new GoogleAuthProvider();
 
@@ -43,6 +43,7 @@ const handleUserSignUp = async (userData) => {
             phoneNumber:userData.phoneNumber
         }
     ));
+    sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
 
     
     window.location.assign('/verify-email/'+auth.currentUser.uid);
@@ -66,6 +67,7 @@ export const GoogleSignUporIn = async () => {
                 phoneNumber: user.phoneNumber
             });
             console.log("User added to Firestore");
+            window.location.assign("/")
 
         } else {
             // Existing user, sign in
@@ -104,7 +106,7 @@ export const EmailSignUp = async (userData) => {
 export const  UserSignout =async ()=>{
     try {
         await signOut(auth)
-        localStorage.removeItem("UserID")
+        sessionStorage.removeItem("UserID")
         sessionStorage.clear();
         window.location.assign("/")
 
@@ -116,7 +118,7 @@ export const  UserSignout =async ()=>{
 export const EmailSignIn=async({email,password})=>{
     try {
        await  signInWithEmailAndPassword(auth,email,password)
-       sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+       sessionStorage.setItem('UserID', JSON.stringify(encryptData(auth.currentUser.uid)));
        window.location.assign("/")
     } catch (error) {
         console.error("Error during Email SignIn:", error);
@@ -134,7 +136,7 @@ export const EmailSignIn=async({email,password})=>{
 export const GoogleSignIn=async()=>{
     try {
         await signInWithPopup(auth, provider);
-        localStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
+        sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
 
     } catch (error) {
         console.log("Error during Google Sign In",error)

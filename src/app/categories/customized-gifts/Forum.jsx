@@ -1,8 +1,10 @@
 "use client"
 import React, { useState } from 'react';
 import axios from 'axios';
-import { auth } from '../../../Firebase/Initialisation';
-
+import { DB, Storage, auth } from '../../../Firebase/Initialisation';
+import { addDoc, collection } from 'firebase/firestore';
+import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage';
+import { getCurrentFirestoreTimestamp } from '@/app/Utils/time';
 const Customized = () => {
     const [files, setFiles] = useState([]);
     const [fileNames, setFileNames] = useState([]);
@@ -16,20 +18,34 @@ const Customized = () => {
     const [zipCode, setZipCode] = useState('');
     const [description, setDescription] = useState('');
 
-    const handleFileChange = (event) => {
-        const selectedFiles = Array.from(event.target.files);
-        const newFileNames = selectedFiles.map(file => file.name);
+        const handleFileChange = (event) => {
+            const selectedFiles = Array.from(event.target.files);
+            const newFileNames = selectedFiles.map(file => file.name);
+        
+            // Limit to 3 files
+            if (files.length + selectedFiles.length > 3) {
+            alert("You can only upload a maximum of 3 files.");
+            return;
+            }
+        
+            // Update state with new files and file names
+            setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
+            setFileNames(prevFileNames => [...prevFileNames, ...newFileNames]);
+        };
+        const uploadImage = async (imageFile) => {
+            try {
+                const buffer = await imageFile.arrayBuffer();
+                const blob = new Blob([buffer], { type: imageFile.type });
+                const imageRef = storageRef(Storage, `${imageFile.name}`);
+                await uploadBytes(imageRef, blob);
+                const downloadURL = await getDownloadURL(imageRef);
+                return downloadURL;
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                throw error;
+            }
+        };
     
-        // Limit to 3 files
-        if (files.length + selectedFiles.length > 3) {
-          alert("You can only upload a maximum of 3 files.");
-          return;
-        }
-    
-        // Update state with new files and file names
-        setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
-        setFileNames(prevFileNames => [...prevFileNames, ...newFileNames]);
-      };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -40,29 +56,41 @@ const Customized = () => {
         }
 
         try {
-            const formData = new FormData();
-            formData.append('fullName', firstName + ' ' + lastName);
-            formData.append('email', email);
-            formData.append('phoneNumber', phoneNumber);
-            formData.append('streetAddress', streetAddress);
-            formData.append('city', city);
-            formData.append('state', state);
-            formData.append('zipCode', zipCode);
-            formData.append('description', description);
-            formData.append('userId', auth.currentUser.uid);
+            const {data}=await axios.post("/api/encrypt",{id:auth.currentUser.uid,data:auth.currentUser.uid})
+            const cryptedUserID=data.data
 
-            files.forEach((file, index) => {
-                formData.append('files', file);
-            });
+        
+        const imageUrls = await Promise.all(files.map(async (file) => await uploadImage(file)));
 
-            await axios.post("/api/customized_gifts/addgift", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+        const Giftdata = {
+            fullName:firstName + ' ' + lastName,
+            email:email,
+            phoneNumber:phoneNumber,
+            ShippingAdresse: {
+                streetAddress:streetAddress,
+                city:city,
+                state:state,
+                zipCode:zipCode,
+            },
+            description:description,
+            Status: {
+                Pre_order: getCurrentFirestoreTimestamp(),
+                Processing: null,
+                In_transit: null,
+                Shipped: null,
+                Cancelled: null,
+            },
+            images: imageUrls,
+            UserID: auth.currentUser.uid,
+            encryptedUserID:cryptedUserID,
+            dateAdded: getCurrentFirestoreTimestamp()
+        };
+        console.log(Giftdata)
 
-            alert("Gift successfully added!");
-            window.location.assign("/me/customized");
+        await addDoc(collection(DB, "CustomizedGifts"), Giftdata);
+
+        alert("Gift successfully added!");
+        window.location.assign("/me/customized");
         } catch (e) {
             console.error("Error adding document: ", e);
         }

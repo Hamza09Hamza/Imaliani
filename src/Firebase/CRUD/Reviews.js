@@ -1,40 +1,42 @@
 import { getDocs, collection, query, where, orderBy, limit, startAfter,addDoc, getDoc, updateDoc, deleteDoc, setDoc, doc } from "firebase/firestore";
-import { DB } from "../Initialisation";
-import { decryptData, encryptData } from "../../app/Utils/Encryption";
-import { error } from "console";
-import { ref } from "firebase/storage";
-
+import { DB, auth } from "../Initialisation";
+import axios from "axios";
 
 export const getUserReviews = async (userId,lastVisibleOrder = null, pageSize = 5) => {
     try {
+        const {data}=await axios.post("/api/encrypt",{id:userId,data:userId})
+        const encryptedUserID=data.data
         const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
-            where("UserID","==",encryptData(userId)),
+            where("cryptedUserID","==",encryptedUserID),
             orderBy("dateAdded", "desc"),
             limit(pageSize)
         );
-
-
+        
+        
         if (lastVisibleOrder) {
             reviewsQuery = query(
                 reviewsQuery,
                 startAfter(lastVisibleOrder)
             );
         }
-
+        
         const querySnapshot = await getDocs(reviewsQuery);
-        console.log(querySnapshot.empty)
-        const reviews = querySnapshot.docs.map(doc => {
+
+        const reviews  = await Promise.all(querySnapshot.docs.map(async(doc) => {
             const data = doc.data();
-            // Decrypt UserID and ProductIDs
+            let UserID=await axios.post("/api/decrypt",{id:userId,data:data.cryptedUserID})
+            let ProductID=await axios.post("/api/decrypt",{id:userId,data:data.ProductID})
+            UserID=UserID.data.data
+            ProductID=ProductID.data.data
             return {
                 id: doc.id,
                 ...data,
-                UserID: decryptData(data.UserID),
-                ProductID:decryptData(data.ProductID),
+                UserID: UserID,
+                ProductID:ProductID,
             };
-        });
+        }));
 
         // Get the last visible document for pagination
         const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -46,12 +48,14 @@ export const getUserReviews = async (userId,lastVisibleOrder = null, pageSize = 
     }
 };
 
-export const getProductReviews = async (productId, lastVisibleReview = null, pageSize = 10) => {
+export const getProductReviews = async (productId, lastVisibleReview = null, pageSize = 10,userId) => {
     try {
+        const {data}=await axios.post("/api/encrypt",{id:userId,data:productId})
+        const cryptedProductId=data.data
         const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
-            where("ProductID","==",encryptData(productId)),
+            where("ProductID","==",cryptedProductId),
             orderBy("dateAdded", "desc"),
             limit(pageSize)
         );
@@ -64,18 +68,51 @@ export const getProductReviews = async (productId, lastVisibleReview = null, pag
             
         }
         const querySnapshot = await getDocs(reviewsQuery);
-        const reviews = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            UserID: decryptData(doc.data().UserID),
-            ProductID: decryptData(doc.data().ProductID),
+        const reviews = await Promise.all(querySnapshot.docs.map(async(doc) => {
+            const data = doc.data();
+            let UserID=await axios.post("/api/encrypt",{id:userId,data:data.UserID})
+            let ProductID=await axios.post("/api/encrypt",{id:userId,data:data.ProductID})
+            UserID=UserID.data.data
+            ProductID=ProductID.data.data
+            return {
+                id: doc.id,
+                ...data,
+                UserID: UserID,
+                ProductID:ProductID,
+                
+            };
         }));
-        console.log(querySnapshot.empty)
+        let ratingsPerValue=[
+            { 
+                label:0,
+                value: (await productReviewperStar(productId,0)).length
+            },
+            { 
+                label:1,
+                value: (await productReviewperStar(productId,1)).length
+            },
+            { 
+                label:2,
+                value: (await productReviewperStar(productId,2)).length
+            },
+            { 
+                label:3,
+                value: (await productReviewperStar(productId,3)).length
+            },
+            { 
+                label:4,
+                value: (await productReviewperStar(productId,4)).length
+            },
+            { 
+                label:5,
+                value: (await productReviewperStar(productId,5)).length
+            },
+            ]
 
 
         const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
-        return { reviews, lastVisible };
+        return { reviews,ratingsPerValue ,lastVisible };
     } catch (error) {
         console.error("Error retrieving product reviews:", error);
         throw new Error("Failed to retrieve product reviews.");
@@ -88,7 +125,7 @@ export const getAllReviews = async (lastVisibleOrder = null, pageSize = 10) => {
         const reviewsRef = collection(DB, "Ratings");
         let reviewsQuery = query(
             reviewsRef,
-            orderBy("date", "desc"),
+            orderBy("dateAdded", "desc"),
             limit(pageSize)
         );
 
@@ -100,18 +137,19 @@ export const getAllReviews = async (lastVisibleOrder = null, pageSize = 10) => {
         }
 
         const querySnapshot = await getDocs(reviewsQuery);
-        const reviews = querySnapshot.docs.map(doc => {
+        const reviews = await Promise.all(querySnapshot.docs.map(async(doc) => {
             const data = doc.data();
+            let UserID=await axios.post("/api/encrypt",{id:userId,data:data.UserID})
+            let ProductID=await axios.post("/api/encrypt",{id:userId,data:data.ProductID})
+            UserID=UserID.data.data
+            ProductID=ProductID.data.data
             return {
                 id: doc.id,
                 ...data,
-                UserID: decryptData(data.UserID),
-                Products: data.Products.map(product => ({
-                    ...product,
-                    ProductID: decryptData(product.ProductID)
-                }))
+                UserID: UserID,
+                ProductID:ProductID,
             };
-        });
+        }));
 
         const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
@@ -137,10 +175,11 @@ export const getReviwesperID=async (id)=>{
 
 export const setReview = async (id=null, ReviewData) => {
     try {
-
+        console.log(ReviewData.UserID,auth.currentUser?.uid)
         
         if(id!==null){
-            await setDoc(doc(DB, "Ratings/",id), ReviewData);}
+            await setDoc(doc(DB, "Ratings/",id), ReviewData);
+        }
         else
             await addDoc(collection(DB,"Ratings"),ReviewData)
         console.log("Review saved successfully.");
@@ -162,3 +201,54 @@ export const deleteReview = async (ReviewId) => {
     }
 };
 
+
+
+
+export async function productReviewperStar(id, star) {
+    try {
+        const {data}=await axios.post("/api/encrypt",{id:auth.currentUser.uid,data:id})
+        const encryptedProductID=data.data
+
+        const reviewsQuery = query(
+            collection(DB, "Ratings"),
+            where("rating", "==", star),
+            where("ProductID","==",encryptedProductID),
+            orderBy("dateAdded", "desc")
+        );
+
+
+        const datares = await getDocs(reviewsQuery);
+        const result = datares.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+
+
+        return result;
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        throw new Error("Failed to fetch product reviews");
+    }
+}
+
+
+export const getRateProduct=async (id,userId)=>{
+    const {data}=await axios.post("/api/encrypt",{id:userId,data:id})
+    const encrypted=data.data
+    const ratesRef = collection(DB, "Ratings");
+
+    let ratesQuery = query(
+        ratesRef,
+        where("ProductID", "==",encrypted), 
+    );
+    const querySnapshot = await getDocs(ratesQuery);
+    let totalRatings = 0;
+    let ratingsCount = 0;
+    querySnapshot.forEach(doc => {
+        totalRatings += doc.data().rating;
+        ratingsCount += 1;
+    });
+    if(totalRatings>0&&ratingsCount>0)
+        return totalRatings/ratingsCount;
+    else
+        return 0
+    
+
+}

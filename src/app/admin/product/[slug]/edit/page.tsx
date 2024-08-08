@@ -4,9 +4,9 @@ import { getProductsperID,updateProduct } from '@/Firebase/CRUD/Products';
 import { DocumentData } from 'firebase/firestore';
 import { OriginCategorieList } from '@/components/products';
 import Image from 'next/image';
- 
-
-export default function EditPage({ params }: { params: { slug: string } }) {
+import AdminFooter from "../../../footer"
+import isAuth from '@/app/Auth';
+ function EditPage({ params }: { params: { slug: string } }) {
     const { slug } = params;
     const [product, setProduct] = useState<DocumentData | undefined>(undefined);
     const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ export default function EditPage({ params }: { params: { slug: string } }) {
         const fetchProduct = async () => {
             if (slug) {
                 try {
-                    const data = await getProductsperID(slug); 
+                    const data = await getProductsperID(slug) as any
                     
                     setProduct(data);
                     if(data){
@@ -90,7 +90,7 @@ export default function EditPage({ params }: { params: { slug: string } }) {
         }
     };
 
-    return (
+    return (<>
         <div className='bg-softBeige w-[100vw] h-[100vh] flex items-center justify-center'>
 
         <div className=" p-4 w-full max-w-2xl h-full md:h-auto">
@@ -214,6 +214,9 @@ export default function EditPage({ params }: { params: { slug: string } }) {
             </div>
         </div>
         </div>
+        <AdminFooter/>
+        </>
 
     );
 }
+export default isAuth(EditPage)

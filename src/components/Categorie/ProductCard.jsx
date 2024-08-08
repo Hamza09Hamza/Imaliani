@@ -1,14 +1,18 @@
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import Done from"@/images/Done.png"
 import AddToCartButton from '../addChart';
+import { doc, getDoc } from 'firebase/firestore';
+import { updateUserField } from '@/Firebase/CRUD/User';
 const CatCard = ({product}) => {
   const [added,setAdded]=useState(false)
   const handleAddToCart= async ()=>{
     if(auth.currentUser) {
-      await axios.put("/api/chart/updateuser",{type:true,id:product.id,userid:auth.currentUser.uid})
+      const Chart= (await getDoc(doc(DB,"Users/",auth.currentUser.uid))).data().Chart
+      const {data}=await axios.put("/api/chart/updateuser",{type:true,id:product.id,Chart:Chart})
+      await updateUserField("Chart",data.userchart,auth.currentUser.uid);
       
 
     }else

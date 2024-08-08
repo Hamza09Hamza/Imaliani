@@ -1,16 +1,16 @@
 "use client";
 import React from 'react'
 import TissueBoxEmpty from "@/images/Products/AshtrayHat.jpg"
-import TissueBox from "@/images/Products/TissueBox.jpg"
-import Flowers from "@/images/Products/Flowers.jpg"
+import TissueBox from "@/images/2024-08-08 04.13.54.jpg"
+import framedec from "@/images/2024-08-08 04.13.32.jpg"
 import Candles from "@/images/Products/Candels.jpg"
 import catCandle from "@/images/Products/catCandle.jpg"
-import Heart from "@/images/Products/Heart.jpg"
+import Heart from "@/images/2024-08-08 04.13.58.jpg"
 import HeroCard from "./HeroCard"
 import Image from 'next/image';
 import TrendingSlider from "./Carousel"
 const HeroSec = () => {
-	const images=[TissueBox,Flowers,Heart]
+	const images=[TissueBox,framedec,Heart]
         return (<>
         <div className='flex flex-col items-center '>
 
@@ -22,7 +22,12 @@ const HeroSec = () => {
 			</p>
 				<TrendingSlider images={images}/>
 				<p className='lg:max-w-[60%] mid:text-sm mid:max-w-[80%] text-center text-xl mid:text-tooHardBeige text-hardBeige mb-10'>
-				We offer a curated selection of candles, ashtrays, and home decorations to bring a touch of elegance to your space. Discover unique pieces that reflect your style and add warmth to your home. Transform your surroundings with Imaliano Craft Studio, where creativity and quality come together.			</p>
+				<span className='font-bold text-md text-brown'>Imaliani</span> has the vision to revive dying
+				colors and colorless homes by creating a
+				life, adding positivity and colors with our
+				handmade products.
+				Our products are special that why we
+				creat a new style in the market</p>
 			<div className=' mt-10 flex flex-col justify-around items-center w-[90%]'>
 					<HeroCard 
 					title={"Elegance in every moment  "}

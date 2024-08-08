@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Logo from "@/images/imalian.png";
 import { GoogleSignUporIn, EmailSignUp } from "@/Firebase/Authentication";
 import InputField from "@/components/Signing/InputFeild";
-import PhoneNumberField from "@/components/Signing/InputPhoneN";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import PasswordField from "@/components/Signing/PasswordInput";
 
 const SignUp = () => {
@@ -45,7 +46,7 @@ const SignUp = () => {
 
     const handleSignUp = async () => {
         if (validateFields()) {
-          setError(await EmailSignUp({ firstName, lastName, email, password, phoneNumber: "+" + phone }));
+          setError(await EmailSignUp({ firstName, lastName, email, password, phoneNumber:phone }));
         }
     };
 
@@ -106,7 +107,14 @@ const SignUp = () => {
                                 errors={errors}
                                 setErrors={setErrors}
                             />
-                            <PhoneNumberField label={"phone"} value={phone} onChange={setPhone} errors={errors} setErrors={setErrors} />
+                             <PhoneInput
+                                        placeholder="+1 555-555-555"
+                                        value={phone}
+                                        onChange={setPhone}
+                                        defaultCountry="AE"
+                                        className={`w-full text-gray-800 text-sm border  px-4 py-3 rounded-md outline-Beige `}
+                                        />
+                                        {errors.phone && <span className="text-red-500 mt-2 text-xs">{errors.phone}</span>}
                             <PasswordField
                                 label="Password"
                                 value={password}

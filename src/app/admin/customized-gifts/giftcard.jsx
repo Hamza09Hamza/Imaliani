@@ -7,7 +7,7 @@ const OrderCard = ({ id, date, description, status, statusClass, statusIcon,hand
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-800 ">Order ID:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900 ">
-          <a href={url} className="hover:underline">{formatString(id)}</a>
+          <a href={url} className="hover:underline">#{formatString(id)}</a>
         </dd>
       </dl>
 

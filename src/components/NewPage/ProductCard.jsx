@@ -1,13 +1,21 @@
 import Image from 'next/image';
 import React, { useEffect } from 'react';
 import AddToCartButton from '../addChart';
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import axios from 'axios';
+import { doc, getDoc } from 'firebase/firestore';
+import { updateUserField } from '@/Firebase/CRUD/User';
 
 const ProductCard = ({ product }) => {
   const handleAddToCart= async ()=>{
     if(auth.currentUser) {
-      await axios.put("/api/chart/updateuser",{type:true,id:product.id,userid:auth.currentUser.uid})
+      const Chart= (await getDoc(doc(DB,"Users/",auth.currentUser.uid))).data().Chart
+      let encryptedProductID=await axios.post("/api/encrypt",{id:auth.currentUser.uid,data:product.id})
+      encryptedProductID=encryptedProductID.data.data;
+      console.log()
+      await updateUserField("Chart",
+      [...Chart,{ProductID:encryptedProductID,Quantity:1}],
+      auth.currentUser.uid);
       
 
     }else

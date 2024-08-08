@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { OriginCategorieList } from '@/components/products';
 import {addNewProduct} from "@/Firebase/CRUD/Products"
 import {getCurrentFirestoreTimestamp} from "../../Utils/time"
+import AdminFooter from '../footer';
+import isAuth from "../../adminAuth";
+
 const CreateProduct = () => {
     const [fileNames, setFileNames] = useState([]);
     const [formData, setFormData] = useState({
@@ -47,8 +50,8 @@ const CreateProduct = () => {
         }
     };
 
-    return (
-        <div className='w-[100vw] h-[100vh] flex items-center justify-center bg-softBeige'>
+    return (<>
+        <div className='w-[100vw] pb-40 flex items-center justify-center bg-softBeige'>
             <div className="relative p-4 w-full max-w-2xl h-full md:h-auto">
                 <div className="relative p-4 bg-white rounded-lg shadow sm:p-5">
                     <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5">
@@ -108,7 +111,8 @@ const CreateProduct = () => {
                 </div>
             </div>
         </div>
-    );
+        <AdminFooter/>
+    </>);
 };
 
-export default CreateProduct;
+export default isAuth(CreateProduct);

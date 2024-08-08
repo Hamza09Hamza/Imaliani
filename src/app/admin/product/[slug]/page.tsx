@@ -4,7 +4,9 @@ import {deleteProduct, getProductsperID} from "@/Firebase/CRUD/Products"
 import { DocumentData } from 'firebase/firestore';
 import Image from 'next/image';
 import DeleteModal from "@/app/me/Delete"
-export default function Product({ params }: { params: { slug: string } }) {  
+import AdminFooter from "../../footer"
+import isAuth from "../../../adminAuth"
+function Product({ params }: { params: { slug: string } }) {  
     const [isOpen,setIsOpen]=useState<Boolean>(false) 
     const  slug  = params.slug
 
@@ -13,6 +15,7 @@ export default function Product({ params }: { params: { slug: string } }) {
     }
     const onDelete=async()=>{
         await deleteProduct(slug)
+        window.location.assign("/admin/products")
     }
 
     const [product, setProduct] = useState<DocumentData | undefined>(undefined);
@@ -83,8 +86,8 @@ export default function Product({ params }: { params: { slug: string } }) {
     </div>
     <DeleteModal onClose={closeDelete} isOpen={isOpen} onDelete={onDelete} typeText={"product"}/>
 </div>
-
+    <AdminFooter/>
 
     </> );
 }
- 
+export default isAuth(Product) 

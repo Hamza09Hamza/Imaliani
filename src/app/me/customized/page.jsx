@@ -5,10 +5,11 @@ import Navbar from '../navbar';
 import {getDateRange} from "../orders/Order"
 import Head from '@/components/header';
 import Empty from '@/components/Emptylist';
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import { timestampToDate, getMostRecentStatus } from '@/app/Utils/time';
 import axios from 'axios';
 import {Statuses} from "../orders/Order"
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
@@ -24,25 +25,35 @@ const Orders = () => {
             const unsubscribe = auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     try {
-                        const {data} = await axios.get("/api/customized_gifts/getuser" ,{
-                                params: {
-                                    id: user.uid
-                                }
-                        });
-                        let OrdersData=data.result
-                        console.log(OrdersData)
-                        let OrdersList = OrdersData.map((order) => {
-                            console.log(getMostRecentStatus(order.Status))
-                            return {
-                              ...order,
-                                orderId: "#" + order.id,
-                                date: timestampToDate(order.Status.Pre_order),
-                                status: getMostRecentStatus(order.Status),
-                                description:order.description
-                            };
-                        });
-                        setDisplayedOrders(OrdersList);
-                        setLastVisibile(data.lastVisible);
+                        const customRef=collection(DB,"CustomizedGifts");
+                        const {data}=await axios.post("/api/encrypt",{id:user.uid,data:user.uid})
+                        const cryptedUserID=data.data
+                        let customQuery = query(
+                            customRef,
+                            where("encryptedUserID","==",cryptedUserID),
+                            orderBy("dateAdded", "desc"),
+                           
+                        );
+                        const res=await getDocs(customQuery)
+                        if(!res.empty){
+                            const customs=res.docs.map((doc)=>({...doc.data(),id:doc.id}))
+                            let OrdersList = customs.map((order) => {
+                                    console.log(getMostRecentStatus(order.Status))
+                                    return {
+                                      ...order,
+                                        orderId:  order.id,
+                                        date: timestampToDate(order.Status.Pre_order),
+                                        status: getMostRecentStatus(order.Status),
+                                        description:order.description
+                                    };
+                                });
+                                console.log(OrdersList)
+                            setDisplayedOrders(OrdersList);
+
+                        }else{
+                            setDisplayedOrders([]);
+                        setCurrentOrders([]);
+                        }
 
                     } catch (error) {
                         console.error("Error fetching user orders:", error);
@@ -129,7 +140,7 @@ const Orders = () => {
                 <select 
                 value={selectedDateFilter} 
                 onChange={handleDateFilterChange} id="duration" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-hardBeige outline-hardBeige focus:ring-hardBeige">
-                  <option selected>All times</option>
+                  <option defaultValue={""}>All times</option>
                   <option value={"this week"}>this week</option>
                   <option value="this month">this month</option>
                   <option value="last 3 months">the last 3 months</option>

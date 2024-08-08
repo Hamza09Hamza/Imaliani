@@ -184,3 +184,15 @@ export const fetchrandomProducts = async (lastVisibleOrder = null, pageSize = 10
     }
 
  };
+
+
+
+export const getProductName= async (ProductID)=>{
+   const res =await getDoc(doc(DB,"products/",ProductID))
+   if(res.exists()){
+    return res.data().title
+   }else{
+    return ""
+   }
+
+}

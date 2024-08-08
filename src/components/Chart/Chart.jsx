@@ -3,42 +3,54 @@ import React, {  useEffect, useState } from 'react';
 import Head from '../header';
 import CharCard from "./ChartCard";
 import Summary from "./PricingSum";
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import Empty from "../Emptylist"
 import axios from 'axios';
+import { doc, getDoc } from 'firebase/firestore';
+import { updateUserField } from '@/Firebase/CRUD/User';
 
 const Chart = ({setCurrentPage,setListCat}) => {
    
     
     const [products, setProducts] = useState([]);
+    const [chart,setChart]=useState([]);
 
     useEffect(() => {
         const handleAuthStateChange = () => {
             const unsubscribe = auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     try {
-                        const { data } = await axios.get("/api/chart/getuser", {
-                            params: {
-                                id: auth.currentUser.uid
+                        let test=await user.getIdToken()
+                        if(test){
+                            const res = await getDoc(doc(DB,"Users/"+user.uid))
+                            if( res.exists()){
+                                let Chart=res.data().Chart
+                                if(Chart.length>0)
+                                    {
+                                        const { data } = await axios.post("/api/chart/getuser", {
+                                            idToken: test,
+                                            Chart:Chart
+                                        });
+                                        let Products = data.Products;
+                                        Chart=data.DATAChart
+                                        setChart(Chart);
+                                        let result = Products.map((product) => {
+                                            return {
+                                                ...product,
+                                                quantity: Chart.filter((prod) => prod.ProductID === product.id)[0].Quantity
+                                            }
+                                        });
+                                    setProducts(result); // Update the products state with the result
+                                    }
+                                    else setProducts([])
+
                             }
-                        });
-
-                        let Products = data.data.Products;
-                        let Chart = data.data.Chart;
-
-                        let result = Products.map((product) => {
-                            return {
-                                ...product,
-                                quantity: Chart.find((prod) => prod.id === product.id).Quantity
-                            }
-                        });
-
-                        setProducts(result); // Update the products state with the result
+                        }
                     } catch (error) {
                         console.error("Error fetching user orders:", error);
                     }
                 } else {
-                    setProducts([]); // Clear products if user is not logged in
+                    setProducts([]); 
                 }
             });
 
@@ -72,7 +84,9 @@ const Chart = ({setCurrentPage,setListCat}) => {
     }
     const rmCart= async (id)=>{
         if(auth.currentUser) {
-          await axios.put("/api/chart/updateuser",{type:false,id:id,userid:auth.currentUser.uid})
+            const {data}=await axios.put("/api/chart/updateuser",{type:false,id:id,Chart:chart});
+          await updateUserField("Chart",data.userchart,auth.currentUser.uid);
+
         }else
           window.location.assign("signin")
       }

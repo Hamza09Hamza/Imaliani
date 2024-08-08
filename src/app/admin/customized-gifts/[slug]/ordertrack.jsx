@@ -1,9 +1,10 @@
 "use client"
-import { auth } from '@/Firebase/Initialisation';
+import { DB, auth } from '@/Firebase/Initialisation';
 import { getUserRole } from '@/Firebase/Utils';
 import { getCurrentFirestoreTimestamp,timestampToDate } from '@/app/Utils/time';
 import { Statuses } from '@/app/me/orders/Order';
 import axios from 'axios';
+import { doc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 
 const TrackOrder = ({ Status, id }) => {
@@ -30,9 +31,9 @@ handleAuthStateChange();
     const setNewStatus = async (value) => {
         const date = getCurrentFirestoreTimestamp();
         setCurrentStatus({ ...currentStatus, [value]: date });
-
         if (await getUserRole(auth.currentUser.uid)) {
-            await axios.put("/api/orders/setorder", { id: id.substring(1), status: { ...Status, [value]: date },userId:auth.currentUser.uid });
+            const orderRef = doc(DB, "CustomizedGifts/", id);
+            await updateDoc(orderRef, {Status:{ ...Status, [value]: date} });
             window.location.reload()
         }
     };
@@ -95,7 +96,30 @@ handleAuthStateChange();
                             </li>
                         )}
                     </ol>
-                    
+                    {admin ?<div className='flex items-center flex-col gap-4 justify-center w-[100%]'>
+                        <button onClick={() => { setIsOpen(!isOpen) }} className='px-4 py-2 rounded-2xl bg-hardBeige hover:bg-tooHardBeige duration-500 transition-all'>
+                            {isOpen ? "Not sure ?" : "set a new status"}
+                        </button>
+                        <div className={`${isOpen ? "flex" : "hidden"} items-center justify-around`}>
+                            {filterStatuses().map((status) => (
+                                <dd
+                                    key={status.status}
+                                    onClick={async() => {
+                                        
+                                        setIsOpen(false);
+                                       await setNewStatus(status.status);
+                                    }}
+                                    className={`me-2 mt-1.5 inline-flex cursor-pointer items-center rounded-full px-2.5 py-0.5 font-medium ${status.statusClass}`}
+                                >
+                                    <svg className="h-2.5 w-2.5 flex-shrink-0 text-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        {status.statusIcon}
+                                    </svg>
+                                    <span className="ms-2">{status.status}</span>
+                                </dd>
+                            ))}
+                        </div>
+                    </div>:<>
+                    </>}
                 </div>
             </div>
         </>

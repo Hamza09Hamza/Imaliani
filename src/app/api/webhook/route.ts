@@ -5,6 +5,8 @@ import { decryptData,encryptData } from '@/app/Utils/Encryption';
 import {getCurrentFirestoreTimestamp} from "@/app/Utils/time"
 import {setNewOrder} from "@/Firebase/CRUD/Oders"
 import { updateUserField } from '@/Firebase/CRUD/User';
+import { adminCreateOrder, adminUpdateUserChart } from "@/Firebase/admintest";
+import { Timestamp } from 'firebase-admin/firestore';
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -45,7 +47,7 @@ export async function POST(req: Request, res: NextResponse) {
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string);
   const totalAmount = paymentIntent.amount;
-
+  // await initAdmin()
   
   const encryptedProductData = session.metadata?.encryptedProductData || "[]";
   const encryptedUserInfo = session.metadata?.encryptedUserInfo || "[]";
@@ -64,7 +66,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         email:encryptData(UserInfo.email),
         products:productData,
         Status:{
-            Pre_order:getCurrentFirestoreTimestamp(),
+            Pre_order:Timestamp.now(),
             Processing:null,
             In_transit:null,
             Shipped:null,
@@ -81,14 +83,14 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           ...product,
           id: encryptData(product.id)
       }))
-    };
+    };  
+
     
-    console.log(userId)
     try {
-      await setNewOrder(encryptedOrderData)
+      await adminCreateOrder(encryptedOrderData)
       console.log("done setting order")
 
-      await updateUserField("Chart",[],userId)
+      await adminUpdateUserChart(userId)
       console.log("done deleting  chart")
 
     } catch (error) {

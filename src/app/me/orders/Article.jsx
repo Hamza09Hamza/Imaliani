@@ -32,7 +32,7 @@ const OrderCard = ({ id, date, price, status, statusClass, statusIcon,handleDele
       </dl>
       <div className="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
                 
-        <a href={"/me/orders/"+id.slice(1)} className=" transition-all duration-500 w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100   -whi lg:w-auto">View details</a>
+        <a href={url} className=" transition-all duration-500 w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100   -whi lg:w-auto">View details</a>
       </div>
     </article>
      

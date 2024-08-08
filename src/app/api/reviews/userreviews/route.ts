@@ -1,3 +1,4 @@
+import "server-only";
 import { NextResponse, NextRequest } from 'next/server';
 import { DB, auth } from "../../../../Firebase/Initialisation"
 import { decryptData } from '../../../Utils/Encryption';
@@ -9,9 +10,7 @@ export async function GET(req: NextRequest) {
     if(id ){
         
         try {
-            console.log(id)
             const data = await getUserReviews(id,null,5);
-
             if(data)
                 {
                     let Reviews = data.reviews

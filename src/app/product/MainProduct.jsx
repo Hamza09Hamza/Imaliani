@@ -2,8 +2,10 @@ import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import AddToCartButton from '@/components/addChart';
-import {auth} from "@/Firebase/Initialisation"
+import {DB, auth} from "@/Firebase/Initialisation"
 import CarouselCustomNavigation from '@/components/carousel'
+import { updateUserField } from '@/Firebase/CRUD/User';
+import { doc, getDoc } from 'firebase/firestore';
  const MainProduct = ({product}) => {
   const [connected,setConnected]=useState(null)
   const [Buying,setBuying]=useState(false)
@@ -27,7 +29,10 @@ import CarouselCustomNavigation from '@/components/carousel'
  
   const handleAddToCart= async ()=>{
     if(auth.currentUser) {
-      await axios.put("/api/chart/updateuser",{type:true,id:product.id,userid:auth.currentUser.uid})
+      console.log(product.id)
+      const Chart= (await getDoc(doc(DB,"Users/",auth.currentUser.uid))).data().Chart
+      const {data}=await axios.put("/api/chart/updateuser",{type:true,id:product.id,Chart:Chart})
+      await updateUserField("Chart",data.userchart,auth.currentUser.uid);
       
 
     }else

@@ -4,8 +4,10 @@ import ReviewCard from '../../../../components/Reviews/ReviewCard';
 import Head from "../../../../components/header"
 import Footer from "../../../../components/footer"
 import axios from 'axios';
-import {auth} from "../../../../Firebase/Initialisation"
+import {DB, auth} from "../../../../Firebase/Initialisation"
 import EditReviewModal from '../../../me/reviews/UpdateReview';
+import { addDoc, collection } from 'firebase/firestore';
+import { getProductReviews } from '@/Firebase/CRUD/Reviews';
 
 const Reviews = ({ params }: { params: { id: string } }) => {
   const  id  = params.id;
@@ -25,13 +27,17 @@ const Reviews = ({ params }: { params: { id: string } }) => {
 
   const handleEditClick =async  () => {
     console.log(review)
-    auth.currentUser&&  await axios.post("/api/reviews/setreview",{
-      Review:{...review},
-      userId:auth.currentUser?.uid,
-      
-    })
+    if(auth.currentUser){
+     const  {data}=await axios.post("/api/reviews/setreview",{
+        Review:{...review},
+        userId:auth.currentUser.uid,
+        
+      })
+      await addDoc(collection(DB, 'Ratings'), data.Reviewdata);
+    }
+
     setIsEditModalOpen(false);
-    // window.location.reload()
+    window.location.reload()
   };
 const handleEditClose = () => {
     setIsEditModalOpen(false);
@@ -41,20 +47,16 @@ const handleEditClose = () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
-                   const {data} =await axios.get("/api/reviews/productreviews",{params:{
-                        id:review.ProductID
-                    }})
-                    console.log(data.result)
-                    if(data.result.reviews){
-                      setProdReviews(data.result.reviews)
-                      setNumberofrate(data.result.ratingsPerValue)
-                      setTotalSum(data.result.ratingsPerValue.reduce((acc: any, obj: { value: any; }) => acc + obj.value, 0))
+                  console.log(user.uid)
+                  const data =await getProductReviews(review.ProductID,null,10,user.uid as any)
+                    if(data.reviews){
+                      setProdReviews(data.reviews)
+                      setNumberofrate(data.ratingsPerValue)
+                      setTotalSum(data.ratingsPerValue.reduce((acc: any, obj: { value: any; }) => acc + obj.value, 0))
                     }
                     else{
                       setProdReviews([])
                       setNumberofrate([])
-                      
-
                     }
 
                 } catch (error) {
@@ -71,7 +73,7 @@ const handleEditClose = () => {
     handleAuthStateChange();
 }, []); 
   const totalRate=()=>{
-    return numberofrate.reduce((acc, obj) => acc + obj.label*obj.value, 0)/ProdReviews.length
+    return numberofrate.reduce((acc: number, obj: { label: number; value: number; }) => acc + obj.label*obj.value, 0)/ProdReviews.length
 
   }
 
@@ -91,8 +93,8 @@ const handleEditClose = () => {
         return stars;
       };
     return ( <>
-    <Head status={undefined} categorie={null} setCategorie={null} />
-    { ProdReviews&&ProdReviews.length>0 && numberofrate ?  <section className="bg-softBeige py-8 antialiased px-16 pb-40 md:pt-16">
+    <Head status={undefined} categorie={null} setCategorie={null} customer={auth.currentUser?.uid} />
+    { auth.currentUser?.uid&& ProdReviews&&ProdReviews.length>0 && numberofrate ?  <section className="bg-softBeige py-8 antialiased px-16 pb-40 md:pt-16">
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-semibold text-gray-900 ">Reviews</h2>

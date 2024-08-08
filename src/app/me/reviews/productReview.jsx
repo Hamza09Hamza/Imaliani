@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import EditReviewModal from "./UpdateReview";
 import DeleteModal from "../Delete";
-const ProductReview = ({ id, title, message, rating, dateAdded, onReviewUpdate, onReviewDelete }) => {
+const ProductReview = ({ id, title, message, rating, onReviewUpdate, onReviewDelete,dateAdded }) => {
+    
     const [isOpen, setIsOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [review, setReview] = useState({ title, description: message, rating , });
-
+    const [updatereview, setUpdateReview] = useState({ title:title, description: message, rating:rating,dateAdded  });
     const handleEditClick = () => {
         setIsEditModalOpen(true);
     };
@@ -15,9 +15,9 @@ const ProductReview = ({ id, title, message, rating, dateAdded, onReviewUpdate, 
         setIsEditModalOpen(false);
     };
 
-    const handleSaveEdit =async () => {
+    const handleSaveEdit = async () => {
         // Save edit logic
-       await onReviewUpdate({ ...review,id });
+        await onReviewUpdate({ ...updatereview,id });
         setIsEditModalOpen(false);
     };
 
@@ -157,8 +157,8 @@ const ProductReview = ({ id, title, message, rating, dateAdded, onReviewUpdate, 
                 <EditReviewModal
                     type={"Edit"}
                     isOpen={isEditModalOpen}
-                    review={review}
-                    setReview={setReview}
+                    review={updatereview}
+                    setReview={setUpdateReview}
                     onClose={handleEditClose}
                     onSave={handleSaveEdit}
                 />

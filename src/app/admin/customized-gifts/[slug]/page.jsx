@@ -1,6 +1,6 @@
 "use client";
 
-import { auth } from '../../../../Firebase/Initialisation';
+import { DB, auth } from '../../../../Firebase/Initialisation';
 import ProductCard from '../../../../components/Order/orderporduct';
 import TrackOrder from './ordertrack';
 import React, { useEffect, useState } from 'react';
@@ -9,8 +9,11 @@ import { timestampToDate, getMostRecentStatus } from '../../../Utils/time';
 import { getProductsperID } from '../../../../Firebase/CRUD/Products';
 import Head from '../../../../components/header';
 import CarouselCustomNavigation from '../../../../components/carousel';
+import AdminFooter from '../../footer';
+import { doc, getDoc } from 'firebase/firestore';
+import isAuth from "../../../Auth"
 
-export default function Product({ params }) {
+ function Product({ params }) {
   const slug = params.slug;
   const [order, setOrder] = useState({
     images: [] , // Adjust this type as needed
@@ -24,41 +27,45 @@ export default function Product({ params }) {
 
   useEffect(() => {
     const handleAuthStateChange = () => {
-      const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        if (user) {
-          try {
-            let order
-            const stored = JSON.parse(sessionStorage.getItem("giftData") || "");
-            if (stored === "") {
-              const { data } = await axios.get("/api/cutomized_gifts/getgift", {
-                params: {
-                  id: slug,
-                },
-              });
-              order = data.data;
-            } else {
-              order = stored;
-            }
-            order = {
-              ...order,
-              orderId: "#" + order.id,
-              date: timestampToDate(order.Status.Pre_order),
-              status: getMostRecentStatus(order.Status),
-              description: order.description,
-            };
-            setOrder(order);
-          } catch (error) {
-            console.error("Error fetching user orders:", error);
-          }
-        }
-      });
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
+            if (user) {
+              try {
+                let order;
+                const res=await getDoc(doc(DB,"CustomizedGifts/",slug))
 
-      return () => unsubscribe();
+                if(res.exists()) 
+                {
+                   
+                    const orddata=res.data()
+                  order = {
+                  ...orddata,
+                  orderId:  res.id || "" ,
+                  date: timestampToDate(orddata.Status.Pre_order)|| "" ,
+                  status: getMostRecentStatus(orddata.Status) || "",
+                  description: orddata.description || "",
+                };
+                const {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.email})
+                order.email=data.data
+                
+               
+
+                setOrder(order);
+                console.log(orddata)
+              }else{
+                order={};
+              }
+    
+              } catch (error) {
+                console.error("Error fetching user orders:", error);
+              }
+            }
+          });
+
+        return () => unsubscribe();
     };
 
     handleAuthStateChange();
-  }, [slug]);
-
+}, []);
   return (
     <>
       <section className="bg-softBeige py-8 antialiased md:py-16 h-[100vh]">
@@ -84,6 +91,8 @@ export default function Product({ params }) {
           </div>
         </div>
       </section>
+      <AdminFooter/>
     </>
   );
 }
+export default isAuth(Product)

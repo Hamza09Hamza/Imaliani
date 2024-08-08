@@ -1,4 +1,5 @@
 "use client"
+import { updateOrderStatus } from '@/Firebase/CRUD/Oders';
 import { auth } from '@/Firebase/Initialisation';
 import { getUserRole } from '@/Firebase/Utils';
 import { getCurrentFirestoreTimestamp,timestampToDate } from '@/app/Utils/time';
@@ -32,7 +33,7 @@ handleAuthStateChange();
         setCurrentStatus({ ...currentStatus, [value]: date });
 
         if (await getUserRole(auth.currentUser.uid)) {
-            await axios.put("/api/orders/setorder", { id: id.substring(1), status: { ...Status, [value]: date },userId:auth.currentUser.uid });
+            await updateOrderStatus(id,{ ...Status, [value]: date });
             window.location.reload()
         }
     };

@@ -15,7 +15,7 @@ export async function DELETE(req: NextRequest) {
             try {
                 const data = await getDoc(doc(DB,"Ratings/",id));
                 if(data.exists()){
-                    if(decryptData(data.data().UserID)===userId){  
+                    if(decryptData(data.data().cryptedUserID)===userId){  
                         await deleteReview(data.id);
                     }
                     else{ 
