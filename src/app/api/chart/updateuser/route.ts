@@ -12,12 +12,12 @@ export async function PUT(req: NextRequest) {
         try {
         const data = await getDoc(doc(DB,"products/",id))
         let userchart=Chart
+        console.log(Chart)
             if( data.exists())
             {
                 if(type===true)
                     {
-                        let encryptedProductID=await axios.post("/api/encrypt",{id:"testing",data:id})
-                        encryptedProductID=encryptedProductID.data.data;
+                        const encryptedProductID=encryptData(id)
                         if (!userchart.find((prod: any) => prod.ProductID === id)) {
                             userchart = [...userchart, { ProductID: encryptedProductID, Quantity: 1 }];
                         }

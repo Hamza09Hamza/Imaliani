@@ -62,7 +62,7 @@ export default function Product({ params }) {
       <Head status={false} setCategorie={null} categorie={null} />
       <section className="bg-softBeige py-8 antialiased md:py-16 h-full">
         <div className="mx-auto max-w-screen-xl bg-white p-8 rounded-3xl 2xl:px-0">
-          <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of order #{order.orderId}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of gift with ID: #{order.orderId}</h2>
 
           <div className="mt-6 sm:mt-8 lg:flex lg:gap-8">
             <div className="w-full divide-y h-[100%] divide-gray-200 overflow-hidden rounded-lg border border-gray-200 lg:max-w-xl xl:max-w-2xl">

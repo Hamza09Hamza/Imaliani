@@ -28,7 +28,7 @@ const Head: React.FC<ChildComponentProps> = ({ customer,status,categorie,setCate
     
     return (
         <>
-            <header className='flex justify-around flex-row bg-Main w-[100vw] font-roboto items-center py-2'>
+            <header className={`flex ${status ? "justify-around" :"justify-between"} flex-row bg-Main w-[100vw] font-roboto items-center py-2`}>
                 <Image
                     onClick={(e)=>{e.preventDefault();window.location.assign("/")}}
                     src={Imiliani}
@@ -36,7 +36,7 @@ const Head: React.FC<ChildComponentProps> = ({ customer,status,categorie,setCate
                     alt="Imiliani"
                     
                 />
-                <Search />
+               {status && <Search />}
                 <div className='flex flex-row w-[20%] items-center justify-around max-h-[90%] mr-5 '>
                     <div 
                         onClick={()=>auth.currentUser?window.location.assign("/me/chart"): window.location.assign("/signin")}  

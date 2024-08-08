@@ -35,8 +35,13 @@ const SignIn = () => {
     const handleSignIn = async () => {
         if (validateFields()) {
           try {
-            setError(await EmailSignIn({ email, password }));
-            sessionStorage.setItem("UserID",JSON.stringify(auth.currentUser.uid))
+            const err=await EmailSignIn({ email, password })
+            if(err)
+              setError(err);
+            else{
+              sessionStorage.setItem("UserID",JSON.stringify(auth.currentUser.uid))
+              window.location.assign("/")
+            }
           } catch (error) {
             console.log(error)
           }

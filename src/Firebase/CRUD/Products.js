@@ -113,10 +113,10 @@ export const getProductsperID=async(id)=>{
     
 }
 
-export const fetchNewProducts = async (lastVisible=null) => {
+export const fetchNewProducts = async (lastVisible=null,pageSize=10) => {
    try {
     const productsRef = collection(DB, "products");
-    let productQuery = query(productsRef, orderBy("dateAdded", "desc"),  limit(10));
+    let productQuery = query(productsRef, orderBy("dateAdded", "desc"),  limit(pageSize));
     if (lastVisible) {
         productQuery = query(
             productQuery,
@@ -126,9 +126,8 @@ export const fetchNewProducts = async (lastVisible=null) => {
     const querySnapshot = await getDocs(productQuery);
     let lastVisibleGift=null
     const products = querySnapshot.docs.map(doc => ({...doc.data(),id:doc.id}));
-    if(products.length==10){
-     lastVisibleGift = querySnapshot.docs[querySnapshot.docs.length - 1];
-    }
+    // console.log(products.length)
+    lastVisibleGift = querySnapshot.docs[querySnapshot.docs.length - 1];
     return {products,lastVisibleGift};
    } catch (error) {
     console.log("error fetching new products",error)

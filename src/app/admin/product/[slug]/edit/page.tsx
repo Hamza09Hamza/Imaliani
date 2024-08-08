@@ -5,7 +5,7 @@ import { DocumentData } from 'firebase/firestore';
 import { OriginCategorieList } from '@/components/products';
 import Image from 'next/image';
 import AdminFooter from "../../../footer"
-import isAuth from '@/app/Auth';
+import isAuth from '@/app/adminAuth';
  function EditPage({ params }: { params: { slug: string } }) {
     const { slug } = params;
     const [product, setProduct] = useState<DocumentData | undefined>(undefined);

@@ -5,7 +5,7 @@ import { OriginCategorieList } from '../../../components/products';
 import AdminFooter from '../footer';
 import Navbar from '../../me/navbar';
 import { getFirestore, collection, getCountFromServer } from 'firebase/firestore';
-import isAuth from '@/app/Auth';
+import isAuth from '@/app/adminAuth'
 
 const Products = () => {
     const [Products, setProducts] = useState([]);
@@ -131,7 +131,7 @@ const Products = () => {
                                 <tbody>
                                     {currentOrders.map((product, index) => (
                                         <tr key={index} className="border-b">
-                                            <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{product.title}</th>
+                                            <th scope="row" onClick={()=>window.location.assign("/admin/product/"+product.id)} className="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:underline whitespace-nowrap">{product.title}</th>
                                             <td className="px-4 py-3">{product.category}</td>
                                             <td className="px-4 py-3">{product.description}</td>
                                             <td className="px-4 py-3">{product.price}</td>

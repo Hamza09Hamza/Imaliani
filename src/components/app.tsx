@@ -28,7 +28,7 @@ const Application: React.FC = () => {
 
     return (
         <>
-                <main className=' h-[100%] flex-1  '>
+                <main className=' h-[100%] max-w-[100vw] flex-1  '>
                     <Home customer={customer} />
 
                         <Footer  />

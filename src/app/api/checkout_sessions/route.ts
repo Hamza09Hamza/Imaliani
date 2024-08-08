@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `http://localhost:3000/`,
+      success_url: `http://localhost:3000/me/orders`,
       cancel_url: `http://localhost:3000/me/chart`,
       metadata: {
         encryptedProductData:JSON.stringify(encryptedProductData),

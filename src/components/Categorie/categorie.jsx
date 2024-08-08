@@ -4,66 +4,62 @@ import Head from '../header';
 import ProductList from './ProductList';
 import { OriginCategorieList } from '../products';
 import CatList from './CatList';
-import { fetchrandomProducts,fetchCatProducts } from '@/Firebase/CRUD/Products';
+import { fetchrandomProducts, fetchCatProducts } from '@/Firebase/CRUD/Products';
 
 const Categorie = () => {
     const [cat, setCat] = useState('All');
-    
-    const [listcat, setListCat] = useState();
-    
+    const [listcat, setListCat] = useState('');
     const [CategorieList, setCategorieList] = useState(OriginCategorieList);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [products, setProducts] = useState([]);
     const [lastVisibleOrder, setLastVisibleOrder] = useState(null);
-    
+    const [hasMoreProducts, setHasMoreProducts] = useState(true);
+
     const handleCategorie = (value) => {
         if (value !== 'All') {
             const filteredList = OriginCategorieList.filter(item => value.includes(item));
             setCategorieList(filteredList.length > 0 ? filteredList : OriginCategorieList);
             setCat(filteredList[0]);
-            setLastVisibleOrder(null)
+            setLastVisibleOrder(null);
             setListCat(filteredList[0]);
         } else {
             setCategorieList(OriginCategorieList);
             setCat(value);
-            setLastVisibleOrder(null)
+            setLastVisibleOrder(null);
             setListCat('');
         }
     };
-    
-    useEffect(()=>{
-        const fetchProducts = async () => {
-            try {
-                
-                let {  products, lastVisible } = await fetchCatProducts(listcat,null,10);
-                setProducts(products);
-                setLastVisibleOrder(lastVisible);
-            } catch (error) {
-                console.error("Error fetching products:", error);
+
+    const fetchProducts = async (isLoadMore = false) => {
+        try {
+            let fetchedProducts;
+            let lastVisible;
+
+            if (listcat) {
+                const result = await fetchCatProducts(listcat, lastVisibleOrder, 10);
+                fetchedProducts = result.products;
+                lastVisible = result.lastVisible;
+            } else {
+                const result = await fetchrandomProducts(lastVisibleOrder, );
+                fetchedProducts = result.products;
+                lastVisible = result.lastVisible;
             }
-        };
 
-        if(OriginCategorieList.includes(listcat)){
-            fetchProducts();
+            setProducts(prevProducts => isLoadMore ? [...prevProducts, ...fetchedProducts] : fetchedProducts);
+            setLastVisibleOrder(lastVisible);
+            setHasMoreProducts(fetchedProducts.length > 0);
+        } catch (error) {
+            console.error("Error fetching products:", error);
         }
-
-    },[listcat])
+    };
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const {  products, lastVisible } = await fetchrandomProducts(lastVisibleOrder);
-                setProducts(products);
-                setLastVisibleOrder(lastVisible);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
-        };
-
         fetchProducts();
-    }, []);
-    
+    }, [listcat]);
 
+    const loadMoreProducts = () => {
+        fetchProducts(true);
+    };
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -78,15 +74,25 @@ const Categorie = () => {
                 setCategorie={handleCategorie} />
                 <div className="flex flex-row h-full overflow-scroll bg-gray-50">
                     
-                    <div className={`lg:w-1/5  text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500 `}style={{zIndex:200}}>
+                    <div className={`lg:w-1/5  text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500 `} style={{zIndex:200}}>
                         <CatList list={CategorieList} setList={setListCat} listcat={listcat} toggleSidebar={toggleSidebar} status={isSidebarOpen} />
                     </div>
                    
-                        <div className="flex-1  lg:pl-2 overflow-y-auto h-full  mid:pb-10 xxs:pb-4 bg-gray-50">
-                            <ProductList products={products?products:[]} />
-                        </div>
-                       
-                    
+                    <div className="flex-1 lg:pl-2 overflow-y-auto pb-40 h-full mid:pb-10 xxs:pb-4 bg-gray-50">
+                        <ProductList products={products ? products : []} />
+                        
+                        {/* Load More Button */}
+                        {hasMoreProducts && (
+                            <div className="flex justify-center my-4">
+                                <button 
+                                    onClick={loadMoreProducts} 
+                                    className="bg-hardBeige text-white px-4 py-2 rounded-3xl hover:bg-tooHardBeige duration-700 transition-all"
+                                >
+                                    Load More
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

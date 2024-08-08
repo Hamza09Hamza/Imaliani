@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from '../header';
 import HeroSec from "./HeroSec"
-
+import Contactus from "./Contactus"
 
 
 const Home= ({customer}) => {
@@ -10,6 +10,7 @@ const Home= ({customer}) => {
             <div className='w-[100vw]  bg-softBeige h-fit pb-40w' >
                 <Head customer={customer}   status={false} categorie={null} setCategorie={null} />
                 <HeroSec/>
+                <Contactus/>
             </div>
         </>
     );

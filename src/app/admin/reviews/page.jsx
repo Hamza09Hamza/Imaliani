@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { deleteReview } from '@/Firebase/CRUD/Reviews';
 import { getProductName } from '@/Firebase/CRUD/Products';
-
+import isAuth from '@/app/adminAuth'
 const Reviews = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(5);
@@ -37,7 +37,6 @@ const Reviews = () => {
                     if(!data.empty){
                         const res= await Promise.all(data.docs.map(async(doc)=>{
                             const prod=doc.data()
-                            console.log(prod.ProductID)
                             const {data}=await axios.post("/api/decrypt",{id:user.uid,data:prod.ProductID})
                             const decryptedProductId=data.data
                             let productTitle =await getProductName(decryptedProductId)
@@ -77,7 +76,7 @@ const Reviews = () => {
     const handleReviewDelete = async(reviewId) => {
 
         const id =reviews.filter(review => review.id === reviewId)[0].id
-        setReviews(reviews.filter(review => review.id !== reviewId));à
+        setReviews(reviews.filter(review => review.id !== reviewId));
         if(id)
             await deleteReview(id)
         // window.location.reload()
@@ -146,4 +145,4 @@ const Reviews = () => {
     );
 };
 
-export default Reviews;
+export default isAuth(Reviews);

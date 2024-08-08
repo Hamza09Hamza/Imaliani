@@ -12,7 +12,7 @@ const GiftCard = ({order, statusClass, statusIcon }) => {
   return (<>
     <article className="flex  bg-white p-4 rounded-2xl flex-wrap items-center gap-y-4 py-6">
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-        <dt className="text-base font-medium text-gray-800 ">Order ID:</dt>
+        <dt className="text-base font-medium text-gray-800 ">Gift ID:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900 ">
           <div onClick={seeGift} className=" cursor-pointer hover:underline">#{ formatString(id)}</div>
         </dd>

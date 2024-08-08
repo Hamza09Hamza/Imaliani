@@ -9,28 +9,28 @@ const TrendingSlider = ({images}) => {
     
   return (<>
  
-    <div className='flex flex-col items-center  justify-around mb-40 mt-10 p-10 bg-semiHardBeige  bg-opacity-25 rounded-2xl lg:max-w-[90%] mid:max-w-[60%] xxs:max-w-[90%]'>
+    <div className='flex flex-col items-center  justify-around mb-20 mt-10 p-10 bg-semiHardBeige  bg-opacity-25 rounded-2xl lg:max-w-[90%] mid:max-w-[60%] xxs:max-w-[90%]'>
             <h2 className='pb-4 lg:text-semiHeader mid:text-2xl xxs:text-base text-hardBeige'>
                Our Best Products 
             </h2>
         <div className='flex mid:flex-col  mid:gap-4 items-center flex-wrap justify-around '>
             <SlideCard
                 type={"Best Sales"}
-                title={"Noteworthy technology acquisitions 2021"}
+                title={"The vision to revive dying colors and colorless homes"}
                 image={image1}
-                description={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."}
+                description={"by adding positivity and colors Our products are special that why we create a new style in the market."}
              />
                    <SlideCard
                 type={"Best Searched"}
-                title={"Noteworthy technology acquisitions 2021"}
+                title={"Embracing sleek and understated shapes"}
                 image={image2}
-                description={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."}
+                description={"Like crafting vessels, bowls, and other objects that integrate into modern living spaces while being a practical addition to everyday life.."}
              />
             <SlideCard
                 type={"Best Offer"}
-                title={"Noteworthy technology acquisitions 2021"}
+                title={"Celebrate the oldest and most widespread art of pottery"}
                 image={image3}
-                description={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."}
+                description={"These handcrafted pieces are a statement of lifestyle with its versatility in style and overwhelming hues. It’s like they portray a story of their own."}
              />
         </div>
         

@@ -7,7 +7,7 @@ import PasswordField from "@/components/Signing/PasswordInput";
 import axios from 'axios';
 import { DB, auth } from '../../Firebase/Initialisation';
 import { doc, getDoc } from 'firebase/firestore';
-import isAuth from '@/app/Auth';
+import isAuth from '@/app/adminAuth';
 
 const AdminPanel = () => {
     const [errors, setErrors] = useState({

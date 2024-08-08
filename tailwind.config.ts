@@ -25,10 +25,13 @@ const config: Config = {
         "semiHeader":"3rem",
         "small":"0.5rem"
       },
+      lineHeight:{
+        "small":"0.5rem"
+      },
 
       screens: {
         'mid': { 'max': '1025px' }, // Custom breakpoint for max-width 480px
-        'xxs':{ 'max': '652px'}
+        'xxs':{ 'max': '752px'}
       },
 
       backgroundImage: {

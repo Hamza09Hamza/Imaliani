@@ -11,7 +11,7 @@ import Head from '../../../../components/header';
 import CarouselCustomNavigation from '../../../../components/carousel';
 import AdminFooter from '../../footer';
 import { doc, getDoc } from 'firebase/firestore';
-import isAuth from "../../../Auth"
+import isAuth from "../../../adminAuth"
 
  function Product({ params }) {
   const slug = params.slug;

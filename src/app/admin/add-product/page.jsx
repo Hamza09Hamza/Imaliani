@@ -5,50 +5,59 @@ import {addNewProduct} from "@/Firebase/CRUD/Products"
 import {getCurrentFirestoreTimestamp} from "../../Utils/time"
 import AdminFooter from '../footer';
 import isAuth from "../../adminAuth";
+import {ref, set } from "firebase/database"; // Import the necessary Firebase functions
+import { RTDB } from '@/Firebase/Initialisation';
 
 const CreateProduct = () => {
-    const [fileNames, setFileNames] = useState([]);
-    const [formData, setFormData] = useState({
-        title: '',
-        price: '',
-        category: '',
-        description: '',
-        images: []
-    });
-
-    const handleFileChange = (event) => {
-        const files = Array.from(event.target.files);
-
-        
-        if (files.length + fileNames.length > 3) {
-            alert('You can only upload a maximum of 3 files.');
-            return;
-        }
-
-        
-        const newFileNames = files.map(file => file.name);
-        setFileNames(prevFileNames => [...prevFileNames, ...newFileNames]);
-        setFormData(prevData => ({
-            ...prevData,
-            images: [...prevData.images, ...files]
-        }));
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        const productData = {
-            ...formData,
-            dateAdded:getCurrentFirestoreTimestamp()
+        const [fileNames, setFileNames] = useState([]);
+        const [formData, setFormData] = useState({
+            title: '',
+            price: '',
+            category: '',
+            description: '',
+            images: []
+        });
+    
+        const handleFileChange = (event) => {
+            const files = Array.from(event.target.files);
+    
+            if (files.length + fileNames.length > 3) {
+                alert('You can only upload a maximum of 3 files.');
+                return;
+            }
+    
+            const newFileNames = files.map(file => file.name);
+            setFileNames(prevFileNames => [...prevFileNames, ...newFileNames]);
+            setFormData(prevData => ({
+                ...prevData,
+                images: [...prevData.images, ...files]
+            }));
         };
-
-        try {
-            await addNewProduct(productData);
-            alert('Product added successfully!');
-        } catch (error) {
-            console.error("Error adding product:", error);
-        }
-    };
+    
+        const handleSubmit = async (event) => {
+            event.preventDefault();
+    
+            const productData = {
+                ...formData,
+                dateAdded: getCurrentFirestoreTimestamp()
+            };
+    
+            try {
+                // Add product data to Firestore
+                await addNewProduct(productData);
+    
+                // Add product name to Firebase Realtime Database
+                const productRef = ref(RTDB, `products/${productData.title}`); // Creating a reference to the `products` folder and using the product title as a key
+                await set(productRef, {
+                    name: productData.title
+                });
+    
+                alert('Product added successfully!');
+            } catch (error) {
+                console.error("Error adding product:", error);
+            }
+        };
+    
 
     return (<>
         <div className='w-[100vw] pb-40 flex items-center justify-center bg-softBeige'>

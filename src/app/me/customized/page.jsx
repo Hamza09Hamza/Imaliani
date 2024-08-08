@@ -10,6 +10,7 @@ import { timestampToDate, getMostRecentStatus } from '@/app/Utils/time';
 import axios from 'axios';
 import {Statuses} from "../orders/Order"
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import Footer from '@/components/footer';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
@@ -30,7 +31,7 @@ const Orders = () => {
                         const cryptedUserID=data.data
                         let customQuery = query(
                             customRef,
-                            where("encryptedUserID","==",cryptedUserID),
+                            where("UserID","==",user.uid),
                             orderBy("dateAdded", "desc"),
                            
                         );
@@ -126,7 +127,7 @@ const Orders = () => {
                 <label htmlFor="order-type" className="sr-only mb-2 block text-sm font-medium text-gray-900">Select order type</label>
                 <select value={selectedRating}
                     onChange={handleRatingChange} id="order-type" className="block w-full min-w-[8rem] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-hardBeige outline-hardBeige focus:ring-hardBeige">
-                  <option defaultValue={""}>All orders</option>
+                  <option defaultValue={""}>All gifts</option>
                   <option value="Pre_order">Pre-order</option>
                   <option value="processing">Processing</option>
                   <option value="In_transit">In transit</option>
@@ -174,7 +175,9 @@ const Orders = () => {
     </>
     }
     {/* <DeleteModal typeText={"order"} isOpen={isDeleteModalOpen} onClose={handleDeleteClose} onDelete={handleConfirmDelete} /> */}
+    <Footer/>
     </>
+
 
   );
 };
