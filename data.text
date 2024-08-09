@@ -1,0 +1,49 @@
+import "server-only";
+import { getFirestore } from "firebase-admin/firestore";
+import admin from "firebase-admin";
+
+
+// Ensure the app is not initialized more than once
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(process.env.FIREBASE_CREDENTIALS),
+  });
+}
+
+
+const firestore = getFirestore();
+export const adminCreateOrder = async (data) => {
+  try {
+    const ordersSnapshot = await firestore.collection('Orders').add(data);
+    console.log(ordersSnapshot.empty);
+    console.log("done creating order");
+  } catch (error) {
+    console.log("error creating order", error);
+  }
+};
+
+export const adminUpdateUserChart= async(userID)=>{
+  try {
+    // Reference to the user's document in the Users collection
+    const userDocRef = firestore.collection('Users').doc(userID);
+
+    // Update the Chart field for the user
+    await userDocRef.update({ Chart: [] });
+
+    console.log("User Chart updated successfully");
+  } catch (error) {
+    console.error("Error updating user Chart:", error);
+  }
+}
+
+
+
+
+
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_51Pgk52IsWNmyijWz5Lvcy9CymaSXMxymhnAclydifoBSIp2E6TMIgKjbXfFiPRJqwCcEiQJolKEVwxRuzgevXS5700CJNfLr6j"
+STRIPE_SECRET_KEY="sk_test_51Pgk52IsWNmyijWzAKZs1ClHRPyZShrp26mRltEpy835YTDBm9nbyICQvx406JvUQhZ3NPgvLq6bmp7OLZ0qxC9Q00abLNYqdx"
+ENCRYPTION_SECRET_KEY="74d13d11d71e55091a4051badfb40cfdd0332a9997f584ed53f9cf726c8b2ea9"
+WEBHOOK_SECRET_KEY="whsec_eccd52e81ef2d6e9ddca2c93d07cd5ed0d045f9eec8dc797318a3ab9d8be3e71"
+ENCRYPTION_IV="17f2bfb17d74f9121587b089e9b517f9"
+
