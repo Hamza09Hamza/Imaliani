@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import ProductReview from './ProductReview';
+import ProductReview from './productReview';
 import Navbar from  "../navbar";
 import Empty from "@/components/Emptylist";
 import axios from 'axios';
