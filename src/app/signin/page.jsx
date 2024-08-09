@@ -5,7 +5,7 @@ import Image from 'next/image';
 import InputField from "@/components/Signing/InputFeild";
 import PasswordField from "@/components/Signing/PasswordInput";
 import { EmailSignIn,  GoogleSignUporIn } from '@/Firebase/Authentication';
-import { auth } from '@/Firebase/Initialisation';
+import { auth } from '../../Firebase/Initialisation';
 
 const SignIn = () => {
   useLayoutEffect(()=>{
