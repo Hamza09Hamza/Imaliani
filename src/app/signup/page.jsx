@@ -9,6 +9,11 @@ import 'react-phone-number-input/style.css';
 import PasswordField from "@/components/Signing/PasswordInput";
 
 const SignUp = () => {
+     useLayoutEffect(()=>{
+        
+    auth.currentUser ? window.location.assign("/")  : null
+},[auth.currentUser])
+ 
     const [errors, setErrors] = useState({
         firstname: "",
         lastname: "",
@@ -156,7 +161,7 @@ const SignUp = () => {
                                     Sign up
                                 </button>
                             </div>
-                            <div onClick={async () =>{ await GoogleSignUporIn();window.location.assign("/")}} className="flex cursor-pointer items-center justify-center px-6 py-3 mt-4 text-gray-900 transition-colors duration-300 border-hardBeige transform border rounded-lg hover:bg-softBeige">
+                            <div onClick={async () =>{ await GoogleSignUporIn();}} className="flex cursor-pointer items-center justify-center px-6 py-3 mt-4 text-gray-900 transition-colors duration-300 border-hardBeige transform border rounded-lg hover:bg-softBeige">
                                 <svg className="w-6 h-6 mx-2" viewBox="0 0 24 24" fill="none">
                                     <path d="M22.005 12.276c0-.792-.07-1.56-.198-2.3H12v4.358h5.617a4.798 4.798 0 01-2.083 3.148v2.61h3.365c1.97-1.816 3.106-4.491 3.106-7.816z" fill="#4285F4"></path>
                                     <path d="M12 23c3.042 0 5.594-1.01 7.458-2.72l-3.374-2.611c-.936.629-2.123 1.002-4.084 1.002-3.137 0-5.796-2.119-6.75-4.968H2.746v3.084A11.998 11.998 0 0012 23z" fill="#34A853"></path>
