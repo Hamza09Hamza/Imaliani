@@ -7,6 +7,7 @@ import InputField from "@/components/Signing/InputFeild";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import PasswordField from "@/components/Signing/PasswordInput";
+import { auth } from '../../Firebase/Initialisation';
 
 const SignUp = () => {
      useLayoutEffect(()=>{
