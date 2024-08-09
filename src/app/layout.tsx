@@ -4,24 +4,20 @@ import "./globals.css";
 import { Roboto } from 'next/font/google'
 import {Abril_Fatface} from 'next/font/google'
  
-export const roboto = Roboto({
+const roboto = Roboto({
   weight: ['400','300'],
   subsets: ['latin'],
   variable: '--font-roboto',
 
 })
 
-export const abrilFatface = Abril_Fatface({
+const abrilFatface = Abril_Fatface({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-Abril',
 
 });
 
-const inter = Inter({ 
-  weight: '400',
-subsets: ['latin'],
-variable: '--font-inter', });
 
 export const metadata: Metadata = {
   title: "Imaliani craft studio",
