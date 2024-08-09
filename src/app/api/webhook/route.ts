@@ -45,57 +45,66 @@ export async function POST(req: Request, res: NextResponse) {
 }
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-  const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string);
-  const totalAmount = paymentIntent.amount;
-  // await initAdmin()
-  
-  const encryptedProductData = session.metadata?.encryptedProductData || "[]";
-  const encryptedUserInfo = session.metadata?.encryptedUserInfo || "[]";
-  const userId = session.metadata?.encryptedUserId || "";
-  
-  const productData = JSON.parse(encryptedProductData) as { id: string; quantity: number }[]
-  const UserInfo=JSON.parse(encryptedUserInfo) as any
+  try{
+        const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string);
 
-    const order={
-        ShippingAdresse:{
-          streetAddress:UserInfo.streetAddress,
-          zipCode:UserInfo.zipCode,
-          city:UserInfo.city,
-          state:UserInfo.state,
-        },
-        email:encryptData(UserInfo.email),
-        products:productData,
-        Status:{
-            Pre_order:Timestamp.now(),
-            Processing:null,
-            In_transit:null,
-            Shipped:null,
-            Cancelled:null,
-        },
-        UserID:userId,
-        totalAmount:totalAmount/100,
-    }
-    const encryptedOrderData = {
-      ...order,
-      UserID: order.UserID,
-      encryptedUserID:encryptData(order.UserID),
-      products: order.products.map(product => ({
-          ...product,
-          id: encryptData(product.id)
-      }))
-    };  
+        if (paymentIntent.status !== 'succeeded') {
+            console.error('Payment not successful:', paymentIntent.status);
+            return;
+        }
 
-    
-    try {
-      await adminCreateOrder(encryptedOrderData)
-      console.log("done setting order")
+        // Proceed with order processing
+        const totalAmount = paymentIntent.amount;
 
-      await adminUpdateUserChart(userId)
-      console.log("done deleting  chart")
+        const encryptedProductData = session.metadata?.encryptedProductData || "[]";
+        const encryptedUserInfo = session.metadata?.encryptedUserInfo || "[]";
+        const userId = session.metadata?.encryptedUserId || "";
+        const customCustomerId = session.metadata?.customCustomerId || "";
 
-    } catch (error) {
-        console.log("something went off")
-    } 
+        const productData = JSON.parse(encryptedProductData) as { id: string; quantity: number }[];
+        const UserInfo = JSON.parse(encryptedUserInfo) as any;
+        console.log(UserInfo)
+        const order = {
+            ShippingAdresse: {
+            streetAddress: UserInfo.streetAddress,
+            zipCode: UserInfo.zipCode,
+            city: UserInfo.city,
+            state: UserInfo.state,
+            },
+            phoneNo:encryptData(UserInfo.phoneNo),
+            customerId: customCustomerId, 
+            email: encryptData(UserInfo.email),
+            products: productData,
+            Status: {
+            Pre_order: Timestamp.now(),
+            Processing: null,
+            In_transit: null,
+            Shipped: null,
+            Cancelled: null,
+            },
+            UserID: userId,
+            totalAmount: totalAmount / 100,
+        };
+
+        const encryptedOrderData = {
+            ...order,
+            UserID: order.UserID,
+            encryptedUserID: encryptData(order.UserID),
+            products: order.products.map(product => ({
+            ...product,
+            id: encryptData(product.id)
+            }))
+        };
+        await adminCreateOrder(encryptedOrderData);
+        console.log("Order successfully created");
+// 
+        await adminUpdateUserChart(userId);
+        console.log("User chart successfully updated");
+
+} catch (error) {
+  console.error('Error handling checkout session:', error);
+}
+
 
 }
 

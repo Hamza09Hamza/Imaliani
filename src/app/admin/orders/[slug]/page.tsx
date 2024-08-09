@@ -19,6 +19,7 @@ function Product({ params }: { params: { slug: string } }) {
         products: [] as any[], // Adjust this type as needed
         orderId: "",
         date: "",
+        phoneNo:"",
         totalAmount: "",
         status: "",
         Status:{} as any 
@@ -47,6 +48,8 @@ function Product({ params }: { params: { slug: string } }) {
                     };
                     const {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.email})
                     order.email=data.data
+                    const resPhone=await axios.post("/api/decrypt",{id:user.uid,data:order.phoneNo})
+                    order.phoneNo=resPhone.data.data
                     const products=await Promise.all(order.products.map(async(prod:any)=>{
                         const {data}=await axios.post("/api/decrypt",{id:user.uid,data:prod.id})
                         const decryptedProductId=data.data
@@ -80,7 +83,7 @@ function Product({ params }: { params: { slug: string } }) {
    <section className="bg-softBeige py-8 antialiased md:py-16 flex items-center justify-center h-[100vh]">
   <div className="mx-auto max-w-screen-xl bg-white p-8 rounded-3xl 2xl:px-0">
     <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of order {order.orderId}</h2>
-    <span className='mt-1 text-base font-normal text-gray-500 dark:text-gray-400'>{"order set by "+order.email+", "+order.ShippingAdresse.state+", "+order.ShippingAdresse.city+", "+order.ShippingAdresse.zipCode+", "+order.ShippingAdresse.streetAddress}</span>
+    <span className='mt-1 text-base font-normal text-gray-500 dark:text-gray-400'>{"order set by "+order.email+", "+order.phoneNo +" "+order.ShippingAdresse.state+", "+order.ShippingAdresse.city+", "+order.ShippingAdresse.zipCode+", "+order.ShippingAdresse.streetAddress}</span>
 
     <div className="mt-6 sm:mt-8 lg:flex lg:gap-8">
       <div className="w-full divide-y h-[100%] divide-gray-200 overflow-hidden rounded-lg border border-gray-200 lg:max-w-xl xl:max-w-2xl">

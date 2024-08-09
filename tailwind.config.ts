@@ -30,8 +30,9 @@ const config: Config = {
       },
 
       screens: {
-        'mid': { 'max': '1025px' }, // Custom breakpoint for max-width 480px
-        'xxs':{ 'max': '752px'}
+        'mid': { 'max': '1100px' }, // Custom breakpoint for max-width 480px
+        'xxs':{ 'max': '752px'},
+        'halfmd':{ 'max': '900' }, 
       },
 
       backgroundImage: {

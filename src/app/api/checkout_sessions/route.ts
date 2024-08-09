@@ -1,5 +1,6 @@
 // ./app/api/checkout_sessions/route.ts
 
+import { encryptData } from '@/app/Utils/Encryption';
 import { NextResponse, NextRequest } from 'next/server';
 import Stripe from 'stripe';
 
@@ -14,6 +15,8 @@ export async function POST(req: NextRequest) {
       id: product.id,
       quantity: product.quantity
     }));
+    const customCustomerId = encryptData(`${userInfo.email}-${userID}`);
+
     const lineItems = products.map((product: { name: string; description: string; images: string[]; amount: number; quantity: number }) => ({
       price_data: {
         currency: 'aed',
@@ -40,7 +43,8 @@ export async function POST(req: NextRequest) {
       metadata: {
         encryptedProductData:JSON.stringify(encryptedProductData),
         encryptedUserId: userID,
-        encryptedUserInfo:JSON.stringify(userInfo)
+        encryptedUserInfo:JSON.stringify(userInfo),
+        customCustomerId: customCustomerId, 
       },
     });
 

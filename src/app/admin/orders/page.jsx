@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import OrderCard from '../../me/orders/Article';
+import OrderCard from './Article';
 import Navbar from '../../me/navbar';
 import DeleteModal from '../../me/Delete';
 import { getDateRange } from "../../me/orders/Order";
@@ -14,7 +14,7 @@ import { collection, getCountFromServer, getDocs } from 'firebase/firestore';
 import isAuth from "../../adminAuth"
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [ordersPerPage] = useState(7);
+    const [ordersPerPage] = useState(5);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedRating, setSelectedRating] = useState('All orders');
     const [selectedDateFilter, setSelectedDateFilter] = useState('All times');
@@ -35,15 +35,23 @@ const Orders = () => {
                         const res = await getDocs(customRef);
                         if (!res.empty) {
                             const customs = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-                            let OrdersList = customs.map((order) => {
+                            let OrdersList = await Promise.all(customs.map(async (order) => {
+                                let decryptedPhoneNo=null;
+                                if(order.phoneNo){
+                                    const  {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.phoneNo})
+                                    decryptedPhoneNo=data.data
+                                    console.log(decryptedPhoneNo)
+                                }
                                 return {
                                     ...order,
+                                    phoneNo:decryptedPhoneNo,
                                     orderId: order.id,
                                     date: timestampToDate(order.Status.Pre_order),
                                     status: getMostRecentStatus(order.Status),
                                     description: order.description
                                 };
-                            });
+                            }));
+                            console.log(OrdersList)
                             setDisplayedOrders(OrdersList);
                         } else {
                             setDisplayedOrders([]);
@@ -65,6 +73,7 @@ const Orders = () => {
     }, []);
 
     useEffect(() => {
+        console.log(displayedOrders)
         const startDate = getDateRange(selectedDateFilter);
 
         const filteredOrders = displayedOrders.filter(order =>
@@ -147,6 +156,7 @@ const Orders = () => {
                                         <OrderCard
                                             url={"/admin/orders/" + order.orderId}
                                             key={index}
+                                            customerId={order.customerId}
                                             id={order.orderId}
                                             date={order.date}
                                             price={order.totalAmount}
