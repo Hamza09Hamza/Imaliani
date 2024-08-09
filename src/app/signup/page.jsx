@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState ,useLayoutEffect} from 'react';
 import Image from 'next/image';
 import Logo from "@/images/imalian.png";
 import { GoogleSignUporIn, EmailSignUp } from "@/Firebase/Authentication";
