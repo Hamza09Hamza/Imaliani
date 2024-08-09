@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useLayoutEffect } from 'react'
 import Logo from "@/images/imalian.png"
 import Image from 'next/image';
 import InputField from "@/components/Signing/InputFeild";
