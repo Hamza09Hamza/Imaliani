@@ -109,7 +109,7 @@ const SignIn = () => {
                                 <p className="text-red-500 text-sm mt-1">{error}</p>
                             )}
               <div className="!mt-8">
-                <button onClick={async()=>{await handleSignIn()} type="button" className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-hardBeige hover:bg-tooHardBeige transition-all duration-500 focus:outline-none">
+                <button onClick={async()=>{await handleSignIn()}} type="button" className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-hardBeige hover:bg-tooHardBeige transition-all duration-500 focus:outline-none">
                   Sign in
                 </button>
               </div>
