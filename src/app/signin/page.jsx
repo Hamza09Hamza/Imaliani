@@ -62,13 +62,7 @@ const SignIn = () => {
         }
 
     }
-    if (loading) {
-      return <p>Loading...</p>; // Or a better loading indicator
-  }
-
-  if (isAuthenticated) {
-      return null; // Or redirect, but this should already be handled by useEffect
-  }
+   
         return ( <>
     <div className="bg-softBeige font-[sans-serif]">
       <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
