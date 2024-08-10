@@ -39,6 +39,8 @@ const CreateProduct = () => {
     
             const productData = {
                 ...formData,
+                rate: 0,
+                totalRatings: 0,
                 dateAdded: getCurrentFirestoreTimestamp()
             };
     
@@ -53,6 +55,7 @@ const CreateProduct = () => {
                 });
     
                 alert('Product added successfully!');
+                window.location.assign("/admin/products")
             } catch (error) {
                 console.error("Error adding product:", error);
             }

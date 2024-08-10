@@ -11,6 +11,7 @@ import axios from 'axios';
 import {Statuses} from "../orders/Order"
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import Footer from '@/components/footer';
+import Loading from '@/components/loading';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
@@ -20,6 +21,7 @@ const Orders = () => {
     const [currentOrders,setCurrentOrders] =useState([])
     const [totalPages,setTotalPages] =useState()
     const [displayedOrders,setDisplayedOrders]=useState([])
+    const [loading,setLoading]=useState(true)
 
     useEffect(() => {
         const handleAuthStateChange = () => {
@@ -64,6 +66,7 @@ const Orders = () => {
                     setDisplayedOrders([]);
                     setCurrentOrders([]);
                 }
+                setLoading(false)
             });
 
             return () => unsubscribe();
@@ -113,7 +116,10 @@ const Orders = () => {
     const handlePageChange = (pageNumber) => {
         pageNumber<=totalPages&& pageNumber>=1 &&  setCurrentPage(pageNumber);
     };
-    
+    if(loading)
+      return <>  <Head status={false} categorie={null } setCategorie={null} />
+                <Loading/>
+            </> 
 
   return (<>
   <Head status={false} categorie={null } setCategorie={null} />

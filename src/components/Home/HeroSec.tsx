@@ -5,15 +5,27 @@ import framedec from "@/images/2024-08-08 04.13.32.jpg"
 import Heart from "@/images/2024-08-08 04.13.58.jpg"
 import Homeb from "@/images/homeb.jpg"
 import Homec from "@/images/homec.jpg"
+
+import Pottery1 from "@/images/pottery/pexels-fariphotography-905844.jpg"
+import Pottery2 from "@/images/pottery/pexels-korhan-erdol-1123380-2344613.jpg"
+import Pottery3 from "@/images/pottery/pexels-retosatti-22823.jpg"
+import Pottery4 from "@/images/pottery/pexels-roman-odintsov-8063870.jpg"
+import Pottery5 from "@/images/pottery/pexels-sankyrao90-716107.jpg"
+import Pottery6 from "@/images/pottery/pexels-yankrukov-6611431.jpg"
+import Pottery7 from "@/images/pottery/pexels-roman-odintsov-8063857.jpg"
+
+
+
+
+
 import Image from 'next/image';
 import TrendingSlider from "./Carousel"
 import Home4 from "@/images/home4.jpg"
 import DeviceMockup from "./devicemockup"
 const HeroSec = () => {
 	const images=[TissueBox,framedec,Heart]
-
-
-
+	const images2=[Pottery1,Pottery2,Pottery3]
+	const images3=[TissueBox,framedec,Heart]
 
         return (<>
         <div className='flex flex-col items-center '>
@@ -52,7 +64,7 @@ const HeroSec = () => {
 					</div>
 				</div>
 			</div>
-			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] mt-40 mb-60'>
+			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30 '>
 				<div 
 				className='lg:max-w-[40%] mid:max-w-[40%]  xxs:max-w-[90%] lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader text-brown  font-extralight font-Abril'>
@@ -76,7 +88,7 @@ const HeroSec = () => {
 						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[30rem] lg: object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Home4} alt="" />
 				</div>
 			</div>
-			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] mt-40 mb-60'>
+			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30'>
 				<div 
 				className='lg:max-w-[40%] mid:max-w-[40%]  xxs:max-w-[90%] lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader text-brown  font-extralight font-Abril'>
@@ -98,7 +110,7 @@ const HeroSec = () => {
 						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[30rem] lg: object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={TissueBox} alt="" />
 				</div>
 			</div>
-			<div className='  flex flex-row-reverse   lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] mt-40 mb-60'>
+			<div className='  flex flex-row-reverse   lg:justify-around mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30'>
 				<div 
 				className='lg:max-w-[40%]  mid:max-w-[40%]  xxs:max-w-[90%] lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader text-brown  font-extralight font-Abril'>
@@ -120,15 +132,15 @@ const HeroSec = () => {
 				</div>
 				<div className='xl:w-[60%] mid:max-w-[50%] xxs:max-w-[70%] lg:flex-1 lg:max-w-[100%]  mr-2  items-center justify-center flex xxs:flex-col'>
 						<div className='mr-4'>
-							<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2] mb-4  bg-hardBeige  ' src={TissueBox} alt="" />
-							<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2]  bg-hardBeige  ' src={TissueBox} alt="" />
+							<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2] mb-4  bg-hardBeige  '  src={Pottery1} alt="" />
+							<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2]  bg-hardBeige  ' src={Pottery2} alt="" />
 						</div>
 						<div className='xxs:mr-4 xxs:mt-4 '>
-						<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2]  bg-hardBeige  ' src={TissueBox} alt="" />
+						<Image className='  lg:h-[20rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[20rem] lg: object-cover mr-2 z-[2]  bg-hardBeige  ' src={Pottery3} alt="" />
 						</div>
 				</div>
 			</div>
-			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center mid:flex-col items-center w-[90%] mt-40 mb-60'>
+			<div className='  flex  lg:justify-around mid:justify-between  xxs:justify-center mid:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30'>
 				<div 
 				className='lg:max-w-[40%] mid:max-w-[90%] mid:mb-10   xxs:max-w-[90%] lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader mb-4 text-brown mid:text-center font-extralight font-Abril'>
@@ -156,10 +168,10 @@ const HeroSec = () => {
 					</div>
 				</div>
 				<div className='xl:w-[60%] mid:max-w-[50%] xxs:max-w-[70%] lg:flex-1 lg:max-w-[100%]  mr-2  items-center justify-center flex xxs:flex-col'>
-						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[30rem] lg: object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={TissueBox} alt="" />
+						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[20rem] mid:h-[20rem] xxs:h-[20rem]  xl:max-w-[30rem] lg: object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery4} alt="" />
 				</div>
 			</div>
-			<div className='  flex  lg:justify-around flex-col mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] mt-40 mb-60'>
+			<div className='  flex  lg:justify-around flex-col mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30'>
 				<div className='lg:max-w-[90%]  mid:max-w-[40%]  xxs:max-w-[90%] flex flex-row-reverse items-center  lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader mb-24 text-brown lg:w-[40%] font-extralight font-Abril'>
 						What makes
@@ -175,9 +187,9 @@ const HeroSec = () => {
 					</p>
 				</div>
 				<div className='xl:w-[60%] mid:max-w-[50%] xxs:max-w-[70%] lg:flex-1 lg:max-w-[100%]  mr-2  items-center justify-center flex xxs:flex-col'>
-						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[14rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={TissueBox} alt="" />
-						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[14rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={TissueBox} alt="" />
-						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[14rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={TissueBox} alt="" />
+						<Image className='  lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery5} alt="" />
+						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery6} alt="" />
+						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery7} alt="" />
 				</div>
 			</div>
         </div>

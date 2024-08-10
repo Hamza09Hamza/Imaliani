@@ -5,6 +5,7 @@ import ProductList from './ProductList';
 import { OriginCategorieList } from '../products';
 import CatList from './CatList';
 import { fetchrandomProducts, fetchCatProducts } from '@/Firebase/CRUD/Products';
+import Loading from '../loading';
 
 const Categorie = () => {
     const [cat, setCat] = useState('All');
@@ -14,12 +15,14 @@ const Categorie = () => {
     const [products, setProducts] = useState([]);
     const [lastVisibleOrder, setLastVisibleOrder] = useState(null);
     const [hasMoreProducts, setHasMoreProducts] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
     const handleCategorie = (value) => {
         if (value !== 'All') {
             const filteredList = OriginCategorieList.filter(item => value.includes(item));
             setCategorieList(filteredList.length > 0 ? filteredList : OriginCategorieList);
-            setCat(filteredList[0]);
+            setCat(value);
             setLastVisibleOrder(null);
             setListCat(filteredList[0]);
         } else {
@@ -32,6 +35,12 @@ const Categorie = () => {
 
     const fetchProducts = async (isLoadMore = false) => {
         try {
+            if (isLoadMore) {
+                setLoadingMore(true);
+            } else {
+                setLoading(true);
+            }
+
             let fetchedProducts;
             let lastVisible;
 
@@ -40,7 +49,7 @@ const Categorie = () => {
                 fetchedProducts = result.products;
                 lastVisible = result.lastVisible;
             } else {
-                const result = await fetchrandomProducts(lastVisibleOrder, );
+                const result = await fetchrandomProducts(lastVisibleOrder,10);
                 fetchedProducts = result.products;
                 lastVisible = result.lastVisible;
             }
@@ -50,6 +59,9 @@ const Categorie = () => {
             setHasMoreProducts(fetchedProducts.length > 0);
         } catch (error) {
             console.error("Error fetching products:", error);
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
         }
     };
 
@@ -67,31 +79,43 @@ const Categorie = () => {
 
     return (
         <>
-            <div className="w-screen h-screen relative max-h-screen overflow-hidden  xxs:pb-90 bg-gray-50">
+            <div className="w-screen h-screen relative max-h-screen overflow-hidden xxs:pb-90 bg-gray-50">
                 <Head 
-                status={true} 
-                categorie={cat} 
-                setCategorie={handleCategorie} />
+                    status={true} 
+                    categorie={cat} 
+                    setCategorie={handleCategorie} 
+                />
                 <div className="flex flex-row h-full overflow-scroll bg-gray-50">
-                    
-                    <div className={`lg:w-1/5  text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500 `} style={{zIndex:200}}>
+                    <div className={`lg:w-1/5 text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500`} style={{ zIndex: 200 }}>
                         <CatList list={CategorieList} setList={setListCat} listcat={listcat} toggleSidebar={toggleSidebar} status={isSidebarOpen} />
                     </div>
-                   
                     <div className="flex-1 lg:pl-2 overflow-y-auto pb-40 h-full mid:pb-10 xxs:pb-4 bg-gray-50">
-                        <ProductList products={products ? products : []} />
-                        
+                        {loading ? (
+                            <Loading />
+                        ) : (
+                            <ProductList products={products ? products : []} />
+                        )}
+
                         {/* Load More Button */}
-                        {hasMoreProducts && (
-                            <div className="flex justify-center my-4">
+                        {hasMoreProducts && loadingMore==false ? (
+                            <div className="flex justify-center mt-20 my-4">
                                 <button 
                                     onClick={loadMoreProducts} 
                                     className="bg-hardBeige text-white px-4 py-2 rounded-3xl hover:bg-tooHardBeige duration-700 transition-all"
+                                    disabled={loadingMore} // Disable the button when loading more
                                 >
                                     Load More
                                 </button>
                             </div>
-                        )}
+                        ):loadingMore==true ?<> <div className="flex space-x-2 justify-center mt-20 items-center animate-pulse">
+                        <div className="w-3 h-3 bg-hardBeige rounded-full"></div>
+                        <div className="w-3 h-3 bg-hardBeige rounded-full"></div>
+                        <div className="w-3 h-3 bg-hardBeige rounded-full"></div>
+                    </div></> :<>
+                    <h4> we don't have another similair piece</h4>
+                    </>
+                    
+                    }
                     </div>
                 </div>
             </div>

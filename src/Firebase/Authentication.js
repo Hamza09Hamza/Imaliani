@@ -36,15 +36,14 @@ const handleUserSignUp = async (userData) => {
     await sendEmailVerification(auth.currentUser);
     console.log("Verification email sent");
 
-    sessionStorage.setItem('userData', JSON.stringify(
-        {
-            displayName: userData.firstName+' '+userData.lastName,
-            email:userData.email,
-            phoneNumber:userData.phoneNumber
-        }
-    ));
+    await FireSignUp( {
+        displayName: userData.firstName+' '+userData.lastName,
+        email:userData.email,
+        phoneNumber:userData.phoneNumber
+    })
+    console.log("user Added")
     sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
-
+    
     
     window.location.assign('/verify-email/'+auth.currentUser.uid);
 
@@ -97,8 +96,11 @@ export const EmailSignUp = async (userData) => {
             return "The email address is badly formatted.";
         } else if (error.code === 'auth/weak-password') {
             return "The password is too weak.";
-        } else {
-            return "An unexpected error occurred. Please try again later.";
+        } else if (error.code =="auth/invalid-credential") {
+            return "Email or Password are incorrect.";
+        }
+        else {
+            return "could not sign you up retry later";
         }
     }
 };
@@ -128,9 +130,13 @@ export const EmailSignIn=async({email,password})=>{
             return "Incorrect password. Please try again.";
         } else if (error.code === 'auth/invalid-email') {
             return "The email address is badly formatted.";
-        } else {
-            return "An unexpected error occurred. Please try again later.";
+        } else if (error.code =="auth/invalid-credential") {
+            return "Email or Password are incorrect.";
         }
+        else {
+            return "could not sign you in  retry later";
+        }
+    
     }
 }
 export const GoogleSignIn=async()=>{

@@ -8,12 +8,13 @@ import Empty from "../Emptylist"
 import axios from 'axios';
 import { doc, getDoc } from 'firebase/firestore';
 import { updateUserField } from '@/Firebase/CRUD/User';
-
+import Loading from "../loading"
 const Chart = ({setCurrentPage,setListCat}) => {
    
     
     const [products, setProducts] = useState([]);
     const [chart,setChart]=useState([]);
+    const [loading,setLoading]=useState(true)
 
     useEffect(() => {
         const handleAuthStateChange = () => {
@@ -33,6 +34,7 @@ const Chart = ({setCurrentPage,setListCat}) => {
                                         });
                                         let Products = data.Products;
                                         Chart=data.DATAChart
+                                        console.log(data)
                                         setChart(Chart);
                                         let result = Products.map((product) => {
                                             return {
@@ -52,6 +54,7 @@ const Chart = ({setCurrentPage,setListCat}) => {
                 } else {
                     setProducts([]); 
                 }
+                setLoading(false)
             });
 
             return () => unsubscribe();
@@ -85,6 +88,7 @@ const Chart = ({setCurrentPage,setListCat}) => {
     const rmCart= async (id)=>{
         if(auth.currentUser) {
             const {data}=await axios.put("/api/chart/updateuser",{type:false,id:id,Chart:chart});
+            console.log(data)
           await updateUserField("Chart",data.userchart,auth.currentUser.uid);
 
         }else
@@ -96,7 +100,7 @@ const Chart = ({setCurrentPage,setListCat}) => {
         <div className='pb-20'>
 
             <Head setListCat={setListCat} status={false} />
-            {products && products.length>0?
+            {loading ?<><Loading/></> : products && products.length>0?
             <div className="font-sans max-w-5xl xxs:max-w-[90%] max-md:max-w-xl mx-auto bg-white py-4">
                 <h1 className="text-3xl font-bold text-gray-800 text-center">Shopping Cart</h1>
                 <div className="grid md:grid-cols-3 gap-8 mt-12">

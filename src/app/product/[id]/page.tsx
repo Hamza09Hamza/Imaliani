@@ -7,11 +7,13 @@ import MoreProducts from '../MoreProducts';
 import { auth } from '../../../Firebase/Initialisation';
 import { fetchCatProducts, fetchrandomProducts, getProductsperID } from '../../../Firebase/CRUD/Products';
 import React from 'react';
+import Loading from '@/components/loading';
 
 function ProductPage({ params }: { params: { id: string } }) {
   const  id  = params.id;
   const [product, setProduct] = useState<any>(null);
   const [catProducts, setCatProducts] = useState<any>([]);
+  const [loading ,setLoading]=useState<boolean>(false)
 
   useEffect(() => {
     const handleAuthStateChange = () => {
@@ -34,9 +36,7 @@ function ProductPage({ params }: { params: { id: string } }) {
                   if(filtered.length>0)
                     setCatProducts(filtered )
 
-                  console.log(filtered)
-
-
+                 
 
                 } catch (error) {
                     console.error("Error fetching user orders:", error);
@@ -44,6 +44,7 @@ function ProductPage({ params }: { params: { id: string } }) {
             } else {
                 
             }
+            setLoading(true)
         });
 
         return () => unsubscribe();
@@ -51,7 +52,9 @@ function ProductPage({ params }: { params: { id: string } }) {
 
     handleAuthStateChange();
 }, []); 
-
+  if(!loading)
+      return <>     <Head status={false} categorie={null} setCategorie={null} customer={auth.currentUser?.uid}/>
+  <Loading/></>
  
   return (<>
   
@@ -62,6 +65,7 @@ function ProductPage({ params }: { params: { id: string } }) {
       <a href='/categories' className='flex items-center justify-center text-brown outline-none hover:text-tooHardBeige duration-500 transition-all text-center '> see more ?</a>
      </> }
       <div className='flex justify-center w-[100vw]'>
+
     {   catProducts?    <MoreProducts catProducts={catProducts} /> : <>
         <h4> we don't have another similair piece</h4>
     </>}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState ,useLayoutEffect} from 'react';
+import React, { useState ,useLayoutEffect, useEffect} from 'react';
 import Image from 'next/image';
 import Logo from "@/images/imalian.png";
 import { GoogleSignUporIn, EmailSignUp } from "@/Firebase/Authentication";
@@ -10,10 +10,27 @@ import PasswordField from "@/components/Signing/PasswordInput";
 import { auth } from '../../Firebase/Initialisation';
 
 const SignUp = () => {
-     useLayoutEffect(()=>{
-        
-    auth.currentUser ? window.location.assign("/")  : null
-},[auth.currentUser])
+   
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+       const handleAuthStateChange = () => {
+              const unsubscribe = auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                  setIsAuthenticated(true);
+                  window.location.assign("/");
+              } else {
+                  setLoading(false);
+              }
+              });
+  
+              return () => unsubscribe();
+          };
+  
+          handleAuthStateChange();
+  }, []);
+   
  
     const [errors, setErrors] = useState({
         firstname: "",
@@ -55,10 +72,22 @@ const SignUp = () => {
             const err=await EmailSignUp({ firstName, lastName, email, password, phoneNumber:phone })
             if(err)
                 setError(err);
-            else
-                window.location.assign("/")
+            else{
+                window.location.assign("/")}
         }
     };
+
+
+
+
+
+    if (loading) {
+        return <p>Loading...</p>; // Or a better loading indicator
+    }
+  
+    if (isAuthenticated) {
+        return null; // Or redirect, but this should already be handled by useEffect
+    }
 
     return (
         <div className="bg-softBeige font-[sans-serif]">

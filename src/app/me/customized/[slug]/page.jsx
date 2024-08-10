@@ -10,6 +10,7 @@ import { getProductsperID } from '../../../../Firebase/CRUD/Products';
 import Head from '../../../../components/header';
 import CarouselCustomNavigation from '../../../../components/carousel';
 import { doc, getDoc } from 'firebase/firestore';
+import Loading from '@/components/loading';
 
 export default function Product({ params }) {
   const slug = params.slug;
@@ -22,7 +23,7 @@ export default function Product({ params }) {
     email: "",
     Status: {},
   });
-
+  const [loading,setLoading]=useState(true)
   useEffect(() => {
     const handleAuthStateChange = () => {
       const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -49,6 +50,7 @@ export default function Product({ params }) {
             console.error("Error fetching user orders:", error);
           }
         }
+        setLoading(false)
       });
 
       return () => unsubscribe();
@@ -60,7 +62,7 @@ export default function Product({ params }) {
   return (
     <>
       <Head status={false} setCategorie={null} categorie={null} />
-      <section className="bg-softBeige py-8 antialiased md:py-16 h-full">
+      {loading?<><Loading/></> :<section className="bg-softBeige py-8 antialiased md:py-16 h-full">
         <div className="mx-auto max-w-screen-xl bg-white p-8 rounded-3xl 2xl:px-0">
           <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of gift with ID: #{order.orderId}</h2>
 
@@ -82,7 +84,7 @@ export default function Product({ params }) {
             <TrackOrder Status={order.Status} id={order.orderId} />
           </div>
         </div>
-      </section>
+      </section>}
     </>
   );
 }

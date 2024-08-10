@@ -5,6 +5,7 @@ import Head from '../header';
 import { fetchNewProducts } from '@/Firebase/CRUD/Products';
 import { auth } from '@/Firebase/Initialisation';
 import { getRateProduct } from '@/Firebase/CRUD/Reviews';
+import Loading from '../loading';
 
 const New = ({ setListCat, setCurrentPage }) => {
   const [data, setData] = useState([]);
@@ -18,12 +19,11 @@ const New = ({ setListCat, setCurrentPage }) => {
     const fetchInitialProducts = async () => {
       try {
         const res = await fetchNewProducts(null, 5);
-        const productsWithRates = await getProductsRates(res.products);
-        setData(productsWithRates);
+        setData(res.products);
         setLastVisible(res.lastVisibleGift);
 
         if (cat === "All") {
-          setProducts(productsWithRates);
+          setProducts(res.products);
         }
       } catch (error) {
         console.error('Fetch error:', error);
@@ -46,13 +46,6 @@ const New = ({ setListCat, setCurrentPage }) => {
     handleAuthStateChange();
   }, [cat]);
 
-  const getProductsRates = async (products) => {
-    const result = await Promise.all(products.map(async (prod) => {
-      const rate = await getRateProduct(prod.id, auth.currentUser.uid);
-      return { ...prod, rate };
-    }));
-    return result;
-  };
 
   useEffect(() => {
     if (cat !== "All") {
@@ -60,21 +53,21 @@ const New = ({ setListCat, setCurrentPage }) => {
     } else {
       setProducts(data);
     }
+    console.log(data)
   }, [cat, data]);
 
   const continueFetching = async (e) => {
     e.preventDefault();
     try {
       const res = await fetchNewProducts(lastVisible);
-      const productsWithRates = await getProductsRates(res.products);
-      setData((prev) => [...prev, ...productsWithRates]);
+      setData((prev) => [...prev, ...res.products]);
       setLastVisible(res.lastVisibleGift);
     } catch (error) {
       console.error('Fetch error:', error);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <><Loading/></>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (

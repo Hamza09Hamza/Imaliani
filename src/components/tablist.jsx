@@ -5,6 +5,9 @@ const TableList = ({ setCategorie, categorie }) => {
     const [CategorieList] = useState([
         "All", "Candle holder", "Ashtray &Lighter cover", "Home decoration", "Frame decoration", "Jewelry tray"
     ]);
+    useEffect(()=>{
+        console.log(categorie)
+    },[])
     return (
         <>
         <ul className="flex flex-wrap overflow-hidden text-sm xxs:text-xs font-medium text-center text-gray-400">
@@ -29,7 +32,7 @@ const TableList = ({ setCategorie, categorie }) => {
                         key={item}
                         className={`duration-300  cursor-pointer inline-block lg:px-4 px-1 py-3 hover:text-gray-900 hover:bg-gray-100 rounded-lg ${categorie === item ? 'text-gray-900 bg-gray-100' : ''}`}
                         aria-current="page"
-                        onClick={(e) => { setCategorie(e.currentTarget.id) }}
+                        onClick={(e) => { setCategorie(item) }}
                         id={item}
                     >
                         {item}

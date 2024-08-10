@@ -5,17 +5,32 @@ import admin from "firebase-admin";
 
 // Ensure the app is not initialized more than once
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(process.env.FIREBASE_CREDENTIALS),
-  });
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+    admin.initializeApp({
+        credential: admin.credential.cert({
+        "type": process.env.FIREBASE_TYPE,
+        "project_id": process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID,
+        privateKey:privateKey,
+        "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+        "client_id": process.env.FIREBASE_CLIENT_ID,
+        "auth_uri": process.env.FIREBASE_AUTH_URI,
+        "token_uri":process.env.FIREBASE_TOKEN_URI,
+        "auth_provider_x509_cert_url": process.env.AUTH_PROVIDER_X509_CERT_URL,
+        "client_x509_cert_url": process.env.CLIENT_X509_CERT_URL,
+        "universe_domain":process.env.UNIVERSE_DOMAIN,
+        }),
+    });
 }
 
 
 const firestore = getFirestore();
 export const adminCreateOrder = async (data) => {
   try {
-    const ordersSnapshot = await firestore.collection('Orders').add(data);
-    console.log(ordersSnapshot.empty);
+
+    
+    await firestore.collection('Orders').add(data);
     console.log("done creating order");
   } catch (error) {
     console.log("error creating order", error);

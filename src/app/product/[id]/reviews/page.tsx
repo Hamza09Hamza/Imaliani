@@ -6,9 +6,9 @@ import Footer from "../../../../components/footer"
 import axios from 'axios';
 import {DB, auth} from "../../../../Firebase/Initialisation"
 import EditReviewModal from '../../../me/reviews/UpdateReview';
-import { addDoc, collection } from 'firebase/firestore';
 import { getProductReviews } from '@/Firebase/CRUD/Reviews';
-
+import Loading from '@/components/loading';
+import { setReviews } from '@/Firebase/CRUD/Reviews';
 const Reviews = ({ params }: { params: { id: string } }) => {
   const  id  = params.id;
 
@@ -16,6 +16,7 @@ const Reviews = ({ params }: { params: { id: string } }) => {
   const [ProdReviews,setProdReviews]=useState<any>()
   const [numberofrate,setNumberofrate]=useState<any>()
   const [totalSum,setTotalSum]=useState<number>()
+  const [loading,setLoading]=useState<boolean>(true)
   const [review,setReview]=useState({
     rating:0,
     title:"",
@@ -26,18 +27,19 @@ const Reviews = ({ params }: { params: { id: string } }) => {
 
 
   const handleEditClick =async  () => {
-    console.log(review)
     if(auth.currentUser){
      const  {data}=await axios.post("/api/reviews/setreview",{
         Review:{...review},
         userId:auth.currentUser.uid,
         
       })
-      await addDoc(collection(DB, 'Ratings'), data.Reviewdata);
+      console.log(data.Reviewdata)
+      setReviews(null,data.Reviewdata,null)
+      // await addDoc(collection(DB, 'Ratings'), data.Reviewdata);
     }
 
     setIsEditModalOpen(false);
-    window.location.reload()
+    // window.location.reload()
   };
 const handleEditClose = () => {
     setIsEditModalOpen(false);
@@ -47,7 +49,9 @@ const handleEditClose = () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
-                  console.log(user.uid)
+                  // console.log(user.uid)
+                  // u can add a way to optimize api calls and store in sessionStorage
+                  
                   const data =await getProductReviews(review.ProductID,null,10,user.uid as any)
                     if(data.reviews){
                       setProdReviews(data.reviews)
@@ -65,6 +69,7 @@ const handleEditClose = () => {
             } else {
                 
             }
+            setLoading(false)
         });
 
         return () => unsubscribe();
@@ -92,10 +97,13 @@ const handleEditClose = () => {
         }
         return stars;
       };
+
+      if(loading)
+        return <><Loading/></>
     return ( <>
     <Head status={undefined} categorie={null} setCategorie={null} customer={auth.currentUser?.uid} />
     { auth.currentUser?.uid&& ProdReviews&&ProdReviews.length>0 && numberofrate ?  <section className="bg-softBeige py-8 antialiased px-16 pb-40 md:pt-16">
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+      <div className="mx-auto max-w-screen-xl lg:h-[100vh] px-4 2xl:px-0">
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-semibold text-gray-900 ">Reviews</h2>
 
@@ -152,7 +160,8 @@ const handleEditClose = () => {
       <h3 className='text-brown text-3xl  mb-4 text-center'>
         No Reviews yet on this product ! be the first to leave a message
       </h3>
-      <button type="button" data-modal-target="review-modal" data-modal-toggle="review-modal" className="mb-2 me-2 rounded-lg bg-hardBeige px-5 py-2.5 bg text-sm font-medium transition-all duration-300 text-white hover:bg-tooHardBeige outline-none focus:outline-none focus:ring-4 focus:ring-primary-300  " onClick={()=>setIsEditModalOpen(true)}>Write a review</button>
+      <button type="button" data-modal-target="review-modal" data-modal-toggle="review-modal" className="mb-2 me-2 rounded-lg bg-hardBeige px-5 py-2.5 bg text-sm font-medium transition-all duration-300 text-white hover:bg-tooHardBeige outline-none focus:outline-none focus:ring-4 focus:ring-primary-300  " 
+      onClick={()=>setIsEditModalOpen(true)}>Write a review</button>
 
     </div>
     </>}

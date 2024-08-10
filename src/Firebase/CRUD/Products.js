@@ -1,7 +1,7 @@
 import {  deleteDoc, doc,getDoc, getDocs ,limit,orderBy,query,startAfter,updateDoc, where} from "firebase/firestore";
 import { ref } from "firebase/database";
 import {  ref as storageRef, uploadBytes, getDownloadURL ,deleteObject} from "firebase/storage";
-import { DB ,Storage as storage} from "../Initialisation";
+import { DB ,RTDB,Storage as storage} from "../Initialisation";
 import { addDoc, collection } from "firebase/firestore";
 
 
@@ -20,6 +20,7 @@ export const addNewProduct = async (productData) => {
         const ProductData = {
             ...rest,
             images: imageUrls,  
+            
         };
 
         await addDoc(collection(DB, "products"), ProductData);
@@ -88,8 +89,10 @@ export const deleteProduct = async (productId) => {
         await Promise.all(deletePromises);
         console.log("Images deleted ")
         await deleteDoc(productRef);
+        await remove(ref(RTDB, `products/${productData.title}`))
+
         console.log("Product deleted with ID: ", productId);
-        window.location.assign("/admin")
+        window.location.assign("/admin/products")
     } catch (error) {
         console.error("Error deleting product: ", error);
         throw new Error("Failed to delete product.");
@@ -159,6 +162,7 @@ export const fetchCatProducts = async (categorie,lastVisibleProduct = null, page
         return [];
     }
  };
+ 
 export const fetchrandomProducts = async (lastVisibleOrder = null, pageSize = 10) => {
     try {
         const productsRef = collection(DB, "products");

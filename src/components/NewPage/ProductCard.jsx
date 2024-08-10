@@ -10,11 +10,9 @@ const ProductCard = ({ product }) => {
   const handleAddToCart= async ()=>{
     if(auth.currentUser) {
       const Chart= (await getDoc(doc(DB,"Users/",auth.currentUser.uid))).data().Chart
-      let encryptedProductID=await axios.post("/api/encrypt",{id:auth.currentUser.uid,data:product.id})
-      encryptedProductID=encryptedProductID.data.data;
-      console.log()
+      const {data}=await axios.put("/api/chart/updateuser",{type:true,id:product.id,Chart:Chart});
       await updateUserField("Chart",
-      [...Chart,{ProductID:encryptedProductID,Quantity:1}],
+      data.userchart,
       auth.currentUser.uid);
       
 
@@ -33,11 +31,13 @@ const MissStar = () => (
         <path stroke="currentColor" strokeWidth="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z" />
     </svg>
 );
-const Stars = (rating) => (
-    Array.from({ length: 5 }, (_, index) => (
-        index < rating ? <CompleteStar key={index} /> : <MissStar key={index} />
-    ))
-);
+const Stars = (rating) => {
+  console.log(rating)
+  return Array.from({ length: 5 }, (_, index) => (
+      index < rating ? <CompleteStar key={index} /> : <MissStar key={index} />
+  ))
+
+}
     return (<>
       <div   className="  group h-[400px] my-10 flex w-full max-w-xs lg:max-w-[30%] flex-col overflow-hidden border-2 border-gray-400 bg-white shadow-md  rounded-xl" >
         <div onClick={()=>window.location.assign("/product/"+product.id)} className=" cursor-pointer relative h-[250px] flex   items-center justify-center overflow-hidden  bg-gray-100" href="#">
@@ -49,9 +49,14 @@ const Stars = (rating) => (
           <a href="#">
             <h5 className=" truncate tracking-tight text-slate-900">{product.title}</h5>
           </a>
-            <p>
-              <span className="text-lg font-bold text-slate-900">{product.price} AED</span>
-            </p>
+            <div className='flex gap-4'> 
+              <p>
+                <span className="text-lg font-bold text-slate-900">{product.price} AED</span>
+              </p>
+              <p>
+                <span className="text-lg font-bold text-slate-900 line-through">{parseInt(product.price, 10)+parseInt(product.price, 10)*0.2} AED</span>
+              </p>
+            </div>
           <div class="flex mb-2 items-center ">
             <div class="flex items-center space-x-1 rtl:space-x-reverse">
             {product.rate&&Stars(product.rate)}

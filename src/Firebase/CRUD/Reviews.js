@@ -1,4 +1,4 @@
-import { getDocs, collection, query, where, orderBy, limit, startAfter,addDoc, getDoc, updateDoc, deleteDoc, setDoc, doc } from "firebase/firestore";
+import { getDocs, collection, query, where, orderBy, limit, startAfter,addDoc, getDoc, updateDoc, deleteDoc, setDoc, doc, increment } from "firebase/firestore";
 import { DB, auth } from "../Initialisation";
 import axios from "axios";
 
@@ -173,15 +173,34 @@ export const getReviwesperID=async (id)=>{
     }
 }
 
-export const setReview = async (id=null, ReviewData) => {
+export const setReviews = async (id = null, ReviewData,lastrate = null) => {
     try {
-        console.log(ReviewData.UserID,auth.currentUser?.uid)
-        
-        if(id!==null){
-            await setDoc(doc(DB, "Ratings/",id), ReviewData);
+        const {data}=await axios.post("/api/decrypt",{id:auth.currentUser.uid,data:ReviewData.ProductID})
+        const decryptedProductId=data.data
+        const productRef = doc(DB, "products/", decryptedProductId);
+        const productSnapshot = await getDoc(productRef);
+        console.log(auth.currentUser.uid)
+        const productData = productSnapshot.data();
+        if(id!==null && lastrate){
+             await setDoc(doc(DB, "Ratings/", id), ReviewData);
+             if(ReviewData.rating !== undefined ){
+                 const newRateMoyenne = (productData.rate *productData.totalRates -lastrate + ReviewData.rating)/(productData.totalRates)
+                 await updateDoc(productRef, {
+                    rate: newRateMoyenne,
+                });
+             }
         }
-        else
+        else{
+            console.log(typeof(productData.rate),typeof(productData.totalRates),typeof(ReviewData.rating),)
             await addDoc(collection(DB,"Ratings"),ReviewData)
+            const newRateMoyenne = (productData.rate *productData.totalRates + ReviewData.rating)/(productData.totalRates+1)
+            console.log(newRateMoyenne)
+            await updateDoc(productRef, {
+                rate: newRateMoyenne,
+                totalRates: increment(1)
+            }); 
+
+        }
         console.log("Review saved successfully.");
     } catch (error) {
         console.error("Error saving Review:", error);

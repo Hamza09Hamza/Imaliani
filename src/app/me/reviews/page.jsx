@@ -10,13 +10,14 @@ import { auth } from "@/Firebase/Initialisation";
 import { timestampToDate } from "../../Utils/time";
 import { getCurrentFirestoreTimestamp } from '../../Utils/time';
 import { deleteReview, getUserReviews, setReview } from '@/Firebase/CRUD/Reviews';
+import Loading from '@/components/loading';
 
 const Reviews = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(5);
     const [selectedRating, setSelectedRating] = useState('All reviews');
     const [reviews, setReviews] = useState([]);
-
+    const [loading,setLoading]=useState(true)
     const filteredReviews = selectedRating === 'All reviews'
         ? reviews
         : reviews.filter(review => review.rating.toString() === selectedRating);
@@ -40,7 +41,7 @@ const Reviews = () => {
                     }
                 }
             });
-
+            setLoading(false)
             return () => unsubscribe();
         };
 
@@ -84,7 +85,12 @@ const Reviews = () => {
 
     };
     
-
+    if(loading){
+        return <>
+                    <Head categorie={null} setCategorie={null} status={false}/>
+                <Loading/>
+        </>
+    }
 
 
     return (

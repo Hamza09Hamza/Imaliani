@@ -10,9 +10,11 @@ import {timestampToDate,getMostRecentStatus} from "@/app/Utils/time"
 import { getProductsperID } from '@/Firebase/CRUD/Products'
 import Head from '@/components/header'
 import Footer from '@/components/footer'
+import Loading from '@/components/loading'
 
 export default function Product({ params }: { params: { slug: string } }) {  
     const [isOpen,setIsOpen]=useState<Boolean>(false) 
+    const [loading,setLoading]=useState<Boolean>(true) 
     const  slug  = params.slug
     const [order, setOrder] = useState<any>({
         products: [] as any[], // Adjust this type as needed
@@ -70,6 +72,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     console.error("Error fetching user orders:", error);
                   }
                 }
+                setLoading(false)
               });
 
             return () => unsubscribe();
@@ -77,6 +80,12 @@ export default function Product({ params }: { params: { slug: string } }) {
 
         handleAuthStateChange();
     }, []);
+
+
+    if(loading) return <>
+    <Head status={false} setCategorie={null} categorie={null} customer={undefined} />
+    <Loading/>
+    </>
   
     return ( <>
     <Head status={false} setCategorie={null} categorie={null} customer={undefined} />
