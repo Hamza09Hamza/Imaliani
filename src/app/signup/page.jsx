@@ -73,7 +73,8 @@ const SignUp = () => {
             if(err)
                 setError(err);
             else{
-                window.location.assign("/")}
+               window.location.assign("/verify-email")}
+
         }
     };
 
