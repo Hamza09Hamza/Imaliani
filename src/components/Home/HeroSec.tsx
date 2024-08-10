@@ -172,7 +172,7 @@ const HeroSec = () => {
 				</div>
 			</div>
 			<div className='  flex  lg:justify-around flex-col mid:justify-between  xxs:justify-center xxs:flex-col items-center w-[90%] lg:mt-40 lg:mb-60 xxs:mt-20 xxs:mb-30'>
-				<div className='lg:max-w-[90%]  mid:max-w-[40%]  xxs:max-w-[90%] flex flex-row-reverse items-center  lg:text-left xxs:text-center'>
+				<div className='lg:max-w-[90%]  mid:max-w-[40%] xxs:flex-col  xxs:max-w-[90%] flex flex-row-reverse items-center  lg:text-left xxs:text-center'>
 					<h3 className='text-semiHeader mb-24 text-brown lg:w-[40%] font-extralight font-Abril'>
 						What makes
 						our products
