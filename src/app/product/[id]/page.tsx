@@ -16,9 +16,7 @@ function ProductPage({ params }: { params: { id: string } }) {
   const [loading ,setLoading]=useState<boolean>(false)
 
   useEffect(() => {
-    const handleAuthStateChange = () => {
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
+    const handleAuthStateChange =async () => {
                 try {
                   let data
                   let filtered=[];
@@ -41,17 +39,13 @@ function ProductPage({ params }: { params: { id: string } }) {
                 } catch (error) {
                     console.error("Error fetching user orders:", error);
                 }
-            } else {
-                
-            }
             setLoading(true)
-        });
 
-        return () => unsubscribe();
     };
 
     handleAuthStateChange();
 }, []); 
+
   if(!loading)
       return <>     <Head status={false} categorie={null} setCategorie={null} customer={auth.currentUser?.uid}/>
   <Loading/></>
