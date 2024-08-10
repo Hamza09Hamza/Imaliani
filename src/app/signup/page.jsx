@@ -72,8 +72,7 @@ const SignUp = () => {
             const err=await EmailSignUp({ firstName, lastName, email, password, phoneNumber:phone })
             if(err)
                 setError(err);
-            else{
-               window.location.assign("/verify-email")}
+        
 
         }
     };
