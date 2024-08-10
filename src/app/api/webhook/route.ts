@@ -96,7 +96,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             }))
         };
         await adminCreateOrder(encryptedOrderData);
-        console.log("Order successfully created");
+        console.log("Admin Order successfully created");
         await adminUpdateUserChart(userId);
         console.log("User chart successfully updated");
 
