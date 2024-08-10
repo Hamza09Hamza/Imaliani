@@ -9,7 +9,7 @@ import axios from 'axios';
 import { auth } from "@/Firebase/Initialisation";
 import { timestampToDate } from "../../Utils/time";
 import { getCurrentFirestoreTimestamp } from '../../Utils/time';
-import { deleteReview, getUserReviews, setReview } from '@/Firebase/CRUD/Reviews';
+import { deleteReview, getUserReviews, setReviews as setRev } from '@/Firebase/CRUD/Reviews';
 import Loading from '@/components/loading';
 
 const Reviews = () => {
@@ -71,7 +71,7 @@ const Reviews = () => {
         })
         
         const  NewReview={...data.Reviewdata,UserID:auth.currentUser.uid}
-        await setReview(id,NewReview)
+        await setRev(id,NewReview)
    
         window.location.reload()
         
