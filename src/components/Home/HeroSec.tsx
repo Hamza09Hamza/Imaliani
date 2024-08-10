@@ -186,7 +186,7 @@ const HeroSec = () => {
 					environment or your health
 					</p>
 				</div>
-				<div className='xl:w-[60%] mid:max-w-[50%] xxs:max-w-[70%] lg:flex-1 lg:max-w-[100%]  mr-2  items-center justify-center flex xxs:flex-col'>
+				<div className='xl:w-[60%] mid:max-w-[50%] xxs:max-w-[70%] gap-4 pb-20 lg:flex-1 lg:max-w-[100%]  mr-2  items-center justify-center flex xxs:flex-col'>
 						<Image className='  lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery5} alt="" />
 						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery6} alt="" />
 						<Image className=' lg:ml-16 lg:h-[30rem] xxs:w-[100%] lg:max-w-[10rem] mid:h-[15rem] xxs:h-[15rem]  xl:max-w-[18rem]  object-cover mr-2 z-[2]  bg-hardBeige rounded-[1rem] ' src={Pottery7} alt="" />
