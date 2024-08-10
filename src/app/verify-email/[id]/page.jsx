@@ -10,19 +10,8 @@ const CheckEmailPage = () => {
     useEffect(() => {
         const handleAuthChange = async (user) => {
             if (user && user.emailVerified) {
-                const storedUserData = JSON.parse(sessionStorage.getItem('userData'));
-                if (storedUserData) {
-
-                    await FireSignUp ({
-                        displayName: storedUserData.displayName,
-                        email: storedUserData.email,
-                        phoneNumber: storedUserData.phoneNumber,
-
-                    });
-                    sessionStorage.removeItem('userData');
-                    localStorage.setItem('UserID', JSON.stringify(user.uid));
-                    window.location.assign("/");
-                }
+               
+                window.location.assign("/");
             }
         }
 
