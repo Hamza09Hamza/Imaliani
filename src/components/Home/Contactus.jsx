@@ -5,7 +5,7 @@ const Contactus = () => {
     return (  <>
     <footer className="p-4 bg-softBeige   pb-24 ">
   <div className="mx-auto max-w-screen-xl text-center">
-      <a href="#" className="flex justify-center items-center text-2xl font-semibold text-brown ">
+      <a href="#" className="flex justify-center xxs:flex-col items-center text-2xl font-semibold text-brown ">
           <Image src={Logo} width={200} height={200} />
           Imaliani craft studio    
       </a>
