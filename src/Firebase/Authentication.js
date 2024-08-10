@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import { DB, auth } from "./Initialisation";
 import { setDoc, doc,getDoc } from "firebase/firestore";
-import { encryptData } from "@/app/Utils/Encryption";
 const provider = new GoogleAuthProvider();
 
 auth.useDeviceLanguage();
@@ -42,7 +41,6 @@ const handleUserSignUp = async (userData) => {
         phoneNumber:userData.phoneNumber
     })
     console.log("user Added")
-    sessionStorage.setItem('UserID', JSON.stringify(auth.currentUser.uid));
     
     
     window.location.assign('/verify-email/'+auth.currentUser.uid);
@@ -70,7 +68,7 @@ export const GoogleSignUporIn = async () => {
 
         } else {
             // Existing user, sign in
-            sessionStorage.setItem('UserID', JSON.stringify(encryptData(user.uid)));
+            sessionStorage.setItem('UserID', JSON.stringify(user.uid));
             console.log("User signed in");
             window.location.assign("/");
         }
@@ -86,6 +84,7 @@ export const EmailSignUp = async (userData) => {
         console.log("Done in FireAuth");
         console.log(userData.phoneNumber)
         await handleUserSignUp(userData);
+        localStorage.setItem("UserID",JSON.stringify(auth.currentUser.uid))
         console.log("Done in FireStore");
         return ""
     } catch (error) {
@@ -109,6 +108,7 @@ export const  UserSignout =async ()=>{
     try {
         await signOut(auth)
         sessionStorage.removeItem("UserID")
+        localStorage.removeItem("UserID")
         sessionStorage.clear();
         window.location.assign("/")
 
@@ -120,8 +120,9 @@ export const  UserSignout =async ()=>{
 export const EmailSignIn=async({email,password})=>{
     try {
        await  signInWithEmailAndPassword(auth,email,password)
-       sessionStorage.setItem('UserID', JSON.stringify(encryptData(auth.currentUser.uid)));
-       window.location.assign("/")
+       localStorage.setItem("UserID",JSON.stringify(auth.currentUser.uid))
+       sessionStorage.setItem("UserID",JSON.stringify(auth.currentUser.uid))
+
     } catch (error) {
         console.error("Error during Email SignIn:", error);
         if (error.code === 'auth/user-not-found') {
