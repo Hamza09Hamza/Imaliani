@@ -12,20 +12,13 @@ import { auth } from '../../Firebase/Initialisation';
 const SignUp = () => {
    
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true);
   
     useEffect(() => {
        const handleAuthStateChange = () => {
-              const unsubscribe = auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                  setIsAuthenticated(true);
-                  window.location.assign("/");
-              } else {
-                  setLoading(false);
-              }
-              });
-  
-              return () => unsubscribe();
+            const data=localStorage.getItem("UserID")
+            if(JSON.parse(data))
+                    window.location.assign("/");
+            
           };
   
           handleAuthStateChange();
@@ -72,8 +65,6 @@ const SignUp = () => {
             const err=await EmailSignUp({ firstName, lastName, email, password, phoneNumber:phone })
             if(err)
                 setError(err);
-        
-
         }
     };
 
@@ -81,9 +72,6 @@ const SignUp = () => {
 
 
 
-    if (loading) {
-        return <p>Loading...</p>; // Or a better loading indicator
-    }
   
     if (isAuthenticated) {
         return null; // Or redirect, but this should already be handled by useEffect
