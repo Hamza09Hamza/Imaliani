@@ -12,20 +12,14 @@ const SignIn = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-     const handleAuthStateChange = () => {
-            const unsubscribe = auth.onAuthStateChanged(async (user) => {
-              if (user) {
-                setIsAuthenticated(true);
-                window.location.assign("/");
-            } else {
-                setLoading(false);
-            }
-            });
+    const handleAuthStateChange = () => {
+         const data=localStorage.getItem("UserID")
+         if(JSON.parse(data))
+                 window.location.assign("/");
+             
+       };
 
-            return () => unsubscribe();
-        };
-
-        handleAuthStateChange();
+       handleAuthStateChange();
 }, []);
  
   const [errors, setErrors] = useState({
