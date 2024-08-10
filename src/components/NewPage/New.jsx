@@ -15,36 +15,28 @@ const New = ({ setListCat, setCurrentPage }) => {
   const [error, setError] = useState(null);
   const [lastVisible, setLastVisible] = useState(null);
 
-  useEffect(() => {
+useLayoutEffect(() => {
     const fetchInitialProducts = async () => {
       try {
         const res = await fetchNewProducts(null, 5);
         setData(res.products);
         setLastVisible(res.lastVisibleGift);
-
         if (cat === "All") {
           setProducts(res.products);
         }
       } catch (error) {
+
         console.error('Fetch error:', error);
         setError(error);
       } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
-    const handleAuthStateChange = () => {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-          fetchInitialProducts();
-        }
-      });
-
-      return () => unsubscribe();
-    };
-
-    handleAuthStateChange();
+    fetchInitialProducts();
+    
   }, [cat]);
+
 
 
   useEffect(() => {
