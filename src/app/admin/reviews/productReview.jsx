@@ -42,7 +42,7 @@ const ProductReview = ({ id, title, message, rating, dateAdded, productTitle,onR
         ))
     );
     return ( <>
-        <div className="flex justify-between  gap-4 md:gap-6 py-4 md:py-6 mt-2">
+        <div className="flex justify-between  xxs:flex-col gap-4 md:gap-6 py-4 md:py-6 mt-2">
               <dl className="w-[19%] order-3 md:order-1">
                   <dt className="sr-only">user:</dt>
                   <dd className="text-base font-semibold text-gray-700 ">
