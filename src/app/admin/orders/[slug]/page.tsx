@@ -5,6 +5,8 @@ import TrackOrder from '@/components/Order/ordertrack'
 import { DocumentData, doc, getDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Loading from '@/components/loading';
+
 
 import {timestampToDate,getMostRecentStatus} from "@/app/Utils/time"
 import { getProductsperID } from '@/Firebase/CRUD/Products'
@@ -13,6 +15,7 @@ import AdminFooter from '../../footer'
 import isAuth from "../../../adminAuth"
 function Product({ params }: { params: { slug: string } }) {  
     const  slug  = params.slug
+        const [loading,setLoading]=useState(true);
     const [order, setOrder] = useState({
         ShippingAdresse:{city:"",state:"",streetAddress:"",zipCode:""},
         email:"",
@@ -68,6 +71,7 @@ function Product({ params }: { params: { slug: string } }) {
                   } catch (error) {
                     console.error("Error fetching user orders:", error);
                   }
+                    setLoading(false)
                 }
               });
 
@@ -77,7 +81,9 @@ function Product({ params }: { params: { slug: string } }) {
         handleAuthStateChange();
     }, []);
   
-
+if(!loading){
+        return <><Loading/></>
+    }
   
     return ( <>
    <section className="bg-softBeige py-8 antialiased md:py-16 flex items-center justify-center h-[100vh]">
