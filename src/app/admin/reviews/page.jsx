@@ -13,11 +13,14 @@ import { collection, getDocs } from 'firebase/firestore';
 import { deleteReview } from '@/Firebase/CRUD/Reviews';
 import { getProductName } from '@/Firebase/CRUD/Products';
 import isAuth from '@/app/adminAuth'
+import Loading from '@/components/loading';
+
 const Reviews = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(5);
     const [selectedRating, setSelectedRating] = useState('All reviews');
     const [reviews, setReviews] = useState([]);
+    const [loading,setLoading]=useState(true)
 
     const filteredReviews = selectedRating === 'All reviews'
         ? reviews
@@ -51,6 +54,7 @@ const Reviews = () => {
                 }else{
                     redirect("/")
                 }
+                setLoading(false)
 
             });
 
@@ -84,7 +88,9 @@ const Reviews = () => {
     };
     
 
-
+  if(!loading){
+        return <><Loading/></>
+    }
 
     return (
         <>
