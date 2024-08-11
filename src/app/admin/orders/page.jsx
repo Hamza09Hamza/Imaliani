@@ -123,7 +123,7 @@ const Orders = () => {
         <>
             {displayedOrders.length > 0 ? (
                 <section className="bg-softBeige flex w-full xxs:w-[100%] items-center p-16 antialiased lg:h-[100vh] md:py-16">
-                    <div className="mx-auto flex-1 max-w-screen-xl px-4 p-16 2xl:px-0 bg-white rounded-3xl">
+                    <div className="mx-auto flex-1 max-w-screen-xl px-4 xxs:w-[100%] p-16 2xl:px-0 bg-white rounded-3xl">
                         <div className="mx-auto max-w-5xl">
                             <div className="gap-4 sm:flex sm:items-center sm:justify-between">
                                 <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Orders lists</h2>
