@@ -51,7 +51,7 @@ const ProductReview = ({ id, title, message, rating, dateAdded, productTitle,onR
               </dl>
               <dl className="w-[19%] order-3 md:order-1">
                   <dt className="sr-only">Product:</dt>
-                  <dd className="text-base font-semibold text-gray-900 ">
+                  <dd className="text-base font-serif text-gray-600 ">
                   <a href={"/admin/product/"+ProductID} className="hover:underline">{productTitle} </a>
                   </dd>
               </dl>

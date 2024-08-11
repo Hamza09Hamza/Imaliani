@@ -36,7 +36,7 @@ const Orders = () => {
                         const countSnapshot = await getCountFromServer(customRef);
                         const totalOrders = countSnapshot.data().count;
                         setTotalPages(Math.ceil(totalOrders / ordersPerPage));
-
+                        
                         const res = await getDocs(customRef);
                         if (!res.empty) {
                             const customs = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
@@ -45,7 +45,6 @@ const Orders = () => {
                                 if(order.phoneNo){
                                     const  {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.phoneNo})
                                     decryptedPhoneNo=data.data
-                                    console.log(decryptedPhoneNo)
                                 }
                                 return {
                                     ...order,

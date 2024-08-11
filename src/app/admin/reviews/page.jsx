@@ -9,7 +9,7 @@ import { getCurrentFirestoreTimestamp } from '../../Utils/time';
 import { DB, auth } from '../../../Firebase/Initialisation';
 import AdminFooter from '../footer';
 import { redirect } from 'next/navigation';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { deleteReview } from '@/Firebase/CRUD/Reviews';
 import { getProductName } from '@/Firebase/CRUD/Products';
 import isAuth from '@/app/adminAuth'
@@ -35,8 +35,12 @@ const Reviews = () => {
         const handleAuthStateChange = () => {
             const unsubscribe = auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    
-                    const data=await getDocs(collection(DB,"Ratings"))
+                    const reviewsRef = collection(DB, "Ratings");
+                    let reviewsQuery = query(
+                        reviewsRef,
+                        orderBy("dateAdded", "desc"),
+                    );
+                    const data=await getDocs(reviewsQuery)
                     if(!data.empty){
                         const res= await Promise.all(data.docs.map(async(doc)=>{
                             const prod=doc.data()
