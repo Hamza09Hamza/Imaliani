@@ -13,6 +13,9 @@ import { Statuses } from '../../me/orders/Order';
 import AdminFooter from '../footer';
 import { collection, getDocs } from 'firebase/firestore';
 import isAuth from "../../adminAuth"
+import Loading from '@/components/loading'
+
+
 const Gifts = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [giftsPerPage] = useState(5);
@@ -22,6 +25,7 @@ const Gifts = () => {
     const [currentOrders, setCurrentOrders] = useState([]);
     const [totalPages, setTotalPages] = useState();
     const [displayedOrders, setDisplayedOrders] = useState([]);
+    const [loading,setLoading]=useState(true)
 
     useEffect(() => {
         const handleAuthStateChange = () => {
@@ -54,6 +58,8 @@ const Gifts = () => {
                     setDisplayedOrders([]);
                     setCurrentOrders([]);
                 }
+              setLoading(false)
+
             });
 
             return () => unsubscribe();
@@ -101,6 +107,12 @@ const Gifts = () => {
         pageNumber <= totalPages && pageNumber >= 1 && setCurrentPage(pageNumber);
     };
 
+
+if(!loading){
+      return<><Loading/></>
+    }
+
+    
     return (
         <>
             {displayedOrders.length > 0 ? (
