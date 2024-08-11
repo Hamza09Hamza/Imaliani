@@ -81,7 +81,7 @@ function Product({ params }: { params: { slug: string } }) {
         handleAuthStateChange();
     }, []);
   
-if(!loading){
+if(loading){
         return <><Loading/></>
     }
   
