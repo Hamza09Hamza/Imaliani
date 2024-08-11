@@ -185,7 +185,7 @@ const Orders = () => {
                         </div>
                     </div>
                 </section>
-            ) : (
+            ) : loading ? <><Loading/></> :(
                 <Empty type={"shopping"} text={"You have no orders yet."} />
             )}
             <DeleteModal typeText={"order"} isOpen={isDeleteModalOpen} onClose={handleDeleteClose} onDelete={handleConfirmDelete} />
