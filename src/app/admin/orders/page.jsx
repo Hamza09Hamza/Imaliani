@@ -12,7 +12,12 @@ import { Statuses } from '../../me/orders/Order';
 import AdminFooter from '../footer';
 import { collection, getCountFromServer, getDocs } from 'firebase/firestore';
 import isAuth from "../../adminAuth"
+import Loading from '@/components/loading'
+
+
+
 const Orders = () => {
+    const [loading,setLoading]=useState(true)
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -64,6 +69,8 @@ const Orders = () => {
                     setDisplayedOrders([]);
                     setCurrentOrders([]);
                 }
+                                setLoading(false)
+
             });
 
             return () => unsubscribe();
@@ -111,6 +118,11 @@ const Orders = () => {
     const handlePageChange = (pageNumber) => {
         pageNumber <= totalPages && pageNumber >= 1 && setCurrentPage(pageNumber);
     };
+
+
+    if(!loading){
+      return<><Loading/></>
+    }
 
     return (
         <>
