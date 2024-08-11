@@ -3,7 +3,7 @@ import {formatString} from "@/app/Utils/text"
 const OrderCard = ({ id, date, price, status, statusClass, statusIcon,customerId ,url}) => {
 
   return (<>
-    <article className="flex  bg-white p-4 rounded-2xl flex-wrap items-center gap-y-4 py-6">
+    <article className="flex  bg-white p-4 rounded-2xl flex-wrap xxs:flex-col items-center gap-y-4 py-6">
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-800 ">Order ID:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900 ">
