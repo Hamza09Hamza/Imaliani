@@ -88,7 +88,7 @@ const Reviews = () => {
     };
     
 
-  if(!loading){
+  if(loading){
         return <><Loading/></>
     }
 
