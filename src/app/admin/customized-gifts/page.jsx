@@ -108,7 +108,7 @@ const Gifts = () => {
     };
 
 
-if(!loading){
+if(loading){
       return<><Loading/></>
     }
 
