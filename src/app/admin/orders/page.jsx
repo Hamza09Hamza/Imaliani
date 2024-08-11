@@ -119,11 +119,6 @@ const Orders = () => {
         pageNumber <= totalPages && pageNumber >= 1 && setCurrentPage(pageNumber);
     };
 
-
-    if(!loading){
-      return<><Loading/></>
-    }
-
     return (
         <>
             {displayedOrders.length > 0 ? (
