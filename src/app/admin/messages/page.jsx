@@ -29,7 +29,15 @@ const Messges = () => {
                         const data = await getDocs(collection(DB, "Messages"));
                         if (!data.empty) {
                             let messagesData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+                            messagesData=messagesData.map((mes)=>{
+                                console.log(timestampToDate(mes.timestamp))
+                                return{
+                                    ...mes,timestamp:timestampToDate(mes.timestamp)
+                                }
+                            
+                            })
                             setDisplayedMessages(messagesData);
+                            console.log(messagesData)
                         }
                     } catch (error) {
                         console.error("Error fetching user messages:", error);
@@ -114,7 +122,7 @@ const Messges = () => {
                                         <MessCard
                                             key={index}
                                             id={mess.id}
-                                            date={timestampToDate(mess.timestamp)}
+                                            date={mess.timestamp}
                                             message={mess.message}
                                             email={mess.email}
                                             subject={mess.subject}

@@ -73,7 +73,7 @@ const Gifts = () => {
         const startDate = getDateRange(selectedDateFilter);
         const filteredOrders = displayedOrders.filter(order =>
             (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
-            moment(msg.timestamp, "DD.MM.YYYY, HH:mm").toDate()>= startDate
+            moment(order.date, "DD.MM.YYYY, HH:mm").toDate()>= startDate
         );
 
         const indexOfLastOrder = currentPage * giftsPerPage;
