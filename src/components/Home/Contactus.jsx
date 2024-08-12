@@ -22,7 +22,7 @@ const Contactus = () => {
                 data-aos-delay="200"
 
                 data-aos-easing="ease-in-sine">
-              <a href="#" className="mr-4 hover:underline md:mr-6">Tiktok</a>
+              <a href="https://www.tiktok.com/@imaliani_craft_studio" className="mr-4 hover:underline md:mr-6">Tiktok</a>
           </li>
           <li data-aos="fade-left"
                 data-aos-duration="1500"

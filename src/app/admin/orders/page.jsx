@@ -13,6 +13,7 @@ import AdminFooter from '../footer';
 import { collection, getCountFromServer, getDocs } from 'firebase/firestore';
 import isAuth from "../../adminAuth"
 import Loading from '@/components/loading'
+import moment from 'moment';
 
 
 
@@ -84,7 +85,7 @@ const Orders = () => {
 
         const filteredOrders = displayedOrders.filter(order =>
             (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
-            new Date(order.date.split('.').reverse().join('-')) >= startDate
+            moment(order.date, "DD.MM.YYYY, HH:mm").toDate() >= startDate
         );
 
         const indexOfLastOrder = currentPage * ordersPerPage;

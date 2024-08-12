@@ -48,9 +48,9 @@ const Messges = () => {
     useEffect(() => {
         const startDate = getDateRange(selectedDateFilter);
         const filteredMessages = displayedMessages.filter(msg =>
-            new Date(timestampToDate(msg.timestamp).split('.').reverse().join('-')) >= startDate
+            moment(msg.timestamp, "DD.MM.YYYY, HH:mm").toDate() >= startDate
         );
-
+        
         const indexOfLastMessage = currentPage * messagesPerPage;
         const indexOfFirstMessage = indexOfLastMessage - messagesPerPage;
         setCurrentMessages(filteredMessages.slice(indexOfFirstMessage, indexOfLastMessage));

@@ -1,6 +1,6 @@
 import { auth } from '@/Firebase/Initialisation';
 import React from 'react'
-const Empty = ({text,type}) => {
+const Empty = ({text,type,url}) => {
     return ( <>
     <div className="h-full mx-auto px-10 py-4 bg-white rounded-lg flex items-center justify-center">
                 <div className="flex flex-col items-center justify-center py-12 h-[100%]">
@@ -11,7 +11,7 @@ const Empty = ({text,type}) => {
                     </svg>
                     <p className="text-gray-600 text-lg font-semibold mb-4">{text}</p>
                     <button
-                        onClick={(e)=>{e.preventDefault();auth.currentUser? window.location.assign("/"):window.location.assign("signup")}}
+                        onClick={(e)=>{e.preventDefault();auth.currentUser? window.location.assign(url?url:"/categories"):window.location.assign("signup")}}
                         className="px-6 py-2 bg-hardBeige text-white rounded-md shadow-md hover:bg-tooHardBeige transition-colors duration-300">
                         Let's start {type}!
                     </button>

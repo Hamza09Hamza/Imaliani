@@ -50,8 +50,8 @@ const Head: React.FC<ChildComponentProps> = ({ customer, status, categorie, setC
                 <div className='flex flex-row w-[20%] items-center justify-around max-h-[90%] mr-5 '>
                     <div
                         onClick={() => auth.currentUser ? window.location.assign("/me/chart") : window.location.assign("/signin")}
-                        className='text-black mid:text-xs mid:hidden mid:text-center cursor-pointer font-roboto font-light hover:text-gray-400 duration-500 transition-all'>
-                        {isAuthenticated ? "My Chart" : "Sign In"}
+                        className={`text-black mid:text-xs  mid:text-center cursor-pointer font-roboto font-light hover:text-gray-400 duration-500 transition-all  ${auth.currentUser?" mid:hidden":"" }`}>
+                        {auth.currentUser ? "My Chart" : "Sign In"}
                     </div>
                     <UserDrop user={isAuthenticated} />
                 </div>

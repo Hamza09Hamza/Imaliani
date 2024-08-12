@@ -12,6 +12,7 @@ import {Statuses} from "../orders/Order"
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import Footer from '@/components/footer';
 import Loading from '@/components/loading';
+import moment from 'moment';
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [ordersPerPage] = useState(5);
@@ -78,7 +79,7 @@ const Orders = () => {
         
         const filteredOrders = displayedOrders.filter(order => 
             (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
-            new Date(order.date.split('.').reverse().join('-')) >= startDate
+            moment(order.date, "DD.MM.YYYY, HH:mm").toDate() >= startDate
         );
     
         const indexOfLastOrder = currentPage * ordersPerPage;
@@ -177,7 +178,7 @@ const Orders = () => {
         </div>
       </div>
     </section> :<>
-     <Empty type={"customizing"} text={"You have no customized items yet."}/>
+     <Empty url={"/categories/customized-gifts"} type={"customizing"} text={"You have no customized items yet."}/>
     </>
     }
     {/* <DeleteModal typeText={"order"} isOpen={isDeleteModalOpen} onClose={handleDeleteClose} onDelete={handleConfirmDelete} /> */}

@@ -12,6 +12,7 @@ import { Statuses } from "./Order";
 import { collection, getCountFromServer, query, where, getDocs, orderBy } from 'firebase/firestore';
 import Footer from '@/components/footer';
 import Loading from '@/components/loading';
+import moment from 'moment';
 
 const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -36,11 +37,11 @@ const Orders = () => {
                             customRef,
                             where("UserID", "==", user.uid),
                         );
-
+                        
                         const countSnapshot = await getCountFromServer(orderQuery);
                         const totalOrders = countSnapshot.data().count;
                         setTotalPages(Math.ceil(totalOrders / ordersPerPage));
-
+                        
                         const res = await getDocs(orderQuery);
                         if (!res.empty) {
                             const customs = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
@@ -76,10 +77,11 @@ const Orders = () => {
 
     useEffect(() => {
         const startDate = getDateRange(selectedDateFilter);
+        const filteredOrders = displayedOrders.filter(order =>{
+            console.log( );
 
-        const filteredOrders = displayedOrders.filter(order =>
-            (selectedRating === 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
-            new Date(order.date.split('.').reverse().join('-')) >= startDate
+            return (selectedRating == 'All orders' || order.status.toString().toLowerCase() === selectedRating.toLowerCase()) &&
+            moment(order.date, "DD.MM.YYYY, HH:mm").toDate() >= startDate}
         );
 
         const indexOfLastOrder = currentPage * ordersPerPage;
