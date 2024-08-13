@@ -53,9 +53,9 @@ const TrackOrder = ({ Status, id,email }) => {
             const date = getCurrentFirestoreTimestamp();
             setCurrentStatus({ ...currentStatus, [value]: date });
             const orderRef = doc(DB, "CustomizedGifts/", id);
-            // await updateDoc(orderRef, {Status:{ ...Status, [value]: date} });
+            await updateDoc(orderRef, {Status:{ ...Status, [value]: date} });
             await sendOrderStatusEmail(email,value)
-            // window.location.reload()
+            window.location.reload()
         } catch (error) {
             
         }

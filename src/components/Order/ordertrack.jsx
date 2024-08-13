@@ -57,12 +57,12 @@ handleAuthStateChange();
 
         if (await getUserRole(auth.currentUser.uid)) {
             try {
-                // await updateOrderStatus(id,{ ...Status, [value]: date });
+                await updateOrderStatus(id,{ ...Status, [value]: date });
                 await sendOrderStatusEmail(email,value)
             } catch (error) {
                 
             }
-            // window.location.reload()
+            window.location.reload()
         }
     };
 
