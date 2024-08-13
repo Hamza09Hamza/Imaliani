@@ -15,14 +15,14 @@ const Contactus = () => {
                 data-aos-duration="1500"
                 data-aos-delay="100"
                 data-aos-easing="ease-in-sine">
-              <a href="https://www.instagram.com/imaliani_craft_studio?igsh=dXFzdnhpeWFxdWxq" className="mr-4 hover:underline md:mr-6 ">Instagram</a>
+              <a href="https://www.instagram.com/imaliani_craft_studio?igsh=dXFzdnhpeWFxdWxq" className="mr-4 hover:underline md:mr-6 ">Instagram : imalinai_craft_studio</a>
           </li>
           <li data-aos="fade-left"
                 data-aos-duration="1500"
                 data-aos-delay="200"
 
                 data-aos-easing="ease-in-sine">
-              <a href="https://www.tiktok.com/@imaliani_craft_studio" className="mr-4 hover:underline md:mr-6">Tiktok</a>
+              <a href="https://www.tiktok.com/@imaliani_craft_studio" className="mr-4 hover:underline md:mr-6">Tiktok : imalinai_craft_studio</a>
           </li>
           <li data-aos="fade-left"
                 data-aos-duration="1500"
