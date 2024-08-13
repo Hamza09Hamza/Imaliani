@@ -4,7 +4,7 @@ import React from 'react'
 const ProductCard = ({id,desciption,price,quantity,image}) => {
     return ( <>
     <div className="space-y-4 p-6">
-          <div className="flex items-center gap-6">
+          <div className="flex xxs:flex-col items-center gap-6">
             <a href="#" className="h-24 w-24  ">
               <Image className="h-full w-full object-cover" src={image} width={100} height={100} alt="imac image" />
             </a>

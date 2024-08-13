@@ -85,11 +85,11 @@ const Categorie = () => {
                     categorie={cat} 
                     setCategorie={handleCategorie} 
                 />
-                <div className="flex flex-row h-full overflow-scroll bg-gray-50">
+                <div className="flex flex-row h-full overflow-hidden bg-gray-50">
                     <div className={`lg:w-1/5 text-gray-700 bg-gray-50 flex flex-col justify-around mid:w-[fit] h-fit mid:pb-40 pb-40 xxs:pb-2 transition-transform transform duration-500`} style={{ zIndex: 200 }}>
                         <CatList list={CategorieList} setList={setListCat} listcat={listcat} toggleSidebar={toggleSidebar} status={isSidebarOpen} />
                     </div>
-                    <div className="flex-1 lg:pl-2 overflow-y-auto pb-40 h-full mid:pb-10 xxs:pb-4 bg-gray-50">
+                    <div className="flex-1 lg:pl-2   overflow-y-scroll pb-60 xxs  h-full mid:pb-10 xxs:pb-4 bg-gray-50">
                         {loading ? (
                             <Loading />
                         ) : (
@@ -98,7 +98,7 @@ const Categorie = () => {
 
                         {/* Load More Button */}
                         {hasMoreProducts && loadingMore==false ? (
-                            <div className="flex justify-center mt-20 my-4">
+                            <div className="flex justify-center lg:mt-20 mb-60 xxs:mt-2 my-4">
                                 <button 
                                     onClick={loadMoreProducts} 
                                     className="bg-hardBeige text-white px-4 py-2 rounded-3xl hover:bg-tooHardBeige duration-700 transition-all"

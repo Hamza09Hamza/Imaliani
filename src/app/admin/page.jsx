@@ -61,7 +61,7 @@ const AdminPanel = () => {
             </a>
 
             <div className="p-8 rounded-2xl bg-white shadow">
-                <h2 className="text-gray-800 text-center text-2xl font-bold">Admin Sign in</h2>
+                <h2 className="text-gray-800 text-center text-2xl font-bold">Welcome to Admin Dashboard </h2>
                 <form className="mt-8 space-y-4">
                 <InputField
                     label="Email"

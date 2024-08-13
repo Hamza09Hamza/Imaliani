@@ -86,7 +86,7 @@ if(loading){
     }
   
     return ( <>
-   <section className="bg-softBeige py-8 antialiased md:py-16 flex items-center justify-center h-[100vh]">
+   <section className="bg-softBeige py-8 xxs:pb-40 antialiased md:py-16 flex items-center justify-center lg:h-[100vh]">
   <div className="mx-auto max-w-screen-xl bg-white p-8 rounded-3xl 2xl:px-0">
     <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of order {order.orderId}</h2>
     <span className='mt-1 text-base font-normal text-gray-500 dark:text-gray-400'>{"order set by "+order.email+", "+order.phoneNo +" "+order.ShippingAdresse.state+", "+order.ShippingAdresse.city+", "+order.ShippingAdresse.zipCode+", "+order.ShippingAdresse.streetAddress}</span>
@@ -114,7 +114,7 @@ if(loading){
         </div>
       </div>
 
-      <TrackOrder Status={order.Status} id={order.orderId}/>
+      <TrackOrder email={order.email} Status={order.Status} id={order.orderId}/>
     </div>
   </div>
 </section>

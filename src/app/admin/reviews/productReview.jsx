@@ -43,28 +43,28 @@ const ProductReview = ({ id, title, message, rating, dateAdded, productTitle,onR
     );
     return ( <>
         <div className="flex justify-between  xxs:flex-col gap-4 md:gap-6 py-4 md:py-6 mt-2">
-              <dl className="w-[19%] order-3 md:order-1">
+              <dl className="lg:w-[19%] order-3 md:order-1">
                   <dt className="sr-only">user:</dt>
                   <dd className="text-base font-semibold text-gray-700 ">
                   <div  >#{ProductID} </div>
                   </dd>
               </dl>
-              <dl className="w-[19%] order-3 md:order-1">
+              <dl className="lg:w-[19%] order-3 md:order-1">
                   <dt className="sr-only">Product:</dt>
                   <dd className="text-base font-serif text-gray-600 ">
                   <a href={"/admin/product/"+ProductID} className="hover:underline">{productTitle} </a>
                   </dd>
               </dl>
-              <dl className="w-[19%] order-4 md:order-2">
+              <dl className="lg:w-[19%] order-4 md:order-2">
                   <dt className="sr-only">dateAdded:</dt>
                   <dd className=" text-gray-500 ">{dateAdded}</dd>
               </dl>
-              <dl className="w-[19%] order-4 md:order-2">
+              <dl className="lg:w-[19%] order-4 md:order-2">
                   <dt className="sr-only">Message:</dt>
                   <dd className=" text-gray-500 ">{message}</dd>
               </dl>
 
-              <div className="w-[19%] gap-2 content-center order-1 md:order-3 flex items-center justify-between">
+              <div className="lg:w-[19%] gap-2 content-center order-1 md:order-3 flex items-center justify-between">
                   <dl>
                       <dt className="sr-only">Stars:</dt>
                       <dd className="flex items-center space-x-1">

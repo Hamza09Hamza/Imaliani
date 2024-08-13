@@ -1,5 +1,6 @@
 import "server-only";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import admin from "firebase-admin";
 
 
@@ -26,6 +27,7 @@ if (!admin.apps.length) {
 
 
 const firestore = getFirestore();
+const adauth=getAuth()
 export const adminCreateOrder = async (data) => {
   try {
 
@@ -36,6 +38,9 @@ export const adminCreateOrder = async (data) => {
     console.log("error creating order", error);
   }
 };
+export const admincheck=()=>{
+  return {adauth,firestore};
+}
 
 export const adminUpdateUserChart= async(userID)=>{
   try {

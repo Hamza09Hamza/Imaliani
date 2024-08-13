@@ -102,8 +102,8 @@ const handleEditClose = () => {
         return <><Loading/></>
     return ( <>
     <Head status={undefined} categorie={null} setCategorie={null} customer={auth.currentUser?.uid} />
-    { auth.currentUser?.uid&& ProdReviews&&ProdReviews.length>0 && numberofrate ?  <section className="bg-softBeige py-8 antialiased px-16 pb-40 md:pt-16">
-      <div className="mx-auto max-w-screen-xl lg:h-[100vh] px-4 2xl:px-0">
+    { auth.currentUser?.uid&& ProdReviews&&ProdReviews.length>0 && numberofrate ?  <section className="bg-softBeige py-8 antialiased min-h-[120hv] px-16 xxs:p-2 xxs:pt-20 xxs:pb-20 md:pt-16">
+      <div className="mx-auto max-w-screen-xl min-h-[100vh] px-4 2xl:px-0">
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-semibold text-gray-900 ">Reviews</h2>
 

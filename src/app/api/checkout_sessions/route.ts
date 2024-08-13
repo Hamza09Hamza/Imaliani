@@ -38,8 +38,8 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `https://imaliani.vercel.app/me/orders`,
-      cancel_url: `https://imaliani.vercel.app/me/chart`,
+      success_url: `https://localhost:3000/me/orders`,
+      cancel_url: `https://localhost:3000/me/chart`,
       metadata: {
         encryptedProductData:JSON.stringify(encryptedProductData),
         encryptedUserId: userID,

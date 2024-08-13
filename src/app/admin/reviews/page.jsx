@@ -99,7 +99,7 @@ const Reviews = () => {
     return (
         <>
 
-           {reviews.length>0? <section className="bg-softBeige   min-h-[100vh]  xxs:w-[100vw]  py-8 antialiased md:py-16">
+           {reviews.length>0? <section className="bg-softBeige   min-h-[100vh] xxs:pb-20  xxs:w-[100vw]  py-8 antialiased md:py-16">
                 <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
                     <div className="mx-auto max-w-6xl bg-white px-16 py-8 rounded-3xl ">
                         <div className="gap-4 sm:flex sm:items-center sm:justify-between">

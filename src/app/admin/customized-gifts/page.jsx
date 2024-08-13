@@ -117,7 +117,7 @@ if(loading){
     return (
         <>
             {displayedOrders.length > 0 ? (
-                <section className="bg-softBeige flex w-full xxs:w-[100%] items-center p-16 antialiased  min-h-[100vh] md:py-16">
+                <section className="bg-softBeige flex w-full xxs:pb-20 xxs:w-[100%] items-center lg:p-16 xxs:p-8 antialiased  min-h-[100vh] md:py-16">
                     <div className="mx-auto flex-1 max-w-screen-xl px-4 p-16 2xl:px-0 bg-white rounded-3xl">
                         <div className="lg:mx-auto xxs:w-[100%] lg:max-w-5xl">
                             <div className="gap-4 sm:flex sm:items-center sm:justify-between">

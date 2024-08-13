@@ -84,7 +84,7 @@ const Products = () => {
 
     return (
         <>
-            <section className="bg-softBeige lg:h-[100vh] h-full p-3 sm:p-5">
+            <section className="bg-softBeige min-h-[100vh] xxs:pb-24 p-3 sm:p-5">
                 <div className="mx-auto max-w-screen-xl lg:h-[100vh] px-4 lg:px-12">
                     <div className="bg-white relative w-full shadow-md sm:rounded-lg overflow-hidden">
                         <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">

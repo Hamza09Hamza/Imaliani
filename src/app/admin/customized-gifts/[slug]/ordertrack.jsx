@@ -7,7 +7,7 @@ import axios from 'axios';
 import { doc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 
-const TrackOrder = ({ Status, id }) => {
+const TrackOrder = ({ Status, id,email }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [admin,setAdmin]=useState(false)
     const [currentStatus, setCurrentStatus] = useState(Status);
@@ -24,17 +24,40 @@ const TrackOrder = ({ Status, id }) => {
       return () => unsubscribe();
       };
 
-handleAuthStateChange();
+    handleAuthStateChange();
       
     },[])
-
+    async function sendOrderStatusEmail(email, value) {
+        await axios.post('/api/statusemail', {
+            to: [email,],
+            subject: `Your order is in  ${value} `,
+            text: `Your order has been set to: ${value}. You can check our website for more information.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h1 style="background-color: #f8f8f8; padding: 10px 15px; align-text:center">Your Order Status has been Updated</h1>
+                    <p>Dear Customer,</p>
+                    <p>Your order has been set to: <strong>${value}</strong>.</p>
+                    <p>Please visit our <a href="https://imaliani.vercel.app/me/orders" style="color: #1a73e8; text-decoration: none;">website</a> for more information.</p>
+                    <p>Thank you for shopping with us!</p>
+                    <footer style="background-color: #f8f8f8; padding: 10px; margin-top: 20px;">
+                        <p style="font-size: 12px; color: #777;">This is an automated message, please do not reply.</p>
+                        <p style="font-size: 12px; color: #777;">© 2024 Imaliani Craft Studio</p>
+                    </footer>
+                </div>
+            `,
+            uid:auth.currentUser.uid
+        });
+    }
     const setNewStatus = async (value) => {
-        const date = getCurrentFirestoreTimestamp();
-        setCurrentStatus({ ...currentStatus, [value]: date });
-        if (await getUserRole(auth.currentUser.uid)) {
+        try {
+            const date = getCurrentFirestoreTimestamp();
+            setCurrentStatus({ ...currentStatus, [value]: date });
             const orderRef = doc(DB, "CustomizedGifts/", id);
-            await updateDoc(orderRef, {Status:{ ...Status, [value]: date} });
-            window.location.reload()
+            // await updateDoc(orderRef, {Status:{ ...Status, [value]: date} });
+            await sendOrderStatusEmail(email,value)
+            // window.location.reload()
+        } catch (error) {
+            
         }
     };
 
@@ -100,7 +123,7 @@ handleAuthStateChange();
                         <button onClick={() => { setIsOpen(!isOpen) }} className='px-4 py-2 rounded-2xl bg-hardBeige hover:bg-tooHardBeige duration-500 transition-all'>
                             {isOpen ? "Not sure ?" : "set a new status"}
                         </button>
-                        <div className={`${isOpen ? "flex" : "hidden"} items-center justify-around`}>
+                        <div className={`${isOpen ? "flex" : "hidden"} items-center flex-wrap gap-2 justify-around`}>
                             {filterStatuses().map((status) => (
                                 <dd
                                     key={status.status}

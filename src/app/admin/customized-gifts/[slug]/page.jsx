@@ -44,13 +44,14 @@ import isAuth from "../../../adminAuth"
                   status: getMostRecentStatus(orddata.Status) || "",
                   description: orddata.description || "",
                 };
-                const {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.email})
-                order.email=data.data
+                // const {data}=await axios.post("/api/decrypt",{id:user.uid,data:order.email})
+                // order.email=data.data
                 
                
 
                 setOrder(order);
                 console.log(orddata)
+                console.log(orddata.email)
               }else{
                 order={};
               }
@@ -62,19 +63,20 @@ import isAuth from "../../../adminAuth"
           });
 
         return () => unsubscribe();
-    };
+    }; 
 
     handleAuthStateChange();
 }, []);
+
   return (
     <>
-      <section className="bg-softBeige py-8 antialiased md:py-16 h-[100vh]">
+      <section className="bg-softBeige py-8 xxs:pb-20 antialiased md:py-16 lg:h-[100vh]">
         <div className="mx-auto max-w-screen-xl bg-white p-8 rounded-3xl 2xl:px-0">
           <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Track the delivery of special gift <span className='text-brown'>{order.orderId}</span></h2>
 
           <div className="mt-6 sm:mt-8 lg:flex lg:gap-8">
             <div className="w-full divide-y h-[100%] divide-gray-200 overflow-hidden rounded-lg border border-gray-200 lg:max-w-xl xl:max-w-2xl">
-              <div className='max-w-[70%] h-[20rem] flex items-center justify-center'>
+              <div className='max-w-[70%] lg:h-[20rem] xxs:max-w-[100%] flex items-center justify-center'>
                 <CarouselCustomNavigation images={order.images} />
               </div>
               <p className='my-4 text-gray-600'>
@@ -82,12 +84,12 @@ import isAuth from "../../../adminAuth"
               </p>
               <div className="space-y-4 p-6 bg-softBeige">
                 <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
-                  <dt className="text-lg font-bold text-gray-900">User Email : </dt>
-                  <dd className="text-lg font-bold text-gray-900">{order.email}</dd>
+                  <dt className="text-lg xxs:text-sm font-bold text-gray-600">User Email  </dt>
+                  <dd className="text-lg   xxs:text-sm font-light text-gray-900">{order.email}</dd>
                 </dl>
               </div>
             </div>
-            <TrackOrder Status={order.Status} id={order.orderId} />
+            <TrackOrder email={order.email} Status={order.Status} id={order.orderId} />
           </div>
         </div>
       </section>

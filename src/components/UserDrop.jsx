@@ -3,7 +3,7 @@ import { UserSignout } from '@/Firebase/Authentication';
 import { auth } from '@/Firebase/Initialisation';
 import React, { useEffect, useState } from 'react';
 
-const UserDrop = ({user}) => {
+const UserDrop = ({user,admin}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -72,6 +72,11 @@ const UserDrop = ({user}) => {
                             Customized Gifts
                         </div>
                     </li>
+                   {admin? <li>
+                        <div onClick={()=>{window.location.assign("/admin")}} className="block cursor-pointer px-4 py-2 hover:bg-hardBeige  hover:text-white transition-all duration-500">
+                            Admin Dashboard
+                        </div>
+                    </li>:<></>}
                 </ul>
                 <div className="py-2">
                     <div onClick={async()=>await UserSignout()} className="block cursor-pointer px-4 py-2 text-sm text-gray-100  hover:bg-hardBeige  hover:text-white transition-all duration-500">

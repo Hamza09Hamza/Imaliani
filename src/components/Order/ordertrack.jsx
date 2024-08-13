@@ -7,7 +7,7 @@ import { Statuses } from '@/app/me/orders/Order';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-const TrackOrder = ({ Status, id }) => {
+const TrackOrder = ({ Status, id ,email}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [admin,setAdmin]=useState(false)
     const [currentStatus, setCurrentStatus] = useState(Status);
@@ -28,13 +28,41 @@ handleAuthStateChange();
       
     },[])
 
+    async function sendOrderStatusEmail(email, value) {
+        await axios.post('/api/statusemail', {
+            to: [email,],
+            subject: 'Your order status has updated',
+            text: `Your order has been set to: ${value}. You can check our website for more information.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h1 style="background-color: #f8f8f8; padding: 10px 15px; align-text:center">Your Order Status has been Updated</h1>
+                    <p>Dear Customer,</p>
+                    <p>Your order has been set to: <strong>${value}</strong>.</p>
+                    <p>Please visit our <a href="https://imaliani.vercel.app/me/orders" style="color: #1a73e8; text-decoration: none;">website</a> for more information.</p>
+                    <p>Thank you for shopping with us!</p>
+                    <footer style="background-color: #f8f8f8; padding: 10px; margin-top: 20px;">
+                        <p style="font-size: 12px; color: #777;">This is an automated message, please do not reply.</p>
+                        <p style="font-size: 12px; color: #777;">© 2024 Imaliani Craft Studio</p>
+                    </footer>
+                </div>
+            `,
+            uid:auth.currentUser.uid
+        });
+    }
+
+
     const setNewStatus = async (value) => {
         const date = getCurrentFirestoreTimestamp();
         setCurrentStatus({ ...currentStatus, [value]: date });
 
         if (await getUserRole(auth.currentUser.uid)) {
-            await updateOrderStatus(id,{ ...Status, [value]: date });
-            window.location.reload()
+            try {
+                // await updateOrderStatus(id,{ ...Status, [value]: date });
+                await sendOrderStatusEmail(email,value)
+            } catch (error) {
+                
+            }
+            // window.location.reload()
         }
     };
 
@@ -98,7 +126,7 @@ handleAuthStateChange();
                         <button onClick={() => { setIsOpen(!isOpen) }} className='px-4 py-2 rounded-2xl bg-hardBeige hover:bg-tooHardBeige duration-500 transition-all'>
                             {isOpen ? "Not sure ?" : "set a new status"}
                         </button>
-                        <div className={`${isOpen ? "flex" : "hidden"} items-center justify-around`}>
+                        <div className={`${isOpen ? "flex" : "hidden"} flex-wrap gap-2 items-center justify-around`}>
                             {filterStatuses().map((status) => (
                                 <dd
                                     key={status.status}

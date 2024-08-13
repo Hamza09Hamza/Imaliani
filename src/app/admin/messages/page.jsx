@@ -90,7 +90,7 @@ const Messges = () => {
     return (
         <>
             {displayedMessages.length > 0 ? (
-                <section className="bg-softBeige flex w-full items-center p-16 antialiased justify-center   min-h-[100vh]  xxs:h-full md:py-16">
+                <section className="bg-softBeige flex w-full xxs:pb-20 items-center p-16 antialiased justify-center   min-h-[100vh]   md:py-16">
                     <div className="mx-auto flex-1 max-w-screen-xl px-4 p-16 2xl:px-0 bg-white rounded-3xl">
                         <div className="mx-auto max-w-5xl">
                             <div className="gap-4 sm:flex sm:items-center sm:justify-between">
